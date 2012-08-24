@@ -39,45 +39,78 @@ namespace Dispatcher\Compiler;
 
 use Notoj\Annotation;
 
-class Url
+class Component
 {
-    protected $route;
-    protected $parts;
-    protected $args = array();
-    protected $method = 'ALL';
+    const CONSTANT  = 1;
+    const VARIABLE  = 2;
+    const MIXED     = 3;
 
-    protected $allowedMethods = array('GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'ALL');
+    protected $raw;
+    protected $type;
+    protected $parts = array();
 
-    public function __construct(Annotation $def)
+    public function  __construct($part)
     {
-        if (!$def->has('Route')) {
-            throw new \RuntimeException("Missing @route");
+        $this->raw = $part;
+        $this->doParse();
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function doParse()
+    {
+        $str = $this->raw;
+        $len = strlen($str);
+        $parts  = array();
+        $buffer = "";
+        for($i=0; $i < $len; $i++) {
+            switch ($str[$i]) {
+            case '{':
+                if (!empty($buffer)) {
+                    $parts[] = array(self::CONSTANT, $buffer);
+                    $buffer  = "";
+                } else if ($i != 0) {
+                    throw new RuntimeException("If you use multiple variable they should be separated by a constant");
+                }
+                $pos = $i + 1;
+                $i   = strpos($str, '}', $i);
+                $tmp = substr($str, $pos, $i - $pos);
+                $parts[] = array(self::VARIABLE, $tmp);
+                break;
+            default: 
+                $buffer .= $str[$i];
+            }
         }
-        if ($def->has('Method')) {
-            $method = $def->getOne('Method');
-            $this->setMethod($method[0]);
+
+        if (!empty($buffer)) {
+            $parts[] = array(self::CONSTANT, $buffer);
+        }
+
+        $this->parts = $parts;
+
+        foreach ($parts as $part) {
+            if (empty($this->type)) {
+                $this->type = $part[0];
+            } else {
+                if ($this->type != $part[0]) {
+                    $this->type = self::MIXED;
+                    break;
+                }
+            }
         }
     }
 
-    public function setArguments(Array $args)
+    public function getParts()
     {
-        $this->args = $args;
+        return $this->parts;
     }
 
-    public function setMethod($method)
+    public function __toString()
     {
-        if (!in_array($method, $this->allowedMethods)) {
-            throw new \RuntimeException("{$exception} is not a valid method");
-        }
-        $this->method = $method;
-        return $this;
+        return $this->raw;
     }
 
-    public function setRoute($route)
-    {
-        $this->route = $route;
-        $this->parts = array_map(function($part){ 
-            return new Component($part);
-        }, array_filter(explode("/", $route)));
-    }
 }
