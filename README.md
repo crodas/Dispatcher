@@ -1,6 +1,8 @@
 Dispatcher
 ==========
 
+h2. WARNING: This is project is not finished yet.
+
 It's a compiler which generates code to route HTTP requests to classes or function. The URL patterns are defined with `annotations`.
 
 This is how the `annotations` looks like:
