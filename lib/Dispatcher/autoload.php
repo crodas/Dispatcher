@@ -17,6 +17,7 @@ spl_autoload_register(function ($class) {
     static $classes = array (
   'dispatcher\\compiler\\component' => '/Compiler/Component.php',
   'dispatcher\\compiler\\url' => '/Compiler/Url.php',
+  'dispatcher\\compiler\\urlgroup' => '/UrlGroup.php',
   'dispatcher\\compiler' => '/Compiler.php',
   'dispatcher\\generator' => '/Generator.php',
 );

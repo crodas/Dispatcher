@@ -53,10 +53,6 @@ class Url
         if (!$def->has('Route')) {
             throw new \RuntimeException("Missing @route");
         }
-        if ($def->has('Method')) {
-            $method = $def->getOne('Method');
-            $this->setMethod($method[0]);
-        }
     }
 
     public function setArguments(Array $args)
@@ -73,11 +69,21 @@ class Url
         return $this;
     }
 
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
     public function setRoute($route)
     {
         $this->route = $route;
         $this->parts = array_map(function($part){ 
             return new Component($part);
         }, array_filter(explode("/", $route)));
+    }
+
+    public function getParts()
+    {
+        return $this->parts;
     }
 }

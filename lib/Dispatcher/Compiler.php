@@ -52,6 +52,28 @@ class Compiler
 
         $this->compile();
     }
+    
+    protected function groupByMethod(Array $urls)
+    {
+        $group = new Compiler\UrlGroup('$method');
+        foreach ($urls as $url) {
+            $method = $url->getMethod();
+            if ($method == 'ALL') {
+                $method = '';
+            }
+            $group->addUrl($url, $method);
+        }
+        return $group;
+    }
+
+    protected function groupByPartsSize(Array $urls)
+    {
+        $group = new Compiler\UrlGroup('$parts');
+        foreach ($urls as $url) {
+            $group->addUrl($url, count($url->getParts()));
+        }
+        return $group;
+    }
 
     protected function compile()
     {
@@ -71,10 +93,23 @@ class Compiler
                 if (isset($args['set'])) {
                     $url->setArguments($args['set']);
                 }
-                $urls[] = $url;
+                if ($routeAnnotation->has('Method')) {
+                    foreach($routeAnnotation->get('Method') as $method) {
+                        foreach ($method['args'] as $m) {
+                            $nurl = clone $url;
+                            $nurl->setMethod($m);
+                            $urls[] = $nurl;
+                        }
+                    }
+                } else {
+                    $urls[] = $url;
+                }
             }
         }
         $this->urls = $urls;
+        $groups = $this->groupByMethod($urls);
+        $groups->iterate(array($this, 'groupByPartSize'));
+        print_r($groups);exit;
     }
    
 }
