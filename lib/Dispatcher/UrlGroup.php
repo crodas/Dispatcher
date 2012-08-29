@@ -35,84 +35,47 @@
   +---------------------------------------------------------------------------------+
 */
 
-namespace Dispatcher;
+namespace Dispatcher\Compiler;
 
-use Notoj\Dir as DirParser,
-    Notoj\File as FileParser,
-    Notoj\Annotations;
-
-class Generator
+class UrlGroup
 {
-    protected $dirs  = array();
-    protected $files = array();
-    protected $namespace = NULL;
+    protected $pattern = "";
+    protected $urls = array();
 
-    public function getNamespace()
+    public function __construct($pattern)
     {
-        return $this->namespace;
+        $this->pattern = $pattern;
     }
 
-    public function setNamespace($ns)
+    public function getExpr()
     {
-        if ($ns !== NULL && !preg_match('/^([a-z][a-z0-9_]*\\\\?)+$/i', $ns)) {
-            throw new \RuntimeException("{$ns} is not a valid namespace");
-        }
-        $this->namespace = $ns;
-
-        return $this;
+        return $this->pattern;
     }
 
-    /**
-     *  Add one directory to the stack, it will
-     *  scanned later when generate() is called
-     *
-     *  @param string $directory
-     *
-     *  @return $this
-     */
-    public function addDirectory($directory)
+    public function addUrl(Url $url, $type)
     {
-        if (!is_dir($dir)) {
-            throw new \RuntimeException("{$dir} is not a directory");
+        if (empty($this->urls[$type])) {
+            $this->urls[$type] = array();
         }
-        $this->dirs[] = $directory;
-
-        return $this;
+        $this->urls[$type][] = $url;
     }
 
-    /**
-     *  Add one file to the stack, it will scanned
-     *  later when generate() is called
-     *
-     *  @param string $file
-     *
-     *  @return $this
-     */
-    public function addFile($file)
+    public function iterate($callback)
     {
-        if (!is_file($file)) {
-            throw new \RuntimeException("{$file} is not a file");
+        foreach ($this->urls as $type => $group) {
+            if ($group instanceof self) {
+                $group->iterate($callback);
+                continue;
+            }
+            $return = call_user_func($callback, $group);
+            if (is_array($return) || $return instanceof self) {
+                $this->urls[$type] = $return;
+            }
         }
-        $this->files[] = $file;
-
-        return $this;
     }
 
-    public function generate()
+    public function GetMembers()
     {
-        $annotations = new Annotations;
-
-        foreach (array_unique($this->files) as $file) {
-            $ann = new FileParser($file);
-            $ann->getAnnotations($annotations);
-        }
-
-        foreach (array_unique($this->dirs) as $dir) {
-            $ann = new DirParser($dir);
-            $ann->getAnnotations($annotations);
-        }
-        
-        $compiler = new Compiler($this, $annotations);
-        return $compiler;
+        return $this->urls;
     }
 }

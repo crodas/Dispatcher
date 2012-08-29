@@ -37,7 +37,10 @@
 
 namespace Dispatcher;
 
-use Notoj\Annotations;
+use Notoj\Annotations,
+    Dispatcher\Compiler\Component,
+    Dispatcher\Compiler\Url,
+    Dispatcher\Compiler\UrlGroup;
 
 class Compiler
 {
@@ -55,7 +58,7 @@ class Compiler
     
     protected function groupByMethod(Array $urls)
     {
-        $group = new Compiler\UrlGroup('$method');
+        $group = new UrlGroup('$method');
         foreach ($urls as $url) {
             $method = $url->getMethod();
             if ($method == 'ALL') {
@@ -66,13 +69,51 @@ class Compiler
         return $group;
     }
 
-    protected function groupByPartsSize(Array $urls)
+    public function groupByPartsSize(Array $urls)
     {
-        $group = new Compiler\UrlGroup('$parts');
+        $group = new UrlGroup('$length');
         foreach ($urls as $url) {
             $group->addUrl($url, count($url->getParts()));
         }
         return $group;
+    }
+
+    protected function belongsToGroup(Array $arr, Array $parts)
+    {
+        return count(array_intersect_assoc(
+            $arr, $parts
+        )) > 0;
+    }
+
+    public function groupByPatterns(Array $urls)
+    {
+        $indexes = array();
+        $groups  = array();
+        foreach ($urls as $url) {
+            $parts = array_filter($url->getParts(), function($element) {
+                return $element->getType() == Component::CONSTANT;
+            });
+            if (empty($parts)) continue;
+            foreach ($indexes as $id => $pattern) {
+                if ($this->belongsToGroup($pattern, $parts)) {
+                    $groups[$id][] = $url; 
+                    continue 2;
+                }
+            }
+            $groups[]  = array($url);
+            $indexes[] = $parts;
+        }
+        if (count($indexes) > 1) {
+            $patterns = array();
+            foreach ($indexes as $id => $rules) {
+                $pattern = new UrlGroup($rules);
+                foreach ($groups[$id] as $id => $url) {
+                    $pattern->addUrl($url, $id);
+                }
+                $patterns[] = $pattern;
+            }
+            return $patterns;
+        }
     }
 
     protected function compile()
@@ -88,7 +129,7 @@ class Compiler
                 if (empty($args[0]) && empty($args['name'])) {
                     throw new \RuntimeException("@Route must have an argument");
                 }
-                $url = new Compiler\Url($routeAnnotation);
+                $url = new Url($routeAnnotation);
                 $url->setRoute(isset($args['name']) ? $args['name'] : $args[0]);
                 if (isset($args['set'])) {
                     $url->setArguments($args['set']);
@@ -108,8 +149,14 @@ class Compiler
         }
         $this->urls = $urls;
         $groups = $this->groupByMethod($urls);
-        $groups->iterate(array($this, 'groupByPartSize'));
-        print_r($groups);exit;
+        $groups->iterate(array($this, 'groupByPartsSize'));
+        $groups->iterate(array($this, 'groupByPatterns'));
+
+        $config = $this->config;
+        $args = compact('groups', 'config');
+        $vm = \Artifex::load(__DIR__ . '/Template/Main.tpl.php', $args);
+        $output = $vm->run();
+        die($output);
     }
    
 }

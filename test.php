@@ -23,7 +23,18 @@ function save_post() {
 function index() {
 }
 
+/**
+ *  @Route("/article/{something}", set={lang:"en"})
+ *  @Route("/article/{something}.{ext:type}", set={lang:"en"})
+ *  @Route("/articulo/{something}", set={lang:"en"})
+ *  @Route("/articulo/{something}.{ext:type}", set={lang:"es"})
+ */
+function show_article()
+{
+}
+
 $c = new \Dispatcher\Generator;
 $c->addFile(__FILE__);
+$c->setNamespace('dasdas');
 $compiler = $c->generate();
 var_dump($compiler);
