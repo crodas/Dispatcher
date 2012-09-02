@@ -33,6 +33,10 @@ function show_article()
 {
 }
 
+/** @Filter("something") */
+function filter_aritle() {
+}
+
 $c = new \Dispatcher\Generator;
 $c->addFile(__FILE__);
 $c->setNamespace('dasdas');

@@ -117,7 +117,7 @@ class Compiler
         }
     }
 
-    protected function compile()
+    protected function createUrlObjects()
     {
         if (!$this->annotations->has('Route')) {
             throw new \RuntimeException("cannot find @Route annotation");
@@ -149,16 +149,42 @@ class Compiler
             }
         }
         $this->urls = $urls;
-        $groups = $this->groupByMethod($urls);
+    }
+    
+    public function getFilterExpr($name)
+    {
+        $parts  = explode(":", $name);
+        $filter = $parts[0];
+        $name   = var_export(empty($parts[1]) ? $filter : $parts[1], true);
+
+        if (false) {
+            // filter is not found
+            return null;
+        }
+        
+        return compact('filter', 'name');
+    }
+
+    protected function compile()
+    {
+        $this->createUrlObjects();
+
+        $groups = $this->groupByMethod($this->urls);
         $groups->iterate(array($this, 'groupByPartsSize'));
         $groups->iterate(array($this, 'groupByPatterns'));
 
         $config = $this->config;
-        $args = compact('groups', 'config');
+        $self   = $this;
+        $args   = compact('groups', 'config');
         $vm = \Artifex::load(__DIR__ . '/Template/Main.tpl.php', $args);
         $vm->doInclude('Switch.tpl.php');
         $vm->doInclude('Url.tpl.php');
         $vm->doInclude('If.tpl.php');
+
+        /**
+         *  Convert every Url or UrlGroup object into
+         *  code :-)
+         */
         $vm->registerFunction('render', function($obj) use ($vm) {
             if ($obj instanceof UrlGroup_Switch) {
                 $fnc = 'render_group';
@@ -179,9 +205,17 @@ class Compiler
             $fnc = $vm->getFunction($fnc);
             return $fnc($obj);
         });
-        $vm->registerFunction('expr', function(Array $rules) {
+        
+        /**
+         *  Generate expressions
+         */
+        $vm->registerFunction('expr', function(Array $rules) use ($self) {
             if (count($rules) == 0) return array();
-            return 'hi there_if';
+            $expr = array();
+            foreach ($rules as $rule) {
+                $expr[] = $rule->getExpr($self);
+            }
+            return implode(' && ', array_filter($expr));
         });
         $output = $vm->run();
         die($output);

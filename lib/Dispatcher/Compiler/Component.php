@@ -37,7 +37,8 @@
 
 namespace Dispatcher\Compiler;
 
-use Notoj\Annotation;
+use Notoj\Annotation,
+    Dispatcher\Compiler;
 
 class Component
 {
@@ -62,14 +63,40 @@ class Component
         return $this->type;
     }
 
-    public function getExpr()
+    public function getExpr(Compiler $cmp)
     {
         switch ($this->type) {
         case self::CONSTANT:
             $expr = '$parts[' . $this->index . '] === ' . var_export($this->raw, true);
             break;
-        default:
-            var_dump($this->type);
+        case self::MIXED:
+            $regex = array();
+            $filters = array();
+            $i = 0;
+            foreach ($this->parts as $id => $part) {
+                if ($part[0] == self::CONSTANT) {
+                    $regex[] = preg_quote($part[1]);
+                } else {
+                    $regex[] = "(.+)";
+                    $f = $cmp->getFilterExpr($part[1]);
+                    if (!empty($f)) {
+                        $i++;
+                        $filters[] = "{$f['filter']}(\$Request, {$f['name']}, \$matches_{$this->index}[$i])";
+                    }
+                }
+            }
+            $regex = var_export("/" . implode("", $regex) . "/", true);
+            $expr  = "preg_match($regex, \$parts[$this->index], \$matches_$this->index) > 0";
+            if (count($filters)) {
+                $expr .= ' && ' .implode(' && ', $filters);
+            }
+            break;
+        case self::VARIABLE:
+            $f = $cmp->getFilterExpr($this->parts[0][1]);
+            if (empty($f)) {
+                return "";
+            }
+            $expr = "{$f['filter']}(\$Request, {$f['name']}, \$parts[$this->index])";
         }
 
         return $expr;
