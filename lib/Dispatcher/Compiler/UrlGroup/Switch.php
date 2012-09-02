@@ -37,45 +37,13 @@
 
 namespace Dispatcher\Compiler;
 
-class UrlGroup
+class UrlGroup_Switch extends UrlGroup
 {
-    protected $pattern = "";
-    protected $urls = array();
-
-    public function __construct($pattern)
-    {
-        $this->pattern = $pattern;
-    }
-
-    public function getExpr()
-    {
-        return $this->pattern;
-    }
-
     public function addUrl(Url $url, $type)
     {
         if (empty($this->urls[$type])) {
             $this->urls[$type] = array();
         }
         $this->urls[$type][] = $url;
-    }
-
-    public function iterate($callback)
-    {
-        foreach ($this->urls as $type => $group) {
-            if ($group instanceof self) {
-                $group->iterate($callback);
-                continue;
-            }
-            $return = call_user_func($callback, $group);
-            if (is_array($return) || $return instanceof self) {
-                $this->urls[$type] = $return;
-            }
-        }
-    }
-
-    public function GetMembers()
-    {
-        return $this->urls;
     }
 }

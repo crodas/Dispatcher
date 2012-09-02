@@ -37,59 +37,11 @@
 
 namespace Dispatcher\Compiler;
 
-use Notoj\Annotation;
-
-class Url
+class UrlGroup_If extends UrlGroup
 {
-    protected $route;
-    protected $parts;
-    protected $args = array();
-    protected $method = 'ALL';
-
-    protected $allowedMethods = array('GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'ALL');
-
-    public function __construct(Annotation $def)
+    public function addUrl(Url $url)
     {
-        if (!$def->has('Route')) {
-            throw new \RuntimeException("Missing @route");
-        }
+        $this->urls[] = $url;
     }
 
-    public function getRouteDefinition()
-    {
-        return $this->route;
-    }
-
-    public function setArguments(Array $args)
-    {
-        $this->args = $args;
-    }
-
-    public function setMethod($method)
-    {
-        if (!in_array($method, $this->allowedMethods)) {
-            throw new \RuntimeException("{$exception} is not a valid method");
-        }
-        $this->method = $method;
-        return $this;
-    }
-
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    public function setRoute($route)
-    {
-        $this->route = $route;
-        $this->parts = array_filter(explode("/", $route));
-        $this->parts = array_map(function($part, $index){ 
-            return new Component($part, $index);
-        }, $this->parts, array_keys($this->parts));
-    }
-
-    public function getParts()
-    {
-        return $this->parts;
-    }
 }

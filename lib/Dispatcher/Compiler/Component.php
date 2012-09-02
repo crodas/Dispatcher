@@ -47,17 +47,32 @@ class Component
 
     protected $raw;
     protected $type;
+    protected $index;
     protected $parts = array();
 
-    public function  __construct($part)
+    public function  __construct($part, $index)
     {
-        $this->raw = $part;
+        $this->raw   = $part;
+        $this->index = $index;
         $this->doParse();
     }
 
     public function getType()
     {
         return $this->type;
+    }
+
+    public function getExpr()
+    {
+        switch ($this->type) {
+        case self::CONSTANT:
+            $expr = '$parts[' . $this->index . '] === ' . var_export($this->raw, true);
+            break;
+        default:
+            var_dump($this->type);
+        }
+
+        return $expr;
     }
 
     public function doParse()

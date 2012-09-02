@@ -37,59 +37,42 @@
 
 namespace Dispatcher\Compiler;
 
-use Notoj\Annotation;
-
-class Url
+class UrlGroup
 {
-    protected $route;
-    protected $parts;
-    protected $args = array();
-    protected $method = 'ALL';
+    protected $urls = array();
+    protected $variable;
 
-    protected $allowedMethods = array('GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'ALL');
-
-    public function __construct(Annotation $def)
+    public function __construct($variable) 
     {
-        if (!$def->has('Route')) {
-            throw new \RuntimeException("Missing @route");
+        $this->variable = $variable;
+    }
+
+    public function getExpr()
+    {
+        return $this->variable;
+    }
+
+    public function getUrls()
+    {
+        return $this->urls;
+    }
+
+    public function iterate($callback)
+    {
+        foreach ($this->urls as $type => $group) {
+            if ($group instanceof self) {
+                $group->iterate($callback);
+                continue;
+            }
+            $return = call_user_func($callback, $group);
+            if (is_array($return) || $return instanceof self) {
+                $this->urls[$type] = $return;
+            }
         }
     }
 
-    public function getRouteDefinition()
+    public function GetMembers()
     {
-        return $this->route;
-    }
-
-    public function setArguments(Array $args)
-    {
-        $this->args = $args;
-    }
-
-    public function setMethod($method)
-    {
-        if (!in_array($method, $this->allowedMethods)) {
-            throw new \RuntimeException("{$exception} is not a valid method");
-        }
-        $this->method = $method;
-        return $this;
-    }
-
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    public function setRoute($route)
-    {
-        $this->route = $route;
-        $this->parts = array_filter(explode("/", $route));
-        $this->parts = array_map(function($part, $index){ 
-            return new Component($part, $index);
-        }, $this->parts, array_keys($this->parts));
-    }
-
-    public function getParts()
-    {
-        return $this->parts;
+        return $this->urls;
     }
 }

@@ -40,7 +40,8 @@ namespace Dispatcher;
 use Notoj\Annotations,
     Dispatcher\Compiler\Component,
     Dispatcher\Compiler\Url,
-    Dispatcher\Compiler\UrlGroup;
+    Dispatcher\Compiler\UrlGroup_Switch,
+    Dispatcher\Compiler\UrlGroup_If;
 
 class Compiler
 {
@@ -58,7 +59,7 @@ class Compiler
     
     protected function groupByMethod(Array $urls)
     {
-        $group = new UrlGroup('$method');
+        $group = new UrlGroup_Switch('$method');
         foreach ($urls as $url) {
             $method = $url->getMethod();
             if ($method == 'ALL') {
@@ -71,7 +72,7 @@ class Compiler
 
     public function groupByPartsSize(Array $urls)
     {
-        $group = new UrlGroup('$length');
+        $group = new UrlGroup_Switch('$length');
         foreach ($urls as $url) {
             $group->addUrl($url, count($url->getParts()));
         }
@@ -106,7 +107,7 @@ class Compiler
         if (count($indexes) > 1) {
             $patterns = array();
             foreach ($indexes as $id => $rules) {
-                $pattern = new UrlGroup($rules);
+                $pattern = new UrlGroup_If($rules);
                 foreach ($groups[$id] as $id => $url) {
                     $pattern->addUrl($url, $id);
                 }
@@ -155,6 +156,33 @@ class Compiler
         $config = $this->config;
         $args = compact('groups', 'config');
         $vm = \Artifex::load(__DIR__ . '/Template/Main.tpl.php', $args);
+        $vm->doInclude('Switch.tpl.php');
+        $vm->doInclude('Url.tpl.php');
+        $vm->doInclude('If.tpl.php');
+        $vm->registerFunction('render', function($obj) use ($vm) {
+            if ($obj instanceof UrlGroup_Switch) {
+                $fnc = 'render_group';
+            } else if ($obj instanceof UrlGroup_If) {
+                $fnc = 'render_if';
+            } else if ($obj instanceof Url) {
+                $fnc = 'render_url';
+            } else if (is_array($obj)) {
+                $fnc = $vm->getFunction('render');
+                $buf = '';
+                foreach ($obj as $url) {
+                    $buf .= $fnc($url);
+                }
+                return $buf;
+            } else {
+                throw new \RuntimeException("Don't know how to render " . get_class($obj));
+            }
+            $fnc = $vm->getFunction($fnc);
+            return $fnc($obj);
+        });
+        $vm->registerFunction('expr', function(Array $rules) {
+            if (count($rules) == 0) return array();
+            return 'hi there_if';
+        });
         $output = $vm->run();
         die($output);
     }

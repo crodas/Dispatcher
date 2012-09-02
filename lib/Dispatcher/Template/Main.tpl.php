@@ -11,35 +11,6 @@
 namespace __namespace__;
 #* end
 
-#* 
-#function render_urls($urls)
-// __@urls__
-#* 
-#end
-#function render($obj)
-#   if (!is_object($obj))
-#       render_urls($obj)
-#       return ''
-#   end
-#   $expr = $obj->GetExpr()
-switch (__expr__) {
-#*  
-#   foreach ($obj->GetMembers() as $type => $member)
-#       if ($type == '') 
-#           $zelse = $member
-#           continue
-#       end
-case __@type__:
-    #* render($member)
-    break;
-#*
-#   end
-}
-#*
-#   render($zelse)
-#end
-
-
 class NotFoundException extends \Exception 
 {
 }
