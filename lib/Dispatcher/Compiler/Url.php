@@ -74,6 +74,30 @@ class Url
         return $this;
     }
 
+    public function getVariables() {
+        $vars = array();
+        foreach($this->parts as $id => $part) {
+            switch($part->getType()){
+            case Component::MIXED:
+            case Component::VARIABLE:
+                $isVariable = $part->getType() == Component::VARIABLE;
+                $id1 = 0;
+                foreach ($part->getParts() as $part) {
+                    if ($part[0] == Component::VARIABLE) {
+                        $name = ($i=strpos($part[1], ':')) ? substr($part[1], $i+1) : $part[1];
+                        if ($isVariable) {
+                            $vars[$name] = array($id);
+                        } else {
+                            $vars[$name] = array($id, $id1++);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        return $vars;
+    }
+
     public function getMethod()
     {
         return $this->method;
@@ -82,7 +106,7 @@ class Url
     public function setRoute($route)
     {
         $this->route = $route;
-        $this->parts = array_filter(explode("/", $route));
+        $this->parts = array_values(array_filter(explode("/", $route)));
         $this->parts = array_map(function($part, $index){ 
             return new Component($part, $index);
         }, $this->parts, array_keys($this->parts));

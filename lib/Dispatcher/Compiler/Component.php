@@ -96,7 +96,8 @@ class Component
             if (empty($f)) {
                 return "";
             }
-            $expr = "{$f['filter']}(\$Request, {$f['name']}, \$parts[$this->index])";
+            $name = "\$filter_{$f['filter']}_$this->index";
+            $expr = "($name || ($name={$f['filter']}(\$Request, {$f['name']}, \$parts[$this->index])))";
         }
 
         return $expr;
