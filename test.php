@@ -19,8 +19,11 @@ function foo() {
 function save_post() {
 }
 
-/** @Route("/") */
-function index() {
+class Foobar
+{
+    /** @Route("/") */
+    function index() {
+    }
 }
 
 /**

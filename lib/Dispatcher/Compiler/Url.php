@@ -42,6 +42,7 @@ use Notoj\Annotation;
 class Url
 {
     protected $route;
+    protected $def;
     protected $parts;
     protected $args = array();
     protected $method = 'ALL';
@@ -53,6 +54,12 @@ class Url
         if (!$def->has('Route')) {
             throw new \RuntimeException("Missing @route");
         }
+        $this->def = $def;
+    }
+
+    public function getAnnotation()
+    {
+        return $this->def;
     }
 
     public function getRouteDefinition()

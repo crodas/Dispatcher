@@ -217,6 +217,23 @@ class Compiler
             }
             return implode(' && ', array_filter($expr));
         });
+
+        $vm->registerFunction('callback', function($annotation) use ($vm) {
+            if ($annotation->isFunction()) {
+                return "\\" . $annotation['function'];
+            } else if ($annotation->isMethod()) {
+                $class  = "\\" . $annotation['class'];
+                $method = $annotation['function'];
+                $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
+                $vm->printIndented("if (empty($obj)) {\n");
+                $vm->printIndented("    $obj = new $class;\n");
+                $vm->printIndented("}\n");
+                return "{$obj}->{$method}";
+            } else {
+                throw new \RuntimeException("Invalid callback");
+            }
+        });
+
         $output = $vm->run();
         die($output);
     }
