@@ -1,0 +1,15 @@
+{
+    "name": "crodas/Dispatcher",
+    "description": "Dispatcher generator",
+    "require": {
+        "crodas/notoj": "dev-master",
+        "crodas/artifex": "dev-master",
+        "symfony/console": "dev-master"
+    },
+    "authors": [
+        {
+            "name": "César D. Rodas",
+            "email": "crodas@php.net"
+        }
+    ]
+}
