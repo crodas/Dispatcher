@@ -59,7 +59,7 @@ class Foo
     }
 }
 
-class SimpleTest extends \phpunit_framework_testcase
+class QuickTest extends \phpunit_framework_testcase
 {
     public function testCompile()
     {
@@ -81,8 +81,8 @@ class SimpleTest extends \phpunit_framework_testcase
      */
     public function testMatch()
     {
-        $route = new \SimpleTest\Route;
-        $req   = new \SimpleTest\Request;
+        $route = new \QuickTest\Route;
+        $req   = new \QuickTest\Request;
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/function'));
         $this->assertEquals($num, $req->get('return'));
@@ -93,8 +93,8 @@ class SimpleTest extends \phpunit_framework_testcase
      */
     public function testMatchWithFilter()
     {
-        $route = new \SimpleTest\Route;
-        $req   = new \SimpleTest\Request;
+        $route = new \QuickTest\Route;
+        $req   = new \QuickTest\Request;
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/xxx/foobar'));
         $this->assertEquals($num, $req->get('return'));
@@ -106,8 +106,8 @@ class SimpleTest extends \phpunit_framework_testcase
      */
     public function testMatchMethod()
     {
-        $route = new \SimpleTest\Route;
-        $req   = new \SimpleTest\Request;
+        $route = new \QuickTest\Route;
+        $req   = new \QuickTest\Request;
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/method'));
         $this->assertEquals($num, $req->get('return'));
@@ -118,20 +118,20 @@ class SimpleTest extends \phpunit_framework_testcase
      */
     public function testMatchMixed()
     {
-        $route = new \SimpleTest\Route;
-        $req   = new \SimpleTest\Request;
+        $route = new \QuickTest\Route;
+        $req   = new \QuickTest\Request;
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/foobar.php'));
     }
 
     /**
      *  @depends testCompile
-     *  @expectedException \SimpleTest\NotFoundException
+     *  @expectedException \QuickTest\NotFoundException
      */
     public function test404()
     {
-        $route = new \SimpleTest\Route;
-        $req   = new \SimpleTest\Request;
+        $route = new \QuickTest\Route;
+        $req   = new \QuickTest\Request;
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/function/something'));
         $this->assertEquals($num, $req->get('return'));
@@ -139,12 +139,12 @@ class SimpleTest extends \phpunit_framework_testcase
 
     /**
      *  @depends testCompile
-     *  @expectedException \SimpleTest\NotFoundException
+     *  @expectedException \QuickTest\NotFoundException
      */
     public function test404WithFilter()
     {
-        $route = new \SimpleTest\Route;
-        $req   = new \SimpleTest\Request;
+        $route = new \QuickTest\Route;
+        $req   = new \QuickTest\Request;
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/xxx/barfoo'));
         $this->assertEquals($num, $req->get('return'));
