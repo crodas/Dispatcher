@@ -60,7 +60,7 @@ class Compiler
     
     protected function groupByMethod(Array $urls)
     {
-        $group = new UrlGroup_Switch('$method');
+        $group = new UrlGroup_Switch('$server["REQUEST_METHOD"]');
         foreach ($urls as $url) {
             $method = $url->getMethod();
             if ($method == 'ALL') {
@@ -257,8 +257,12 @@ class Compiler
             return implode(' && ', array_filter($expr));
         });
 
-        $output = $vm->run();
-        die($output);
+        $this->output = $vm->run();
+    }
+    
+    public function getOutput()
+    {
+        return $this->output;
     }
    
 }

@@ -82,7 +82,7 @@ class Component
                     if (!empty($f)) {
                         $i++;
                         $f['filter'] = $callback($f['filter']);
-                        $filters[] = "{$f['filter']}(\$Request, {$f['name']}, \$matches_{$this->index}[$i])";
+                        $filters[] = "{$f['filter']}(\$req, {$f['name']}, \$matches_{$this->index}[$i])";
                     }
                 }
             }
@@ -99,7 +99,7 @@ class Component
             }
             $f['filter'] = $callback($f['filter']);
             $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_$this->index";
-            $expr = "($name || ($name={$f['filter']}(\$Request, {$f['name']}, \$parts[$this->index])))";
+            $expr = "(!empty($name) || ($name={$f['filter']}(\$req, {$f['name']}, \$parts[$this->index])))";
         }
 
         return $expr;

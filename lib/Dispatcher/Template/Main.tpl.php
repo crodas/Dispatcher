@@ -49,6 +49,10 @@ class Route
         $parts  = array_values(array_filter(explode("/", $server['REQUEST_URI'])));
         $length = count($parts);
 
+        if (empty($server['REQUEST_METHOD'])) {
+            $server['REQUEST_METHOD'] = 'GET';
+        }
+
         #* render($groups)
 
         throw new NotFoundException;

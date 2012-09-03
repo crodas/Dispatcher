@@ -46,6 +46,7 @@ class Generator
     protected $dirs  = array();
     protected $files = array();
     protected $namespace = NULL;
+    protected $output;
 
     public function getNamespace()
     {
@@ -98,6 +99,11 @@ class Generator
         return $this;
     }
 
+    public function setOutput($output)
+    {
+        $this->output = $output;
+    }
+
     public function generate()
     {
         $annotations = new Annotations;
@@ -113,6 +119,9 @@ class Generator
         }
         
         $compiler = new Compiler($this, $annotations);
-        return $compiler;
+        if (!empty($this->output)) {
+            file_put_contents($this->output, $compiler->getOutput());
+        }
+        return $compiler->getOutput();
     }
 }

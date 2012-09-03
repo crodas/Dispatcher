@@ -88,7 +88,7 @@ class Url
             case Component::MIXED:
             case Component::VARIABLE:
                 $isVariable = $part->getType() == Component::VARIABLE;
-                $id1 = 0;
+                $id1 = 1;
                 foreach ($part->getParts() as $part) {
                     if ($part[0] == Component::VARIABLE) {
                         $name = ($i=strpos($part[1], ':')) ? substr($part[1], $i+1) : $part[1];
