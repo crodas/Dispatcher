@@ -48,6 +48,7 @@ class Compiler
     protected $config;
     protected $annotations;
     protected $urls;
+    protected $filters = array();
 
     public function __construct(Generator $conf, Annotations $annotations)
     {
@@ -117,6 +118,21 @@ class Compiler
         }
     }
 
+    protected function readFilters()
+    {
+        if (!$this->annotations->has('Filter')) {
+            return;
+        }
+
+        foreach ($this->annotations->get('Filter') as $filterAnnotation) {
+            foreach ($filterAnnotation->get('Filter') as $filter) {
+                $name = current($filter['args']);
+                if (empty($name)) continue;
+                $this->filters[$name] = $filterAnnotation;
+            }
+        }
+    }
+
     protected function createUrlObjects()
     {
         if (!$this->annotations->has('Route')) {
@@ -157,17 +173,19 @@ class Compiler
         $filter = $parts[0];
         $name   = var_export(empty($parts[1]) ? $filter : $parts[1], true);
 
-        if (false) {
+        if (empty($this->filters[$filter])) {
             // filter is not found
             return null;
         }
         
+        $filter = $this->filters[$filter];
         return compact('filter', 'name');
     }
 
     protected function compile()
     {
         $this->createUrlObjects();
+        $this->readFilters();
 
         $groups = $this->groupByMethod($this->urls);
         $groups->iterate(array($this, 'groupByPartsSize'));
@@ -205,20 +223,12 @@ class Compiler
             $fnc = $vm->getFunction($fnc);
             return $fnc($obj);
         });
-        
-        /**
-         *  Generate expressions
-         */
-        $vm->registerFunction('expr', function(Array $rules) use ($self) {
-            if (count($rules) == 0) return array();
-            $expr = array();
-            foreach ($rules as $rule) {
-                $expr[] = $rule->getExpr($self);
-            }
-            return implode(' && ', array_filter($expr));
-        });
 
-        $vm->registerFunction('callback', function($annotation) use ($vm) {
+        /**
+         *  Generate the callback function (from a function or 
+         *  a method)
+         */
+        $vm->registerFunction('callback', $callback=function($annotation) use ($vm) {
             if ($annotation->isFunction()) {
                 return "\\" . $annotation['function'];
             } else if ($annotation->isMethod()) {
@@ -232,6 +242,19 @@ class Compiler
             } else {
                 throw new \RuntimeException("Invalid callback");
             }
+        });
+
+        
+        /**
+         *  Generate expressions
+         */
+        $vm->registerFunction('expr', function(Array $rules) use ($self, $callback) {
+            if (count($rules) == 0) return array();
+            $expr = array();
+            foreach ($rules as $rule) {
+                $expr[] = $rule->getExpr($self, $callback);
+            }
+            return implode(' && ', array_filter($expr));
         });
 
         $output = $vm->run();

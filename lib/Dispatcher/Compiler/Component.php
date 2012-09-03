@@ -63,7 +63,7 @@ class Component
         return $this->type;
     }
 
-    public function getExpr(Compiler $cmp)
+    public function getExpr(Compiler $cmp, \Closure $callback)
     {
         switch ($this->type) {
         case self::CONSTANT:
@@ -81,6 +81,7 @@ class Component
                     $f = $cmp->getFilterExpr($part[1]);
                     if (!empty($f)) {
                         $i++;
+                        $f['filter'] = $callback($f['filter']);
                         $filters[] = "{$f['filter']}(\$Request, {$f['name']}, \$matches_{$this->index}[$i])";
                     }
                 }
@@ -96,6 +97,7 @@ class Component
             if (empty($f)) {
                 return "";
             }
+            $f['filter'] = $callback($f['filter']);
             $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_$this->index";
             $expr = "($name || ($name={$f['filter']}(\$Request, {$f['name']}, \$parts[$this->index])))";
         }

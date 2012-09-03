@@ -36,8 +36,11 @@ function show_article()
 {
 }
 
-/** @Filter("something") */
-function filter_aritle() {
+class Filter_Foobar
+{
+    /** @Filter("something") */
+    function filter_article() {
+    }
 }
 
 $c = new \Dispatcher\Generator;
