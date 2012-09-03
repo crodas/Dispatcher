@@ -1,5 +1,5 @@
 {
-    "name": "crodas/Dispatcher",
+    "name": "crodas/dispatcher",
     "description": "Dispatcher generator",
     "require": {
         "crodas/notoj": "dev-master",
