@@ -72,6 +72,11 @@ class Url
         $this->args = $args;
     }
 
+    public function getArguments()
+    {
+        return $this->args;
+    }
+
     public function setMethod($method)
     {
         if (!in_array($method, $this->allowedMethods)) {
@@ -102,6 +107,7 @@ class Url
                 break;
             }
         }
+
         return $vars;
     }
 

@@ -8,13 +8,18 @@
 #* if (count($expr) > 0) 
 if (__expr__) {
 #* end
-    #* foreach ($object->getVariables() as $name => $var)
+    #* 
+    # foreach ($object->getArguments() as $name => $var)
+    $req->set(__@name__, __@var__);
+    #*
+    # end
+    # foreach ($object->getVariables() as $name => $var)
     #   if (count($var) == 1)
     #       $variable = "parts[" . $var[0] . "]"
     #   else
     #       $variable = "matches_" . $var[0] . "[" . $var[1] . "]"
     #   end
-    $req->set(__@name__, $__variable__);
+    $req->setIfEmpty(__@name__, $__variable__);
     #* end
     // do route
     return __callback__($req);

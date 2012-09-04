@@ -19,6 +19,14 @@ class Request
 {
     protected $var;
 
+    public function setIfEmpty($name, $value)
+    {
+        if (empty($this->var[$name])) {
+            $this->var[$name] = $value;
+        }
+        return $this;
+    }
+
     public function set($name, $value)
     {
         $this->var[$name] = $value;
