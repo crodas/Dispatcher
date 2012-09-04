@@ -71,12 +71,12 @@ class Generator
      *
      *  @return $this
      */
-    public function addDirectory($directory)
+    public function addDirectory($dir)
     {
         if (!is_dir($dir)) {
             throw new \RuntimeException("{$dir} is not a directory");
         }
-        $this->dirs[] = $directory;
+        $this->dirs[] = $dir;
 
         return $this;
     }
@@ -102,6 +102,8 @@ class Generator
     public function setOutput($output)
     {
         $this->output = $output;
+
+        return $this;
     }
 
     public function generate()
