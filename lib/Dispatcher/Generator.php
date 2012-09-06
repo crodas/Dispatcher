@@ -109,15 +109,23 @@ class Generator
     public function generate()
     {
         $annotations = new Annotations;
+        $isCached = $this->output && file_exists($this->output);
 
         foreach (array_unique($this->files) as $file) {
             $ann = new FileParser($file);
             $ann->getAnnotations($annotations);
+            $isCached &= $ann->isCached();
         }
 
         foreach (array_unique($this->dirs) as $dir) {
             $ann = new DirParser($dir);
             $ann->getAnnotations($annotations);
+            $isCached &= $ann->isCached();
+        }
+
+        if ($isCached) {
+            /* nothing to do */
+            return;
         }
         
         $compiler = new Compiler($this, $annotations);
