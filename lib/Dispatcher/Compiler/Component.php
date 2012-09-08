@@ -43,8 +43,8 @@ use Notoj\Annotation,
 class Component
 {
     const CONSTANT  = 1;
-    const VARIABLE  = 2;
-    const MIXED     = 3;
+    const VARIABLE  = 20;
+    const MIXED     = 30;
 
     protected $raw;
     protected $type;

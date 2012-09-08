@@ -39,6 +39,15 @@ namespace Dispatcher\Compiler;
 
 class UrlGroup_If extends UrlGroup
 {
+    public function getWeight()
+    {
+        $weight = 0;
+        foreach ($this->variable as $variable) {
+            $weight = $variable->getType();
+        }
+        return $weight;
+    }
+
     public function addUrl(Url $url)
     {
         $this->urls[] = $url;

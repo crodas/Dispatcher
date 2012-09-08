@@ -1,5 +1,23 @@
 <?php
 
+/** @Filter foo */
+function filter_1($Req) {
+    $Req->set('filter_1', true);
+}
+/** @Filter bar */
+function filter_2() {
+    $Req->set('filter_2', true);
+}
+
+/**
+ *  @Route("/foo/bar/{foo}")
+ *  @Route("/foo/bar/{bar}")
+ *  @Route("/foo/bar/xxx")
+ */
+function TestingMultiple()
+{
+}
+
 /**
  *  @Route("/foo/function")
  *  @Route("/xxx/{foobar}")

@@ -57,6 +57,17 @@ class UrlGroup
         return $this->urls;
     }
 
+    public function sort($callback)
+    {
+        foreach ($this->urls as $type => &$group) {
+            if ($group instanceof self) {
+                $group->sort($callback);
+                continue;
+            }
+            usort($group, $callback);
+        }
+    }
+
     public function iterate($callback)
     {
         foreach ($this->urls as $type => $group) {

@@ -57,6 +57,15 @@ class Url
         $this->def = $def;
     }
 
+    public function getWeight()
+    {
+        $weight = 0;
+        foreach ($this->parts as $part) {
+            $weight += $part->GetType();
+        }
+        return $weight;
+    }
+
     public function getAnnotation()
     {
         return $this->def;

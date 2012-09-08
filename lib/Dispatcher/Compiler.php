@@ -105,9 +105,15 @@ class Compiler
             $groups[]  = array($url);
             $indexes[] = $parts;
         }
-        if (count($indexes) > 1) {
+        if (count($groups) > 1) {
             $patterns = array();
             foreach ($indexes as $id => $rules) {
+                if (count($groups[$id]) == 1) {
+                    // if the group has just *one*
+                    // element
+                    $patterns[] = $groups[$id][0];
+                    continue;
+                }
                 $pattern = new UrlGroup_If($rules);
                 foreach ($groups[$id] as $id => $url) {
                     $pattern->addUrl($url, $id);
@@ -190,6 +196,9 @@ class Compiler
         $groups = $this->groupByMethod($this->urls);
         $groups->iterate(array($this, 'groupByPartsSize'));
         $groups->iterate(array($this, 'groupByPatterns'));
+        $groups->sort(function($obj1, $obj2) {
+            return $obj1->getWeight() - $obj2->getWeight();
+        });
 
         $config = $this->config;
         $self   = $this;
