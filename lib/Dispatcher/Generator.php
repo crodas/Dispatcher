@@ -106,6 +106,11 @@ class Generator
         return $this;
     }
 
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
     public function generate()
     {
         $annotations = new Annotations;

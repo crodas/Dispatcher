@@ -82,7 +82,7 @@ class QuickTest extends \phpunit_framework_testcase
     public function testCompile()
     {
         $gen  = new Dispatcher\Generator;
-        $file = __DIR__ . '/tmp/' . __CLASS__ . '.php';
+        $file = __DIR__ . '/generated/' . __CLASS__ . '.php';
         $this->assertFalse(file_Exists($file));
         $gen->addFile(__FILE__); 
         $gen->setNamespace(__CLASS__);

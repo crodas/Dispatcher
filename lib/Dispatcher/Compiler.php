@@ -188,6 +188,33 @@ class Compiler
         return compact('filter', 'name');
     }
 
+    public function getRelativePath($file1, $file2)
+    {
+        $dir1 = trim(realpath(dirname($file1)),'/');
+        $dir2 = trim(realpath(dirname($file2)),'/');
+        $to   = explode('/', $dir1);
+        $from = explode('/', $dir2);
+
+        $realPath = $to;
+
+        foreach ($from as $depth => $dir) {
+            if(isset($to[$depth]) && $dir === $to[$depth]) {
+                array_shift($realPath);
+            } else {
+                $remaining = count($from) - $depth;
+                if($remaining) {
+                    // add traversals up to first matching dir
+                    $padLength = (count($realPath) + $remaining) * -1;
+                    $realPath  = array_pad($realPath, $padLength, '..');
+                    break;
+                }
+            }
+        }
+
+        return implode("/", $realPath) . '/' . basename($file1); 
+    }
+
+
     protected function compile()
     {
         $this->createUrlObjects();
@@ -201,6 +228,7 @@ class Compiler
         });
 
         $config = $this->config;
+        $output = $this->config->getOutput();
         $self   = $this;
         $args   = compact('groups', 'config');
         $vm = \Artifex::load(__DIR__ . '/Template/Main.tpl.php', $args);
@@ -237,7 +265,23 @@ class Compiler
          *  Generate the callback function (from a function or 
          *  a method)
          */
-        $vm->registerFunction('callback', $callback=function($annotation) use ($vm) {
+        $vm->registerFunction('callback', $callback=function($annotation) use ($vm, $self, $output) {
+            $fileHash = '$file_' . substr(sha1($annotation['file']), 0, 8);
+            $filePath = $annotation['file'];
+            if (!empty($output)) {
+                $filePath = $self->getRelativePath($annotation['file'], $output);
+            }
+
+            $vm->printIndented("if (empty($fileHash)) {\n");
+            $vm->printIndented("   $fileHash = 1;\n");
+            if (!empty($output)) {
+                $vm->printIndented('   require_once __DIR__ . "/' . addslashes($filePath) . '";' . "\n");
+            } else {
+                $vm->printIndented('   require_once "' . addslashes($filePath) . '";' . "\n");
+            }
+
+            $vm->printIndented("}\n");
+
             if ($annotation->isFunction()) {
                 return "\\" . $annotation['function'];
             } else if ($annotation->isMethod()) {
