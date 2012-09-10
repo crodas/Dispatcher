@@ -51,9 +51,6 @@ class Url
 
     public function __construct(Annotation $def)
     {
-        if (!$def->has('Route')) {
-            throw new \RuntimeException("Missing @route");
-        }
         $this->def = $def;
     }
 

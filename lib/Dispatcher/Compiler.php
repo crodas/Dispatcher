@@ -139,38 +139,68 @@ class Compiler
         }
     }
 
+    protected function processRoute($routeAnnotation, Array $route)
+    {
+        $args  = empty($route['args']) ? array() : $route['args'];
+        $route = current($args);
+
+        if ($routeAnnotation->isMethod()) {
+            $class = $this->annotations->getClassInfo($routeAnnotation['class']);
+            if (!empty($class['class'])) {
+                $baseRoute = $class['class']->getOne('Route');
+                if (!empty($baseRoute)) {
+                    $route = current($baseRoute) . '/' . $route;
+                }
+            }
+        }
+
+        if (empty($route)) {
+            throw new \RuntimeException("@Route must have an argument");
+        }
+
+        $url = new Url($routeAnnotation);
+        $url->setRoute($route);
+        if (isset($args['set'])) {
+            $url->setArguments($args['set']);
+        }
+        if ($routeAnnotation->has('Method')) {
+            foreach($routeAnnotation->get('Method') as $method) {
+                foreach ($method['args'] as $m) {
+                    $nurl = clone $url;
+                    $nurl->setMethod($m);
+                    $this->urls[] = $nurl;
+                }
+            }
+        } else {
+            $this->urls[] = $url;
+        }
+    }
+
     protected function createUrlObjects()
     {
         if (!$this->annotations->has('Route')) {
             throw new \RuntimeException("cannot find @Route annotation");
         }
 
-        $urls = array();
+        $this->urls = array();
         foreach ($this->annotations->get('Route') as $routeAnnotation) {
-            foreach ($routeAnnotation->get('Route') as $route) {
-                $args = $route['args'];
-                if (empty($args[0]) && empty($args['name'])) {
-                    throw new \RuntimeException("@Route must have an argument");
+            if ($routeAnnotation->isClass()) {
+                if (count($routeAnnotation->get('Route')) > 1) {
+                    throw new \RuntimeException("Classes can have only *one* @Route");
                 }
-                $url = new Url($routeAnnotation);
-                $url->setRoute(isset($args['name']) ? $args['name'] : $args[0]);
-                if (isset($args['set'])) {
-                    $url->setArguments($args['set']);
-                }
-                if ($routeAnnotation->has('Method')) {
-                    foreach($routeAnnotation->get('Method') as $method) {
-                        foreach ($method['args'] as $m) {
-                            $nurl = clone $url;
-                            $nurl->setMethod($m);
-                            $urls[] = $nurl;
-                        }
+                $class = $this->annotations->getClassInfo($routeAnnotation['class']);
+                foreach ($class['method'] as $annotation) {
+                    if (!$annotation->has('Route')) {
+                        $this->processRoute($annotation, array());
                     }
-                } else {
-                    $urls[] = $url;
                 }
+                continue;
+            }
+
+            foreach ($routeAnnotation->get('Route') as $route) {
+                $this->processRoute($routeAnnotation, $route);
             }
         }
-        $this->urls = $urls;
     }
     
     public function getFilterExpr($name)

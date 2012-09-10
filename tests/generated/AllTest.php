@@ -59,6 +59,25 @@ class Route
         }
 
         switch ($server["REQUEST_METHOD"]) {
+        case 'POST':
+            switch ($length) {
+            case 1:
+                // Routes for /prefix/
+                if ($parts[0] === 'prefix') {
+                    if (empty($file_ce8f643f)) {
+                       $file_ce8f643f = 1;
+                       require_once __DIR__ . "/../input/class.php";
+                    }
+                    if (empty($obj_filt_2d89b930)) {
+                        $obj_filt_2d89b930 = new \SomeClass;
+                    }
+                    // do route
+                    return $obj_filt_2d89b930->save($req);
+                }
+                // end of /prefix/
+                break;
+            }
+            break;
         }
         
         switch ($length) {
@@ -91,6 +110,20 @@ class Route
                 }
                 // end of /function/reverse
             }
+            // Routes for /prefix//some
+            if ($parts[0] === 'prefix' && $parts[1] === 'some') {
+                if (empty($file_ce8f643f)) {
+                   $file_ce8f643f = 1;
+                   require_once __DIR__ . "/../input/class.php";
+                }
+                if (empty($obj_filt_2d89b930)) {
+                    $obj_filt_2d89b930 = new \SomeClass;
+                }
+                // do route
+                return $obj_filt_2d89b930->index($req);
+            }
+            // end of /prefix//some
+            
             if (empty($file_e55749ee)) {
                $file_e55749ee = 1;
                require_once __DIR__ . "/../input/filter.php";
