@@ -36,5 +36,14 @@ class AllTest extends \phpunit_framework_testcase
         $this->assertEquals('esrever', $req->get('reverse'));
     }
 
+    /** @depends testCompile */
+    public function testSetIfEmpty()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $out = $route->doRoute($req, array('REQUEST_URI' => '/ifempty/algo'));
+        $this->assertEquals('ALGO', $req->get('algo-alias'));
+    }
 
 }

@@ -279,7 +279,6 @@ class Compiler
             } else {
                 $vm->printIndented('   require_once "' . addslashes($filePath) . '";' . "\n");
             }
-
             $vm->printIndented("}\n");
 
             if ($annotation->isFunction()) {

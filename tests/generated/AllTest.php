@@ -63,32 +63,49 @@ class Route
         
         switch ($length) {
         case 2:
-            if (empty($file_2053a8ae)) {
-               $file_2053a8ae = 1;
-               require_once __DIR__ . "/../input/functions.php";
+            if ($parts[0] === 'function') {
+                if (empty($file_e55749ee)) {
+                   $file_e55749ee = 1;
+                   require_once __DIR__ . "/../input/filter.php";
+                }
+                // Routes for /function/{reverse}
+                if ($parts[0] === 'function' && (!empty($filter_cab1b2b5_1) || ($filter_cab1b2b5_1=\filter_reverse($req, 'reverse', $parts[1])))) {
+                    $req->setIfEmpty('reverse', $parts[1]);
+                    if (empty($file_2053a8ae)) {
+                       $file_2053a8ae = 1;
+                       require_once __DIR__ . "/../input/functions.php";
+                    }
+                    // do route
+                    return \some_function($req);
+                }
+                // end of /function/{reverse}
+                
+                // Routes for /function/reverse
+                if ($parts[0] === 'function' && $parts[1] === 'reverse') {
+                    if (empty($file_2053a8ae)) {
+                       $file_2053a8ae = 1;
+                       require_once __DIR__ . "/../input/functions.php";
+                    }
+                    // do route
+                    return \some_function($req);
+                }
+                // end of /function/reverse
             }
-            // Routes for /function/reverse
-            if ($parts[0] === 'function' && $parts[1] === 'reverse') {
-                // do route
-                return \some_function($req);
-            }
-            // end of /function/reverse
-            
             if (empty($file_e55749ee)) {
                $file_e55749ee = 1;
                require_once __DIR__ . "/../input/filter.php";
             }
-            if (empty($file_2053a8ae)) {
-               $file_2053a8ae = 1;
-               require_once __DIR__ . "/../input/functions.php";
-            }
-            // Routes for /function/{reverse}
-            if ($parts[0] === 'function' && (!empty($filter_cab1b2b5_1) || ($filter_cab1b2b5_1=\filter_reverse($req, 'reverse', $parts[1])))) {
-                $req->setIfEmpty('reverse', $parts[1]);
+            // Routes for /ifempty/{something:algo-alias}
+            if ($parts[0] === 'ifempty' && (!empty($filter_45a21400_1) || ($filter_45a21400_1=\filter_set($req, 'algo-alias', $parts[1])))) {
+                $req->setIfEmpty('algo-alias', $parts[1]);
+                if (empty($file_2053a8ae)) {
+                   $file_2053a8ae = 1;
+                   require_once __DIR__ . "/../input/functions.php";
+                }
                 // do route
                 return \some_function($req);
             }
-            // end of /function/{reverse}
+            // end of /ifempty/{something:algo-alias}
             break;
         }
 

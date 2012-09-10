@@ -3,6 +3,7 @@
 /** 
  * @Route("/function/{reverse}") 
  * @Route("/function/reverse") 
+ * @Route("/ifempty/{something:algo-alias}") 
  */
 function some_function($Request)
 {

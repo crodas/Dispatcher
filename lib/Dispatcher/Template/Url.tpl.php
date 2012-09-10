@@ -3,7 +3,6 @@
 #* function render_url($object) 
 #   $route    = $object->getRouteDefinition()
 #   $expr     = expr($object->getParts())
-#   $callback = callback($object->getAnnotation())
 // Routes for __route__
 #* if (count($expr) > 0) 
 if (__expr__) {
@@ -21,6 +20,7 @@ if (__expr__) {
     #   end
     $req->setIfEmpty(__@name__, $__variable__);
     #* end
+    # $callback = callback($object->getAnnotation())
     // do route
     return __callback__($req);
 #* if ($expr) 
