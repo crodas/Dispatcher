@@ -1,10 +1,11 @@
 {
     "name": "crodas/dispatcher",
     "description": "Dispatcher generator",
+    "minimum-stability": "dev",
     "require": {
-        "crodas/notoj": "dev-master",
-        "crodas/artifex": "dev-master",
-        "symfony/console": "dev-master"
+        "crodas/notoj": "*",
+        "crodas/artifex": "*",
+        "symfony/console": "*"
     },
     "authors": [
         {

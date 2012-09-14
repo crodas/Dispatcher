@@ -17,7 +17,7 @@ class NotFoundException extends \Exception
 
 class Request
 {
-    protected $var;
+    protected $var = array();
 
     public function setIfEmpty($name, $value)
     {
