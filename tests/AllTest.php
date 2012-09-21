@@ -46,6 +46,18 @@ class AllTest extends \phpunit_framework_testcase
         $this->assertEquals('ALGO', $req->get('algo-alias'));
     }
 
+    /** 
+     * @depends testCompile
+     * @expectedException AllTest\NotFoundException
+     */
+    public function testPreRouteFilter()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $req->set('fail_session', true);
+        $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix', 'REQUEST_METHOD' => 'POST'));
+    }
     /** @depends testCompile */
     public function testClassInheritance()
     {

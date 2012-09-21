@@ -68,8 +68,19 @@ class Route
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
                     }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
                     // do route
-                    return \Controller($req);
+                    if ($allow) {
+                        $return = \Controller($req);
+                
+                        // post postRoute (if any)
+                        $allow = true;
+                
+                        return $return;
+                    }
                 }
                 // end of /foo/function
                 
@@ -87,8 +98,19 @@ class Route
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
                     }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
                     // do route
-                    return \Controller($req);
+                    if ($allow) {
+                        $return = \Controller($req);
+                
+                        // post postRoute (if any)
+                        $allow = true;
+                
+                        return $return;
+                    }
                 }
                 // end of /xxx/{foobar}
                 break;
@@ -104,8 +126,19 @@ class Route
                    $file_92cd6d5b = 1;
                    require_once __DIR__ . "/../QuickTest.php";
                 }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
                 // do route
-                return \TestingMultiple($req);
+                if ($allow) {
+                    $return = \TestingMultiple($req);
+            
+                    // post postRoute (if any)
+                    $allow = true;
+            
+                    return $return;
+                }
             }
             // end of /foo/bar/xxx
             
@@ -120,8 +153,19 @@ class Route
                    $file_92cd6d5b = 1;
                    require_once __DIR__ . "/../QuickTest.php";
                 }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
                 // do route
-                return \TestingMultiple($req);
+                if ($allow) {
+                    $return = \TestingMultiple($req);
+            
+                    // post postRoute (if any)
+                    $allow = true;
+            
+                    return $return;
+                }
             }
             // end of /foo/bar/{bar}
             
@@ -136,8 +180,19 @@ class Route
                    $file_92cd6d5b = 1;
                    require_once __DIR__ . "/../QuickTest.php";
                 }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
                 // do route
-                return \TestingMultiple($req);
+                if ($allow) {
+                    $return = \TestingMultiple($req);
+            
+                    // post postRoute (if any)
+                    $allow = true;
+            
+                    return $return;
+                }
             }
             // end of /foo/bar/{foo}
             break;
@@ -151,8 +206,19 @@ class Route
                 if (empty($obj_filt_23cd7755)) {
                     $obj_filt_23cd7755 = new \Foo;
                 }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
                 // do route
-                return $obj_filt_23cd7755->Bar($req);
+                if ($allow) {
+                    $return = $obj_filt_23cd7755->Bar($req);
+            
+                    // post postRoute (if any)
+                    $allow = true;
+            
+                    return $return;
+                }
             }
             // end of /foo/method
             
@@ -181,8 +247,19 @@ class Route
                 if (empty($obj_filt_23cd7755)) {
                     $obj_filt_23cd7755 = new \Foo;
                 }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
                 // do route
-                return $obj_filt_23cd7755->TestingComplexUri($req);
+                if ($allow) {
+                    $return = $obj_filt_23cd7755->TestingComplexUri($req);
+            
+                    // post postRoute (if any)
+                    $allow = true;
+            
+                    return $return;
+                }
             }
             // end of /foo/{foobar}.{ext:extension}
             break;

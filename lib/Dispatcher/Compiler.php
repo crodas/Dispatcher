@@ -49,6 +49,7 @@ class Compiler
     protected $annotations;
     protected $urls;
     protected $filters = array();
+    protected $route_filters = array();
 
     public function __construct(Generator $conf, Annotations $annotations)
     {
@@ -126,15 +127,23 @@ class Compiler
 
     protected function readFilters()
     {
-        if (!$this->annotations->has('Filter')) {
-            return;
-        }
-
         foreach ($this->annotations->get('Filter') as $filterAnnotation) {
             foreach ($filterAnnotation->get('Filter') as $filter) {
                 $name = current($filter['args']);
                 if (empty($name)) continue;
                 $this->filters[$name] = $filterAnnotation;
+            }
+        }
+
+        $this->route_filters = array();
+        foreach(array('preRoute', 'postRoute') as $type) {
+            $this->route_filters[$type] = array();
+            foreach ($this->annotations->get($type) as $filterRouter) {
+                foreach ($filterRouter->get($type) as $filter) {
+                    $name = current($filter['args']);
+                    if (empty($name)) continue;
+                    $this->route_filters[$name][] = array($type, $filterRouter);
+                }
             }
         }
     }
@@ -163,6 +172,15 @@ class Compiler
         if (isset($args['set'])) {
             $url->setArguments($args['set']);
         }
+
+        foreach ($this->route_filters as $name => $def) {
+            if ($routeAnnotation->get($name)) {
+                foreach ($def as $filter) {
+                    $url->addFilter($filter[0], $filter[1]);
+                }
+            }
+        }
+
         if ($routeAnnotation->has('Method')) {
             foreach($routeAnnotation->get('Method') as $method) {
                 foreach ($method['args'] as $m) {
@@ -247,8 +265,8 @@ class Compiler
 
     protected function compile()
     {
-        $this->createUrlObjects();
         $this->readFilters();
+        $this->createUrlObjects();
 
         $groups = $this->groupByMethod($this->urls);
         $groups->iterate(array($this, 'groupByPartsSize'));

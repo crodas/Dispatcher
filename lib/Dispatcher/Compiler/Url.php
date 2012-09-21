@@ -46,6 +46,7 @@ class Url
     protected $parts;
     protected $args = array();
     protected $method = 'ALL';
+    protected $filters = array();
 
     protected $allowedMethods = array('GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'ALL');
 
@@ -61,6 +62,22 @@ class Url
             $weight += $part->GetType();
         }
         return $weight;
+    }
+
+    public function addFilter($type, Annotation $def)
+    {
+        if (empty($this->filters[$type])) {
+            $this->filters[$type] = array();
+        }
+        $this->filters[$type][] = $def;
+    }
+
+    public function getFilters($type)
+    {
+        if (empty($this->filters[$type])) {
+            return array();
+        }
+        return $this->filters[$type];
     }
 
     public function getAnnotation()

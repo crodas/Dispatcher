@@ -71,8 +71,26 @@ class Route
                     if (empty($obj_filt_2d89b930)) {
                         $obj_filt_2d89b930 = new \SomeClass;
                     }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                    if (empty($file_e0cf7353)) {
+                       $file_e0cf7353 = 1;
+                       require_once __DIR__ . "/../input/route_filters.php";
+                    }
+                    if ($allow) {
+                        $allow &= \CheckSession($req);
+                    }
+                
                     // do route
-                    return $obj_filt_2d89b930->save($req);
+                    if ($allow) {
+                        $return = $obj_filt_2d89b930->save($req);
+                
+                        // post postRoute (if any)
+                        $allow = true;
+                
+                        return $return;
+                    }
                 }
                 // end of /prefix/
                 break;
@@ -94,8 +112,19 @@ class Route
                        $file_2053a8ae = 1;
                        require_once __DIR__ . "/../input/functions.php";
                     }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
                     // do route
-                    return \some_function($req);
+                    if ($allow) {
+                        $return = \some_function($req);
+                
+                        // post postRoute (if any)
+                        $allow = true;
+                
+                        return $return;
+                    }
                 }
                 // end of /function/{reverse}
                 
@@ -105,8 +134,19 @@ class Route
                        $file_2053a8ae = 1;
                        require_once __DIR__ . "/../input/functions.php";
                     }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
                     // do route
-                    return \some_function($req);
+                    if ($allow) {
+                        $return = \some_function($req);
+                
+                        // post postRoute (if any)
+                        $allow = true;
+                
+                        return $return;
+                    }
                 }
                 // end of /function/reverse
             }
@@ -119,8 +159,19 @@ class Route
                 if (empty($obj_filt_2d89b930)) {
                     $obj_filt_2d89b930 = new \SomeClass;
                 }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
                 // do route
-                return $obj_filt_2d89b930->index($req);
+                if ($allow) {
+                    $return = $obj_filt_2d89b930->index($req);
+            
+                    // post postRoute (if any)
+                    $allow = true;
+            
+                    return $return;
+                }
             }
             // end of /prefix//some
             
@@ -135,8 +186,19 @@ class Route
                    $file_2053a8ae = 1;
                    require_once __DIR__ . "/../input/functions.php";
                 }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
                 // do route
-                return \some_function($req);
+                if ($allow) {
+                    $return = \some_function($req);
+            
+                    // post postRoute (if any)
+                    $allow = true;
+            
+                    return $return;
+                }
             }
             // end of /ifempty/{something:algo-alias}
             break;
