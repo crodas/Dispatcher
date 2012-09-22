@@ -1,13 +1,16 @@
 <?php
-/** @Filter reverse */
-function filter_reverse($Req, $name, $value)
+class SomeSillyClass
 {
-    return $name == strrev($value);
-}
+    /** @Filter reverse @Cached 3600 */
+    function filter_reverse($Req, $name, $value)
+    {
+        return $name == strrev($value);
+    }
  
-/** @Filter something */
-function filter_set($Req, $name, $value)
-{
-    $Req->set($name, strtoupper($value));
-    return true;
+    /** @Filter something @Cache 3600 */
+    function filter_set($Req, $name, $value)
+    {
+        $Req->set($name, strtoupper($value));
+        return true;
+    }
 }

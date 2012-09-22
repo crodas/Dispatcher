@@ -19,6 +19,8 @@ class AllTest extends \phpunit_framework_testcase
         $this->assertTrue(file_Exists($file));
 
         require ($file);
+        // add mockup cache class
+        require __DIR__ . "/input/cache_class.php";
     }
 
     /** @depends testCompile */
@@ -42,8 +44,21 @@ class AllTest extends \phpunit_framework_testcase
         $route = new Route;
         $req   = new Request;
         $req->set('phpunit', $this);
+        $route->setCache(TestCacheClass::getInstance());
         $out = $route->doRoute($req, array('REQUEST_URI' => '/ifempty/algo'));
         $this->assertEquals('ALGO', $req->get('algo-alias'));
+    }
+
+    /** @depends testCompile */
+    public function testSetIfEmptyCached()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $route->setCache(TestCacheClass::getInstance());
+        $out = $route->doRoute($req, array('REQUEST_URI' => '/ifempty/algo'));
+        $this->assertEquals('ALGO', $req->get('algo-alias'));
+        $this->assertTrue($req->get('filter:cached:algo-alias'));
     }
 
     /** 

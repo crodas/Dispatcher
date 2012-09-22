@@ -20,29 +20,29 @@ if (__expr__) {
     #   end
     $req->setIfEmpty(__@name__, $__variable__);
     #* end
-    # $callback = callback($object->getAnnotation())
-    # $preRoute = $object->getFilters('preRoute')
+    # $callback  = callback($object->getAnnotation(), '$req')
+    # $preRoute  = $object->getFilters('preRoute')
     # $postRoute = $object->getFilters('postRoute')
 
     //run preRoute filters (if any)
     $allow = true;
     #* foreach ($preRoute as $filter)
-    #   $filterFnc = callback($filter)
+    #   $filterFnc = callback($filter, '$req')
     if ($allow) {
-        $allow &= __filterFnc__($req);
+        $allow &= __filterFnc__;
     }
     #* end
 
     // do route
     if ($allow) {
-        $return = __callback__($req);
+        $return = __callback__;
 
         // post postRoute (if any)
         $allow = true;
         #* foreach ($postRoute as $filter)
-        #   $filterFnc = callback($filter)
+        #   $filterFnc = callback($filter, '$req')
         if ($allow) {
-            $allow &= __filterFnc__($req, $return);
+            $allow &= __filterFnc__;
         }
         #* end
 

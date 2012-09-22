@@ -81,8 +81,7 @@ class Component
                     $f = $cmp->getFilterExpr($part[1]);
                     if (!empty($f)) {
                         $i++;
-                        $f['filter'] = $callback($f['filter']);
-                        $filters[] = "{$f['filter']}(\$req, {$f['name']}, \$matches_{$this->index}[$i])";
+                        $filters[] = $callback($f['filter'], '$req', $f['name'], "\$matches_{$this->index}[$i]");
                     }
                 }
             }
@@ -97,9 +96,9 @@ class Component
             if (empty($f)) {
                 return "";
             }
-            $f['filter'] = $callback($f['filter']);
+            $f['filter'] = $callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
             $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_$this->index";
-            $expr = "(!empty($name) || ($name={$f['filter']}(\$req, {$f['name']}, \$parts[$this->index])))";
+            $expr = "(!empty($name) || ($name={$f['filter']}))";
         }
 
         return $expr;

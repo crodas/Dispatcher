@@ -320,6 +320,9 @@ class Compiler
                 $filePath = $self->getRelativePath($annotation['file'], $output);
             }
 
+            // prepare loading of the method/function
+            // by doing this we avoid the need of having an "autoloader", 
+            // also autoloaders doesn't work with functions, this solution does.
             $vm->printIndented("if (empty($fileHash)) {\n");
             $vm->printIndented("   $fileHash = 1;\n");
             if (!empty($output)) {
@@ -329,16 +332,43 @@ class Compiler
             }
             $vm->printIndented("}\n");
 
+            // Get Code representation out of arguments array
+            $args = func_get_args();
+            array_shift($args);
+            array_walk($args, function($param) {
+                $param = (string)$param;
+                return $param[0] == '$' ? $param : var_export($param, true);
+            });
+            $arguments = implode(", ", $args);
+            
+
+            // check if the filter is cachable
+            if (count($args) == 3) {
+                $cache = intval($annotation->getOne('Cache'));
+            }
+
             if ($annotation->isFunction()) {
-                return "\\" . $annotation['function'];
+                // generate code for functions 
+                $function = "\\" . $annotation['function'];
+                if (!empty($cache)) { 
+                    return  '$this->doCachedFilter(' . var_export($function,true) . ", $arguments, $cache)";
+                } else {
+                    return "$function($arguments)";
+                }
             } else if ($annotation->isMethod()) {
+                // It is a method, *for now* we don't care if the method
+                // is static so we instanciate an object if it wasn't done before
                 $class  = "\\" . $annotation['class'];
                 $method = $annotation['function'];
                 $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
                 $vm->printIndented("if (empty($obj)) {\n");
                 $vm->printIndented("    $obj = new $class;\n");
                 $vm->printIndented("}\n");
-                return "{$obj}->{$method}";
+                if (!empty($cache)) { 
+                    return  '$this->doCachedFilter(array(' . "{$obj}, '{$method}'), $arguments, $cache)";
+                } else {
+                    return "{$obj}->{$method}($arguments)";
+                }
             } else {
                 throw new \RuntimeException("Invalid callback");
             }
