@@ -25,10 +25,10 @@ And this is how to use the generated code:
 ```php
 // Require
 require __DIR__ . "/../libs/bootstrap.php"
-$router = new Project\Router\Route;
+$router = new \Project\Router\Route;
 try {                                                 
     $router->fromRequest(); // route current Request (based on $_SERVER)          
-} catch (Router\NotFoundException $e) {                    
+} catch (\Project\Router\NotFoundException $e) {                    
     die('page not found'); // page not found
 } catch (Exception $e) {
     die('unknown error'); //another exception thrown by our app
@@ -41,7 +41,7 @@ It is possible to use compiler to generate code inside our application, however 
 \Notoj\Notoj::enableCache("/tmp/out-app-annotations-cache.php");
 ```
 
-By doing that Notoj will tell the engine when it is neccesary to compiler (when some file has change). Even though it is pretty we recommend for production to generate at the bootstrap file once (for instance a deploying). Soon we will provide an phar executable to make this easy.
+By doing that Notoj will tell the engine when it is neccesary to compiler (when some file has change). Even though it is pretty efficient we recommend for production to generate at the bootstrap file once (for instance a deploying). Soon we will provide an phar executable to make this easy.
 
 The annotations
 ---------------
