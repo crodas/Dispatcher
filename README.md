@@ -1,11 +1,52 @@
 Dispatcher
 ==========
 
-h2. WARNING: This is project is not finished yet.
+It is a compiler which generates an optimized URL Router class for your application. It can be used as an offline (production friendly) tool or inside your project (development friendly).
 
-It's a compiler which generates code to route HTTP requests to classes or function. The URL patterns are defined with `annotations`.
+The generated Router class searchs for the appropiate `controller` for the current URL. The `callbacks` could be methods or functions.
 
-This is how the `annotations` looks like:
+How to use it
+-------------
+
+This is how to use the compiler:
+
+```php
+// compiler
+$dispatcher = new \Dispatcher\Generator;
+$dispatcher
+  ->addDirectory(__DIR__ . "/../projects") // where our controllers are located
+  ->setNamespace("Project\\Router") // We want the bootstrap file in its own namespace
+  ->setOutput(__DIR__ . "/../libs/bootstrap.php") // Where we want to save it
+  ->generate();  // do your magic!
+```
+
+And this is how to use the generated code:
+
+```php
+// Require
+require __DIR__ . "/../libs/bootstrap.php"
+$router = new Project\Router\Route;
+try {                                                 
+    $router->fromRequest(); // route current Request (based on $_SERVER)          
+} catch (Router\NotFoundException $e) {                    
+    die('page not found'); // page not found
+} catch (Exception $e) {
+    die('unknown error'); //another exception thrown by our app
+} 
+```
+
+It is possible to use compiler to generate code inside our application, however it will load the whole compiler in every request. If you need this behaviour we recommend to turn on Notoj's cache:
+
+```php
+\Notoj\Notoj::enableCache("/tmp/out-app-annotations-cache.php");
+```
+
+By doing that Notoj will tell the engine when it is neccesary to compiler (when some file has change). Even though it is pretty we recommend for production to generate at the bootstrap file once (for instance a deploying). Soon we will provide an phar executable to make this easy.
+
+The annotations
+---------------
+
+We scan your project directory (or directories) looking for the @Route annotation. They can be in `functions`, `methods` or `classes`.
 
 ```php
 <?php
@@ -25,10 +66,11 @@ function do_something_post(Request $request) {
 class ControllerClassFoo
 {
   /**
+   *  @Route("/bar") 
    *  @Method GET
    */
   function list(Request $req) {
-    echo "I'm listing something";
+    echo "I'm listing something on /foobar/bar";
   }
   
   /**
@@ -48,16 +90,6 @@ class ControllerClassBar {
 }
 ```
 
-The compiler will generate a `Dispatcher` class (optionally could be under some namespace) which is easy to use:
-
-```php
-<?php
-$router = new Dispatcher;
-$router->routeCurrentRequest(); 
-// or
-$router->route(array("REQUEST_METHOD" => "GET", "PATH_INFO" => "/foo/bar" ...)); // $_SERVER
-```
-
 Filters
 -------
 
@@ -73,19 +105,20 @@ function show_profile(Request $req) {
 
 /** @Filter("user") */
 function some_filter(Request $req, $name, $value) {
-  return DB::getUserById($value); // should return FALSE or NULL if the user doesn't exists
+  $userobj = DB::getUserById($value);
+  if ($userobj) {
+    $req->set('user', $userobj);
+    return true;
+  }
+  return false;
 }
 ```
 
-The filter should return a false (or equivalent value `0, "", NULL`) if `$value` is not valid and will jump to the next rule. `$name` is used because one callback can be used as multiple filters.
+The filter should return a false if `$value` is not valid the router will jump to the next rule or will throw a `notfound` exception. `$name` is used because one callback can be used as multiple filters.
 
-At some point the results of the filters will be cached (disabled by default) to speed up things if the filter calling is expensive.
+Expensive `Filters` can be cached with `@Cache <ttl>` annotation. The cache mechanism is defined in the application with a class which implements `FilterCache` interface.
 
-Built-in filters
----------------
-- `{numeric}`
-- `{alnum}`
-
+  
 Valid Patterns
 --------------
 - `/foo/bar`
