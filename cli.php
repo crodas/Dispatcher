@@ -55,9 +55,13 @@ $console
         new InputArgument('namespace', InputArgument::OPTIONAL, 'Put the generated file in a given namespace'),
     ))
     ->setCode(function (InputInterface $input, OutputInterface $output) {
+        $dir = $input->getArgument('dir');
+        if (!is_dir($dir)) {
+            $dir = getcwd() . '/' . $dir;
+        }
         $dispatcher = new Generator;
         $dispatcher
-            ->addDirectory($input->getArgument('dir'))
+            ->addDirectory($dir)
             ->setOutput($input->getArgument('output'));
 
         if ($ns = $input->getArgument('namespace')) {
