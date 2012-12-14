@@ -13,6 +13,6 @@ author:
     email: crodas@php.net
 
 dependencies:
-    - https://github.com/crodas/Notoj
-    - https://github.com/crodas/Artifex
-    - https://github.com/symfony/Console
+    - github:crodas/Notoj
+    - github:crodas/Artifex
+    - github:symfony/Console
