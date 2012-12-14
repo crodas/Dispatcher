@@ -207,6 +207,9 @@ class Compiler
                     throw new \RuntimeException("Classes can have only *one* @Route");
                 }
                 $class = $this->annotations->getClassInfo($routeAnnotation['class']);
+                if (empty($class['method'])) {
+                    continue;
+                }
                 foreach ($class['method'] as $annotation) {
                     if (!$annotation->has('Route')) {
                         $this->processRoute($annotation, array());

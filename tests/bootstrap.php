@@ -1,7 +1,6 @@
 <?php
 
-require "vendor/autoload.php";
-require "lib/Dispatcher/autoload.php";
+require __DIR__ . "/../packages/autoload.php";
 
 foreach (glob(__DIR__ . "/generated/*") as $file) {
     unlink($file);
