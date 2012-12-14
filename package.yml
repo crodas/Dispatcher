@@ -1,0 +1,15 @@
+name: dispatcher
+
+description: Dispatcher generator
+
+files: [lib],
+version: 0.1.9
+
+author:
+    name: César Rodas
+    email: crodas@php.net
+
+dependencies:
+    - https://github.com/crodas/Notoj
+    - https://github.com/crodas/Artifex
+    - https://github.com/symfony/Console
