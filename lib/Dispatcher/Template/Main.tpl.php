@@ -142,7 +142,7 @@ class Route
 
     public function doRoute(Request $req, $server)
     {
-        $uri    =  ($p = strpos($server['REQUEST_URI'], '?')) ? substr($server['REQUEST_URI'], $p) : $server['REQUEST_URI'];
+        $uri    =  ($p = strpos($server['REQUEST_URI'], '?')) ? substr($server['REQUEST_URI'], 0, $p) : $server['REQUEST_URI'];
         $parts  = array_values(array_filter(explode("/", $server['REQUEST_URI'])));
         $length = count($parts);
 
