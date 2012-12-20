@@ -85,7 +85,7 @@ class Compiler
     {
         return count(array_intersect_assoc(
             $arr, $parts
-        )) > 0;
+        )) == count($arr);
     }
 
     public function groupByPatterns(Array $urls)
@@ -104,11 +104,14 @@ class Compiler
                 }
             }
             $groups[]  = array($url);
-            $indexes[] = $parts;
+            for ($i=1; $i <= count($parts); $i++) {
+                $indexes[] = array_slice($parts, 0, $i);
+            }
         }
         if (count($groups) > 1) {
             $patterns = array();
             foreach ($indexes as $id => $rules) {
+                if (empty($groups[$id])) continue;
                 if (count($groups[$id]) == 1) {
                     // if the group has just *one*
                     // element

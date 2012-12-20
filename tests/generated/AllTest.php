@@ -139,8 +139,9 @@ class Route
 
     public function doRoute(Request $req, $server)
     {
-        $uri    =  ($p = strpos($server['REQUEST_URI'], '?')) ? substr($server['REQUEST_URI'], 0, $p) : $server['REQUEST_URI'];
-        $parts  = array_values(array_filter(explode("/", $server['REQUEST_URI'])));
+        $uri    = $server['REQUEST_URI'];
+        $uri    = ($p = strpos($uri, '?')) ? substr($uri, 0, $p) : $uri;
+        $parts  = array_values(array_filter(explode("/", $uri)));
         $length = count($parts);
 
         if (empty($server['REQUEST_METHOD'])) {
@@ -189,59 +190,28 @@ class Route
         
         switch ($length) {
         case 2:
-            if ($parts[0] === 'function') {
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
+            // Routes for /function/reverse
+            if ($parts[0] === 'function' && $parts[1] === 'reverse') {
+                if (empty($file_2053a8ae)) {
+                   $file_2053a8ae = 1;
+                   require_once __DIR__ . "/../input/functions.php";
                 }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
-                // Routes for /function/{reverse}
-                if ($parts[0] === 'function' && (!empty($filter_cab1b2b5_1) || ($filter_cab1b2b5_1=$obj_filt_91adc016->filter_reverse($req, 'reverse', $parts[1])))) {
-                    $req->setIfEmpty('reverse', $parts[1]);
-                    if (empty($file_2053a8ae)) {
-                       $file_2053a8ae = 1;
-                       require_once __DIR__ . "/../input/functions.php";
-                    }
-                
-                    //run preRoute filters (if any)
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
+                // do route
+                if ($allow) {
+                    $return = \some_function($req);
+            
+                    // post postRoute (if any)
                     $allow = true;
-                
-                    // do route
-                    if ($allow) {
-                        $return = \some_function($req);
-                
-                        // post postRoute (if any)
-                        $allow = true;
-                
-                        return $return;
-                    }
+            
+                    return $return;
                 }
-                // end of /function/{reverse}
-                
-                // Routes for /function/reverse
-                if ($parts[0] === 'function' && $parts[1] === 'reverse') {
-                    if (empty($file_2053a8ae)) {
-                       $file_2053a8ae = 1;
-                       require_once __DIR__ . "/../input/functions.php";
-                    }
-                
-                    //run preRoute filters (if any)
-                    $allow = true;
-                
-                    // do route
-                    if ($allow) {
-                        $return = \some_function($req);
-                
-                        // post postRoute (if any)
-                        $allow = true;
-                
-                        return $return;
-                    }
-                }
-                // end of /function/reverse
             }
+            // end of /function/reverse
+            
             // Routes for /prefix//some
             if ($parts[0] === 'prefix' && $parts[1] === 'some') {
                 if (empty($file_ce8f643f)) {
@@ -296,6 +266,36 @@ class Route
                 }
             }
             // end of /ifempty/{something:algo-alias}
+            
+            if (empty($file_e55749ee)) {
+               $file_e55749ee = 1;
+               require_once __DIR__ . "/../input/filter.php";
+            }
+            if (empty($obj_filt_91adc016)) {
+                $obj_filt_91adc016 = new \SomeSillyClass;
+            }
+            // Routes for /function/{reverse}
+            if ($parts[0] === 'function' && (!empty($filter_cab1b2b5_1) || ($filter_cab1b2b5_1=$obj_filt_91adc016->filter_reverse($req, 'reverse', $parts[1])))) {
+                $req->setIfEmpty('reverse', $parts[1]);
+                if (empty($file_2053a8ae)) {
+                   $file_2053a8ae = 1;
+                   require_once __DIR__ . "/../input/functions.php";
+                }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
+                // do route
+                if ($allow) {
+                    $return = \some_function($req);
+            
+                    // post postRoute (if any)
+                    $allow = true;
+            
+                    return $return;
+                }
+            }
+            // end of /function/{reverse}
             break;
         }
 
