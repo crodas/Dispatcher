@@ -38,12 +38,9 @@ if (__expr__) {
         $return = __callback__;
 
         // post postRoute (if any)
-        $allow = true;
         #* foreach ($postRoute as $filter)
-        #   $filterFnc = callback($filter, '$req')
-        if ($allow) {
-            $allow &= __filterFnc__;
-        }
+        #   $filterFnc = callback($filter, '$req', '$return')
+        $return = __filterFnc__;
         #* end
 
         return $return;

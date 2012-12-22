@@ -177,7 +177,6 @@ class Route
                         $return = $obj_filt_2d89b930->save($req);
                 
                         // post postRoute (if any)
-                        $allow = true;
                 
                         return $return;
                     }
@@ -205,7 +204,6 @@ class Route
                     $return = \some_function($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }
@@ -230,7 +228,6 @@ class Route
                     $return = $obj_filt_2d89b930->index($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }
@@ -260,7 +257,6 @@ class Route
                     $return = \some_function($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }
@@ -290,7 +286,6 @@ class Route
                     $return = \some_function($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }

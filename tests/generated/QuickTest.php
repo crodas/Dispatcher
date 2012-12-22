@@ -167,7 +167,6 @@ class Route
                         $return = \Controller($req);
                 
                         // post postRoute (if any)
-                        $allow = true;
                 
                         return $return;
                     }
@@ -197,7 +196,6 @@ class Route
                         $return = \Controller($req);
                 
                         // post postRoute (if any)
-                        $allow = true;
                 
                         return $return;
                     }
@@ -225,7 +223,6 @@ class Route
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }
@@ -252,7 +249,6 @@ class Route
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }
@@ -279,7 +275,6 @@ class Route
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }
@@ -305,7 +300,6 @@ class Route
                     $return = $obj_filt_23cd7755->Bar($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }
@@ -346,7 +340,6 @@ class Route
                     $return = $obj_filt_23cd7755->TestingComplexUri($req);
             
                     // post postRoute (if any)
-                    $allow = true;
             
                     return $return;
                 }
