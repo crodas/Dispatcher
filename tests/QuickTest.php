@@ -166,6 +166,5 @@ class QuickTest extends \phpunit_framework_testcase
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/xxx/barfoo'));
         $this->assertEquals($num, $req->get('return'));
-    }
-    
+   }
 }

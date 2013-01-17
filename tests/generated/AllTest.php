@@ -183,6 +183,139 @@ class Route
                 }
                 // end of /prefix/
                 break;
+            case 2:
+                // Routes for /foobar/12345/
+                if ($parts[0] === 'foobar' && $parts[1] === '12345') {
+                    if (empty($file_b40be1df)) {
+                       $file_b40be1df = 1;
+                       require_once __DIR__ . "/../input/method.php";
+                    }
+                    if (empty($obj_filt_e02f213c)) {
+                        $obj_filt_e02f213c = new \SomeMethodController;
+                    }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
+                    // do route
+                    if ($allow) {
+                        $return = $obj_filt_e02f213c->modify($req);
+                
+                        // post postRoute (if any)
+                
+                        return $return;
+                    }
+                }
+                // end of /foobar/12345/
+                break;
+            case 3:
+                // Routes for /foobar/12345//something
+                if ($parts[0] === 'foobar' && $parts[1] === '12345' && $parts[2] === 'something') {
+                    if (empty($file_b40be1df)) {
+                       $file_b40be1df = 1;
+                       require_once __DIR__ . "/../input/method.php";
+                    }
+                    if (empty($obj_filt_e02f213c)) {
+                        $obj_filt_e02f213c = new \SomeMethodController;
+                    }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
+                    // do route
+                    if ($allow) {
+                        $return = $obj_filt_e02f213c->modify_something($req);
+                
+                        // post postRoute (if any)
+                
+                        return $return;
+                    }
+                }
+                // end of /foobar/12345//something
+                break;
+            }
+            break;
+        case 'GET':
+            switch ($length) {
+            case 2:
+                // Routes for /foobar/12345/
+                if ($parts[0] === 'foobar' && $parts[1] === '12345') {
+                    if (empty($file_b40be1df)) {
+                       $file_b40be1df = 1;
+                       require_once __DIR__ . "/../input/method.php";
+                    }
+                    if (empty($obj_filt_e02f213c)) {
+                        $obj_filt_e02f213c = new \SomeMethodController;
+                    }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
+                    // do route
+                    if ($allow) {
+                        $return = $obj_filt_e02f213c->get($req);
+                
+                        // post postRoute (if any)
+                
+                        return $return;
+                    }
+                }
+                // end of /foobar/12345/
+                break;
+            }
+            break;
+        case 'DELETE':
+            switch ($length) {
+            case 2:
+                // Routes for /foobar/12345/
+                if ($parts[0] === 'foobar' && $parts[1] === '12345') {
+                    if (empty($file_b40be1df)) {
+                       $file_b40be1df = 1;
+                       require_once __DIR__ . "/../input/method.php";
+                    }
+                    if (empty($obj_filt_e02f213c)) {
+                        $obj_filt_e02f213c = new \SomeMethodController;
+                    }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
+                    // do route
+                    if ($allow) {
+                        $return = $obj_filt_e02f213c->modify($req);
+                
+                        // post postRoute (if any)
+                
+                        return $return;
+                    }
+                }
+                // end of /foobar/12345/
+                break;
+            case 3:
+                // Routes for /foobar/12345//something
+                if ($parts[0] === 'foobar' && $parts[1] === '12345' && $parts[2] === 'something') {
+                    if (empty($file_b40be1df)) {
+                       $file_b40be1df = 1;
+                       require_once __DIR__ . "/../input/method.php";
+                    }
+                    if (empty($obj_filt_e02f213c)) {
+                        $obj_filt_e02f213c = new \SomeMethodController;
+                    }
+                
+                    //run preRoute filters (if any)
+                    $allow = true;
+                
+                    // do route
+                    if ($allow) {
+                        $return = $obj_filt_e02f213c->modify_something($req);
+                
+                        // post postRoute (if any)
+                
+                        return $return;
+                    }
+                }
+                // end of /foobar/12345//something
+                break;
             }
             break;
         }

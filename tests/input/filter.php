@@ -1,4 +1,7 @@
 <?php
+/**
+ *  @Route("/something/silly")
+ */
 class SomeSillyClass
 {
     /** @Filter reverse @Cached 3600 */
@@ -13,4 +16,5 @@ class SomeSillyClass
         $Req->set($name, strtoupper($value));
         return true;
     }
+
 }

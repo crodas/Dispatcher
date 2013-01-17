@@ -214,7 +214,7 @@ class Compiler
                     continue;
                 }
                 foreach ($class['method'] as $annotation) {
-                    if (!$annotation->has('Route')) {
+                    if ($annotation->has('Method') && !$annotation->has('Route')) {
                         $this->processRoute($annotation, array());
                     }
                 }

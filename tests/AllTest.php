@@ -95,4 +95,37 @@ class AllTest extends \phpunit_framework_testcase
         $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix', 'REQUEST_METHOD' => 'GET'));
     }
 
+
+    /**
+     *  @depends testCompile
+     */
+    public function testComplex1()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $num = $route->doRoute($req, array('REQUEST_URI' => '/foobar/12345'));
+        $this->assertEquals($num, 'SomeMethodController::get');
+
+        $num = $route->doRoute($req, array('REQUEST_URI' => '/foobar/12345', 'REQUEST_METHOD' => 'DELETE'));
+        $this->assertEquals($num, 'SomeMethodController::modify');
+
+        $num = $route->doRoute($req, array('REQUEST_URI' => '/foobar/12345/something', 'REQUEST_METHOD' => 'DELETE'));
+        $this->assertEquals($num, 'SomeMethodController::modify_something');
+    }
+
+    /**
+     *  @depends testCompile
+     *  @expectedException AllTest\NotFoundException
+     */
+    public function testBug001()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $num = $route->doRoute($req, array('REQUEST_URI' => '/something/silly'));
+        $this->assertEquals($num, $req->get('return'));
+    }
+    
+
 }
