@@ -96,7 +96,10 @@ class Compiler
             $parts = array_filter($url->getParts(), function($element) {
                 return $element->getType() == Component::CONSTANT;
             });
-            if (empty($parts)) continue;
+            if (empty($parts)) {
+                $groups[] = array($url);
+                continue;
+            }
             foreach ($indexes as $id => $pattern) {
                 if ($this->belongsToGroup($pattern, $parts)) {
                     $groups[$id][] = $url; 
