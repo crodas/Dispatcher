@@ -90,14 +90,15 @@ class Compiler
 
     public function groupByPatterns(Array $urls)
     {
-        $indexes = array();
-        $groups  = array();
+        $indexes  = array();
+        $groups   = array();
+        $patterns = array();
         foreach ($urls as $url) {
             $parts = array_filter($url->getParts(), function($element) {
                 return $element->getType() == Component::CONSTANT;
             });
             if (empty($parts)) {
-                $groups[] = array($url);
+                $patterns[] = $url;
                 continue;
             }
             foreach ($indexes as $id => $pattern) {
@@ -106,13 +107,12 @@ class Compiler
                     continue 2;
                 }
             }
-            $groups[]  = array($url);
+            $groups[] = array($url);
             for ($i=1; $i <= count($parts); $i++) {
                 $indexes[] = array_slice($parts, 0, $i);
             }
         }
         if (count($groups) > 1) {
-            $patterns = array();
             foreach ($indexes as $id => $rules) {
                 if (empty($groups[$id])) continue;
                 if (count($groups[$id]) == 1) {
@@ -129,6 +129,8 @@ class Compiler
             }
             return $patterns;
         }
+
+        return $urls;
     }
 
     protected function readFilters()

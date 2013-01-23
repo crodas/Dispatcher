@@ -1,10 +1,4 @@
 <?php
-/** @Route("/zzzsfasd_with_no_prefix_{id}") */
-function soo($req)
-{
-    return $req->get('id');
-}
-
 /**
  *  @Route("/something/silly")
  */

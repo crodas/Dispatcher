@@ -167,17 +167,4 @@ class QuickTest extends \phpunit_framework_testcase
         $num = $route->doRoute($req, array('REQUEST_URI' => '/xxx/barfoo'));
         $this->assertEquals($num, $req->get('return'));
    }
-
-    /**
-     *  @depends testCompile
-     *  @expectedException \QuickTest\NotFoundException
-     */
-    public function testWithNoGroup()
-    {
-        $route = new \QuickTest\Route;
-        $req   = new \QuickTest\Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => "/zzzsfasd_with_no_prefix_93"));
-        $this->assertEquals(93, $req->get('return'));
-    }
 }

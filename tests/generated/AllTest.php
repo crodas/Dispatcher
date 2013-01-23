@@ -321,29 +321,6 @@ class Route
         }
         
         switch ($length) {
-        case 1:
-            // Routes for /zzzsfasd_with_no_prefix_{id}
-            if (preg_match('/zzzsfasd_with_no_prefix_(.+)/', $parts[0], $matches_0) > 0) {
-                $req->setIfEmpty('id', $matches_0[1]);
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
-                }
-            
-                //run preRoute filters (if any)
-                $allow = true;
-            
-                // do route
-                if ($allow) {
-                    $return = \soo($req);
-            
-                    // post postRoute (if any)
-            
-                    return $return;
-                }
-            }
-            // end of /zzzsfasd_with_no_prefix_{id}
-            break;
         case 2:
             // Routes for /function/reverse
             if ($parts[0] === 'function' && $parts[1] === 'reverse') {
@@ -447,6 +424,50 @@ class Route
                 }
             }
             // end of /function/{reverse}
+            break;
+        case 1:
+            // Routes for /deadly-simple
+            if ($parts[0] === 'deadly-simple') {
+                if (empty($file_2053a8ae)) {
+                   $file_2053a8ae = 1;
+                   require_once __DIR__ . "/../input/functions.php";
+                }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
+                // do route
+                if ($allow) {
+                    $return = \simple($req);
+            
+                    // post postRoute (if any)
+            
+                    return $return;
+                }
+            }
+            // end of /deadly-simple
+            
+            // Routes for /zzzsfasd_prefix_{id}
+            if (preg_match('/zzzsfasd_prefix_(.+)/', $parts[0], $matches_0) > 0) {
+                $req->setIfEmpty('id', $matches_0[1]);
+                if (empty($file_2053a8ae)) {
+                   $file_2053a8ae = 1;
+                   require_once __DIR__ . "/../input/functions.php";
+                }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            
+                // do route
+                if ($allow) {
+                    $return = \soo($req);
+            
+                    // post postRoute (if any)
+            
+                    return $return;
+                }
+            }
+            // end of /zzzsfasd_prefix_{id}
             break;
         }
 

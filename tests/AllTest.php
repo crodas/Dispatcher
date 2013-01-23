@@ -128,4 +128,28 @@ class AllTest extends \phpunit_framework_testcase
     }
     
 
+    /**
+     *  @depends testCompile
+     */
+    public function testWithNoGroup()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $num = $route->doRoute($req, array('REQUEST_URI' => "/zzzsfasd_prefix_93"));
+        $this->assertEquals(93, $num);
+    }
+
+    /**
+     *  @depends testCompile
+     */
+    public function testWithNoGroupSimple()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $controller = $route->doRoute($req, array('REQUEST_URI' => "/deadly-simple"));
+        $this->assertEquals($controller, $req->get('controller'));
+    }
+
 }
