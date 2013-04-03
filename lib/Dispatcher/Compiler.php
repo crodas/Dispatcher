@@ -160,6 +160,7 @@ class Compiler
     {
         $args  = empty($route['args']) ? array() : $route['args'];
         $route = current($args);
+        $class = null;
 
         if ($routeAnnotation->isMethod()) {
             $class = $this->annotations->getClassInfo($routeAnnotation['class']);
@@ -183,6 +184,11 @@ class Compiler
 
         foreach ($this->route_filters as $name => $def) {
             if ($routeAnnotation->get($name)) {
+                foreach ($def as $filter) {
+                    $url->addFilter($filter[0], $filter[1]);
+                }
+            }
+            if (!empty($class['class']) && $class['class']->get($name)) {
                 foreach ($def as $filter) {
                     $url->addFilter($filter[0], $filter[1]);
                 }

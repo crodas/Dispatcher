@@ -73,6 +73,21 @@ class AllTest extends \phpunit_framework_testcase
         $req->set('fail_session', true);
         $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix', 'REQUEST_METHOD' => 'POST'));
     }
+
+    /** 
+     * @depends testCompile
+     * @expectedException AllTest\NotFoundException
+     */
+    public function testClassPreRouteFilter()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix'));
+        $this->assertEquals($out, 'SomeClass::save');
+        $this->assertTrue($req->get('run_all'));
+    }
+
     /** @depends testCompile */
     public function testClassInheritance()
     {

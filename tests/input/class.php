@@ -2,6 +2,7 @@
 
 /**
  *  @Route("/prefix")
+ *  @run_all
  */
 class SomeClass
 {
