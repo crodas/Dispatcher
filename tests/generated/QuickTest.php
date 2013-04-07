@@ -181,7 +181,7 @@ class Route
                     $obj_filt_23cd7755 = new \Foo;
                 }
                 // Routes for /xxx/{foobar}
-                if ($parts[0] === 'xxx' && (!empty($filter_6727d712_1) || ($filter_6727d712_1=$obj_filt_23cd7755->simple_filter($req, 'foobar', $parts[1])))) {
+                if ($parts[0] === 'xxx' && (!empty($filter_8843d7f9_1) || ($filter_8843d7f9_1=$obj_filt_23cd7755->simple_filter($req, 'foobar', $parts[1])))) {
                     $req->setIfEmpty('foobar', $parts[1]);
                     if (empty($file_92cd6d5b)) {
                        $file_92cd6d5b = 1;
@@ -234,7 +234,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
             // Routes for /foo/bar/{bar}
-            if ($parts[0] === 'foo' && $parts[1] === 'bar' && (!empty($filter_6d764d8a_2) || ($filter_6d764d8a_2=\filter_2($req, 'bar', $parts[2])))) {
+            if ($parts[0] === 'foo' && $parts[1] === 'bar' && (!empty($filter_62cdb702_2) || ($filter_62cdb702_2=\filter_2($req, 'bar', $parts[2])))) {
                 $req->setIfEmpty('bar', $parts[2]);
                 if (empty($file_92cd6d5b)) {
                    $file_92cd6d5b = 1;
@@ -260,7 +260,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
             // Routes for /foo/bar/{foo}
-            if ($parts[0] === 'foo' && $parts[1] === 'bar' && (!empty($filter_b5c42409_2) || ($filter_b5c42409_2=\filter_1($req, 'foo', $parts[2])))) {
+            if ($parts[0] === 'foo' && $parts[1] === 'bar' && (!empty($filter_0beec7b5_2) || ($filter_0beec7b5_2=\filter_1($req, 'foo', $parts[2])))) {
                 $req->setIfEmpty('foo', $parts[2]);
                 if (empty($file_92cd6d5b)) {
                    $file_92cd6d5b = 1;

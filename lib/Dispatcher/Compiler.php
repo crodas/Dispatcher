@@ -185,12 +185,12 @@ class Compiler
         foreach ($this->route_filters as $name => $def) {
             if ($routeAnnotation->get($name)) {
                 foreach ($def as $filter) {
-                    $url->addFilter($filter[0], $filter[1]);
+                    $url->addFilter($filter[0], $filter[1], $name);
                 }
             }
             if (!empty($class['class']) && $class['class']->get($name)) {
                 foreach ($def as $filter) {
-                    $url->addFilter($filter[0], $filter[1]);
+                    $url->addFilter($filter[0], $filter[1], $name);
                 }
             }
         }
@@ -242,7 +242,7 @@ class Compiler
     {
         $parts  = explode(":", $name);
         $filter = $parts[0];
-        $name   = var_export(empty($parts[1]) ? $filter : $parts[1], true);
+        $name   = empty($parts[1]) ? $filter : $parts[1];
 
         if (empty($this->filters[$filter])) {
             // filter is not found
@@ -352,12 +352,12 @@ class Compiler
             // Get Code representation out of arguments array
             $args = func_get_args();
             array_shift($args);
-            array_walk($args, function($param) {
-                $param = (string)$param;
-                return $param[0] == '$' ? $param : var_export($param, true);
-            });
+            $args = array_map(function($param) {
+                $param = is_scalar($param) ? ((string)$param) : $param;
+                $text  = !empty($param[0]) && $param[0] == '$' ? $param : var_export($param, true);
+                return $text;
+            }, $args);
             $arguments = implode(", ", $args);
-            
 
             // check if the filter is cachable
             if (count($args) == 3) {

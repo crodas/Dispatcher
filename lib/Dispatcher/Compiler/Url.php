@@ -64,12 +64,14 @@ class Url
         return $weight;
     }
 
-    public function addFilter($type, Annotation $def)
+    public function addFilter($type, Annotation $def, $tag)
     {
         if (empty($this->filters[$type])) {
             $this->filters[$type] = array();
         }
-        $this->filters[$type][] = $def;
+        $args = $def->get($tag);
+        array_shift($args);
+        $this->filters[$type][] = array($def, $args);
     }
 
     public function getFilters($type)

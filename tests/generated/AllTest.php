@@ -164,19 +164,21 @@ class Route
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                    if (empty($file_e0cf7353)) {
-                       $file_e0cf7353 = 1;
-                       require_once __DIR__ . "/../input/route_filters.php";
-                    }
+                if (empty($file_e0cf7353)) {
+                   $file_e0cf7353 = 1;
+                   require_once __DIR__ . "/../input/route_filters.php";
+                }
                     if ($allow) {
-                        $allow &= \CheckSession($req);
+                        $allow &= \CheckSession($req, array (
+                ));
                     }
-                    if (empty($file_e0cf7353)) {
-                       $file_e0cf7353 = 1;
-                       require_once __DIR__ . "/../input/route_filters.php";
-                    }
+                if (empty($file_e0cf7353)) {
+                   $file_e0cf7353 = 1;
+                   require_once __DIR__ . "/../input/route_filters.php";
+                }
                     if ($allow) {
-                        $allow &= \CheckSession_another($req);
+                        $allow &= \CheckSession_another($req, array (
+                ));
                     }
                 
                     // do route
@@ -362,12 +364,13 @@ class Route
             
                 //run preRoute filters (if any)
                 $allow = true;
-                if (empty($file_e0cf7353)) {
-                   $file_e0cf7353 = 1;
-                   require_once __DIR__ . "/../input/route_filters.php";
-                }
+            if (empty($file_e0cf7353)) {
+               $file_e0cf7353 = 1;
+               require_once __DIR__ . "/../input/route_filters.php";
+            }
                 if ($allow) {
-                    $allow &= \CheckSession_another($req);
+                    $allow &= \CheckSession_another($req, array (
+            ));
                 }
             
                 // do route
@@ -389,7 +392,7 @@ class Route
                 $obj_filt_91adc016 = new \SomeSillyClass;
             }
             // Routes for /ifempty/{something:algo-alias}
-            if ($parts[0] === 'ifempty' && (!empty($filter_45a21400_1) || ($filter_45a21400_1=$this->doCachedFilter(array($obj_filt_91adc016, 'filter_set'), $req, 'algo-alias', $parts[1], 1)))) {
+            if ($parts[0] === 'ifempty' && (!empty($filter_1ded59a9_1) || ($filter_1ded59a9_1=$this->doCachedFilter(array($obj_filt_91adc016, 'filter_set'), $req, 'algo-alias', $parts[1], 1)))) {
                 $req->setIfEmpty('algo-alias', $parts[1]);
                 if (empty($file_2053a8ae)) {
                    $file_2053a8ae = 1;
@@ -418,7 +421,7 @@ class Route
                 $obj_filt_91adc016 = new \SomeSillyClass;
             }
             // Routes for /function/{reverse}
-            if ($parts[0] === 'function' && (!empty($filter_cab1b2b5_1) || ($filter_cab1b2b5_1=$obj_filt_91adc016->filter_reverse($req, 'reverse', $parts[1])))) {
+            if ($parts[0] === 'function' && (!empty($filter_75470a30_1) || ($filter_75470a30_1=$obj_filt_91adc016->filter_reverse($req, 'reverse', $parts[1])))) {
                 $req->setIfEmpty('reverse', $parts[1]);
                 if (empty($file_2053a8ae)) {
                    $file_2053a8ae = 1;

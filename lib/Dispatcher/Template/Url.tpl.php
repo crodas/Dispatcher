@@ -27,7 +27,7 @@ if (__expr__) {
     //run preRoute filters (if any)
     $allow = true;
     #* foreach ($preRoute as $filter)
-    #   $filterFnc = callback($filter, '$req')
+    #   $filterFnc = callback($filter[0], '$req', $filter[1])
     if ($allow) {
         $allow &= __filterFnc__;
     }
@@ -39,7 +39,7 @@ if (__expr__) {
 
         // post postRoute (if any)
         #* foreach ($postRoute as $filter)
-        #   $filterFnc = callback($filter, '$req', '$return')
+        #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
         $return = __filterFnc__;
         #* end
 
