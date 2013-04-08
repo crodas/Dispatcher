@@ -4,7 +4,8 @@ script: phpunit tests
 php:
   - 5.3
   - 5.4
+  - 5.5
 
 before_script:
   - wget -c https://raw.github.com/crodas/Eath/master/eath.phar
-  - php eath.phar install
+  - php -d display_errors=On eath.phar install
