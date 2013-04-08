@@ -7,5 +7,5 @@ php:
   - 5.5
 
 before_script:
-  - wget -c https://raw.github.com/crodas/Eath/master/eath.phar
-  - php -d display_errors=On eath.phar install
+  - curl -sS https://getcomposer.org/installer | php
+  - php composer.phar install
