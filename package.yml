@@ -2,7 +2,7 @@ name: dispatcher
 
 description: Dispatcher generator
 
-files: [lib],
+files: [lib]
 version: 0.1.9
 
 bin:
