@@ -12,5 +12,10 @@
             "name": "César D. Rodas",
             "email": "crodas@php.net"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-0": {
+            "Dispatcher": "lib/"
+        }
+    }
 }
