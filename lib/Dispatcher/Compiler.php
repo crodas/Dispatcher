@@ -183,14 +183,14 @@ class Compiler
         }
 
         foreach ($this->route_filters as $name => $def) {
-            if ($routeAnnotation->get($name)) {
+            if ($ann = $routeAnnotation->getOne($name)) {
                 foreach ($def as $filter) {
-                    $url->addFilter($filter[0], $filter[1], $name);
+                    $url->addFilter($filter[0], $filter[1], $ann);
                 }
             }
-            if (!empty($class['class']) && $class['class']->get($name)) {
+            if (!empty($class['class']) && $ann = $class['class']->getOne($name)) {
                 foreach ($def as $filter) {
-                    $url->addFilter($filter[0], $filter[1], $name);
+                    $url->addFilter($filter[0], $filter[1], $ann);
                 }
             }
         }
