@@ -3,8 +3,8 @@
 #* function render_url($object) 
 #   $route    = $object->getRouteDefinition()
 #   $expr     = expr($object->getParts())
-// Routes for __route__
-#* if (count($expr) > 0) 
+// Routes for __route__ {{{
+#* if ($expr)
 if (__expr__) {
 #* end
     #* 
@@ -48,6 +48,6 @@ if (__expr__) {
 #* if ($expr) 
 }
 #* end
-// end of __route__
+// }}} end of __route__
 
 #* end

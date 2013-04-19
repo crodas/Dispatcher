@@ -1,5 +1,21 @@
 <?php
 
+/** @Filter __id__ */
+function __filter__($req, $name, $value) {
+    return $value == "id";
+}
+
+/** @Route("/{__id__}") */
+function empty_level_1($req) {
+    return __FUNCTION__;
+}
+
+/** @Route("/") */
+function empty_level_2($req) {
+    return __FUNCTION__;
+}
+
+
 /** 
  * @Route("/function/{reverse}") 
  * @Route("/function/reverse") 

@@ -396,10 +396,10 @@ class Compiler
          *  Generate expressions
          */
         $vm->registerFunction('expr', function(Array $rules) use ($self, $callback) {
-            if (count($rules) == 0) return array();
+            if (count($rules) == 0) return '';
             $expr = array();
             foreach ($rules as $rule) {
-                $expr[] = $rule->getExpr($self, $callback);
+                $expr[] = $rule->getExpr($self, $callback) ?: '';
             }
             return implode(' && ', array_filter($expr));
         });

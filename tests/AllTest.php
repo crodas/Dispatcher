@@ -141,6 +141,18 @@ class AllTest extends \phpunit_framework_testcase
         $num = $route->doRoute($req, array('REQUEST_URI' => '/something/silly'));
         $this->assertEquals($num, $req->get('return'));
     }
+    /**
+     *  @depends testCompile
+     */
+    public function testRoot() 
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $num = $route->doRoute($req, array('REQUEST_URI' => "/"));
+        $this->assertEquals('empty_level_2', $num);
+    }
+
     
 
     /**

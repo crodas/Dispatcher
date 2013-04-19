@@ -61,6 +61,11 @@ class Url
         foreach ($this->parts as $part) {
             $weight += $part->GetType();
         }
+        if (count($this->parts) == 1 && $part->GetType() == Component::VARIABLE) {
+            // the url has only a single component (/{foobar}) so it *must*
+            // the last rule to evaluate
+            return 0xfffff;
+        }
         return $weight;
     }
 

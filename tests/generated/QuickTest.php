@@ -152,7 +152,7 @@ class Route
         case 'GET':
             switch ($length) {
             case 2:
-                // Routes for /foo/function
+                // Routes for /foo/function {{{
                 if ($parts[0] === 'foo' && $parts[1] === 'function') {
                     if (empty($file_92cd6d5b)) {
                        $file_92cd6d5b = 1;
@@ -171,7 +171,7 @@ class Route
                         return $return;
                     }
                 }
-                // end of /foo/function
+                // }}} end of /foo/function
                 
                 if (empty($file_92cd6d5b)) {
                    $file_92cd6d5b = 1;
@@ -180,7 +180,7 @@ class Route
                 if (empty($obj_filt_23cd7755)) {
                     $obj_filt_23cd7755 = new \Foo;
                 }
-                // Routes for /xxx/{foobar}
+                // Routes for /xxx/{foobar} {{{
                 if ($parts[0] === 'xxx' && (!empty($filter_8843d7f9_1) || ($filter_8843d7f9_1=$obj_filt_23cd7755->simple_filter($req, 'foobar', $parts[1])))) {
                     $req->setIfEmpty('foobar', $parts[1]);
                     if (empty($file_92cd6d5b)) {
@@ -200,7 +200,7 @@ class Route
                         return $return;
                     }
                 }
-                // end of /xxx/{foobar}
+                // }}} end of /xxx/{foobar}
                 break;
             }
             break;
@@ -208,7 +208,7 @@ class Route
         
         switch ($length) {
         case 3:
-            // Routes for /foo/bar/xxx
+            // Routes for /foo/bar/xxx {{{
             if ($parts[0] === 'foo' && $parts[1] === 'bar' && $parts[2] === 'xxx') {
                 if (empty($file_92cd6d5b)) {
                    $file_92cd6d5b = 1;
@@ -227,13 +227,13 @@ class Route
                     return $return;
                 }
             }
-            // end of /foo/bar/xxx
+            // }}} end of /foo/bar/xxx
             
             if (empty($file_92cd6d5b)) {
                $file_92cd6d5b = 1;
                require_once __DIR__ . "/../QuickTest.php";
             }
-            // Routes for /foo/bar/{bar}
+            // Routes for /foo/bar/{bar} {{{
             if ($parts[0] === 'foo' && $parts[1] === 'bar' && (!empty($filter_62cdb702_2) || ($filter_62cdb702_2=\filter_2($req, 'bar', $parts[2])))) {
                 $req->setIfEmpty('bar', $parts[2]);
                 if (empty($file_92cd6d5b)) {
@@ -253,13 +253,13 @@ class Route
                     return $return;
                 }
             }
-            // end of /foo/bar/{bar}
+            // }}} end of /foo/bar/{bar}
             
             if (empty($file_92cd6d5b)) {
                $file_92cd6d5b = 1;
                require_once __DIR__ . "/../QuickTest.php";
             }
-            // Routes for /foo/bar/{foo}
+            // Routes for /foo/bar/{foo} {{{
             if ($parts[0] === 'foo' && $parts[1] === 'bar' && (!empty($filter_0beec7b5_2) || ($filter_0beec7b5_2=\filter_1($req, 'foo', $parts[2])))) {
                 $req->setIfEmpty('foo', $parts[2]);
                 if (empty($file_92cd6d5b)) {
@@ -279,10 +279,10 @@ class Route
                     return $return;
                 }
             }
-            // end of /foo/bar/{foo}
+            // }}} end of /foo/bar/{foo}
             break;
         case 2:
-            // Routes for /foo/method
+            // Routes for /foo/method {{{
             if ($parts[0] === 'foo' && $parts[1] === 'method') {
                 if (empty($file_92cd6d5b)) {
                    $file_92cd6d5b = 1;
@@ -304,7 +304,7 @@ class Route
                     return $return;
                 }
             }
-            // end of /foo/method
+            // }}} end of /foo/method
             
             if (empty($file_92cd6d5b)) {
                $file_92cd6d5b = 1;
@@ -320,7 +320,7 @@ class Route
             if (empty($obj_filt_23cd7755)) {
                 $obj_filt_23cd7755 = new \Foo;
             }
-            // Routes for /foo/{foobar}.{ext:extension}
+            // Routes for /foo/{foobar}.{ext:extension} {{{
             if ($parts[0] === 'foo' && preg_match('/(.+)\\.(.+)/', $parts[1], $matches_1) > 0 && $obj_filt_23cd7755->simple_filter($req, 'foobar', $matches_1[1]) && $obj_filt_23cd7755->ext_filter($req, 'extension', $matches_1[2])) {
                 $req->setIfEmpty('foobar', $matches_1[1]);
                 $req->setIfEmpty('extension', $matches_1[2]);
@@ -344,7 +344,7 @@ class Route
                     return $return;
                 }
             }
-            // end of /foo/{foobar}.{ext:extension}
+            // }}} end of /foo/{foobar}.{ext:extension}
             break;
         }
 
