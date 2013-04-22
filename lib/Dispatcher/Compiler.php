@@ -145,7 +145,6 @@ class Compiler
 
         $this->route_filters = array();
         foreach(array('preRoute', 'postRoute') as $type) {
-            $this->route_filters[$type] = array();
             foreach ($this->annotations->get($type) as $filterRouter) {
                 foreach ($filterRouter->get($type) as $filter) {
                     $name = current($filter['args']);
@@ -182,15 +181,16 @@ class Compiler
             $url->setArguments($args['set']);
         }
 
-        foreach ($this->route_filters as $name => $def) {
-            if ($routeAnnotation->get($name)) {
-                foreach ($def as $filter) {
+        foreach ($routeAnnotation as $annotation) {
+            $name = $annotation['method'];
+            if (!empty($this->route_filters[$name])) {
+                foreach ($this->route_filters[$name] as $filter) {
                     $url->addFilter($filter[0], $filter[1], $routeAnnotation->getOne($name));
                 }
-            }
-            if (!empty($class['class']) && $class['class']->get($name)) {
-                foreach ($def as $filter) {
-                    $url->addFilter($filter[0], $filter[1], $class['class']->GetOne($name));
+                if (!empty($class['class']) && $class['class']->get($name)) {
+                    foreach ($this->route_filters[$name] as $filter) {
+                        $url->addFilter($filter[0], $filter[1], $class['class']->GetOne($name));
+                    }
                 }
             }
         }
