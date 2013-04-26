@@ -169,7 +169,8 @@ class Route
                    require_once __DIR__ . "/../input/route_filters.php";
                 }
                     if ($allow) {
-                        $allow &= \CheckSession($req, NULL);
+                        $allow &= \CheckSession($req, array (
+                ));
                     }
                 
                     // do route
