@@ -17,4 +17,21 @@ class SomeSillyClass
         return true;
     }
 
+    /**
+     *  @preRoute
+     */
+    function _all_filter($Request, $args)
+    {
+        $Request->set('__all__', true);
+        return true;
+    }
+
+    /**
+     *  @postRoute
+     */
+    function _all_filter_post($Request, $args, $return)
+    {
+        $Request->set('__post__', true);
+        return $return;
+    }
 }

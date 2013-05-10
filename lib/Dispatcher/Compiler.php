@@ -49,6 +49,7 @@ class Compiler
     protected $annotations;
     protected $urls;
     protected $filters = array();
+    protected $all_filters   = array();
     protected $route_filters = array();
 
     public function __construct(Generator $conf, Annotations $annotations)
@@ -147,8 +148,11 @@ class Compiler
         foreach(array('preRoute', 'postRoute') as $type) {
             foreach ($this->annotations->get($type) as $filterRouter) {
                 foreach ($filterRouter->get($type) as $filter) {
-                    $name = strtolower(current($filter['args']));
-                    if (empty($name)) continue;
+                    $name = !empty($filter['args']) ? strtolower(current($filter['args'])) : null;
+                    if (empty($name)) {
+                        $this->all_filters[$type][] = $filterRouter;
+                        continue;
+                    }
                     $this->route_filters[$name][] = array($type, $filterRouter);
                 }
             }
@@ -183,6 +187,13 @@ class Compiler
 
         foreach ($routeAnnotation as $annotation) {
             $name = strtolower($annotation['method']);
+
+            foreach ($this->all_filters as $type => $filters) {
+                foreach ($filters as $filter) {
+                    $url->addFilter($type, $filter, $routeAnnotation->getOne($name));
+                }
+            }
+
             if (!empty($this->route_filters[$name])) {
                 foreach ($this->route_filters[$name] as $filter) {
                     $url->addFilter($filter[0], $filter[1], $routeAnnotation->getOne($name));

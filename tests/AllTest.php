@@ -36,6 +36,7 @@ class AllTest extends \phpunit_framework_testcase
         $out = $route->doRoute($req, array('REQUEST_URI' => '/function/esrever'));
         $this->assertEquals($out, 'some_function');
         $this->assertEquals('esrever', $req->get('reverse'));
+        $this->assertTrue($req->get('__all__'));
     }
 
     /** @depends testCompile */
@@ -47,6 +48,8 @@ class AllTest extends \phpunit_framework_testcase
         $route->setCache(TestCacheClass::getInstance());
         $out = $route->doRoute($req, array('REQUEST_URI' => '/ifempty/algo'));
         $this->assertEquals('ALGO', $req->get('algo-alias'));
+        $this->assertTrue($req->get('__all__'));
+        $this->assertTrue($req->get('__post__'));
     }
 
     /** @depends testCompile */
