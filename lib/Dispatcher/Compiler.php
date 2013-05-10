@@ -326,6 +326,18 @@ class Compiler
             return $fnc($obj);
         });
 
+        $vm->registerFunction('callback_object', $callback=function($annotation) use ($vm, $self, $output) {
+            if ($annotation->isFunction()) {
+                return var_export('\\' . $annotation['function'], true);
+            } else if ($annotation->isMethod()) {
+                $class  = "\\" . $annotation['class'];
+                $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
+                return "array($obj, " . var_export($annotation['function'], true) . ')';
+            } else {
+                throw new \RuntimeException("Invalid callback");
+            }
+        });
+
         /**
          *  Generate the callback function (from a function or 
          *  a method)

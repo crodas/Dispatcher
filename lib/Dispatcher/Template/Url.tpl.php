@@ -20,6 +20,7 @@ if (__expr__) {
     #   end
     $req->setIfEmpty(__@name__, $__variable__);
     #* end
+    # $zcallback = callback_object($object->getAnnotation())
     # $callback  = callback($object->getAnnotation(), '$req')
     # $preRoute  = $object->getFilters('preRoute')
     # $postRoute = $object->getFilters('postRoute')
@@ -35,6 +36,7 @@ if (__expr__) {
 
     // do route
     if ($allow) {
+        $req->setIfEmpty('__handler__', __zcallback__);
         $return = __callback__;
 
         // post postRoute (if any)

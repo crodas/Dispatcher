@@ -175,6 +175,7 @@ class Route
                 
                     // do route
                     if ($allow) {
+                        $req->setIfEmpty('__handler__', array($obj_filt_2d89b930, 'save'));
                         $return = $obj_filt_2d89b930->save($req);
                 
                         // post postRoute (if any)
@@ -200,6 +201,7 @@ class Route
                 
                     // do route
                     if ($allow) {
+                        $req->setIfEmpty('__handler__', array($obj_filt_e02f213c, 'modify'));
                         $return = $obj_filt_e02f213c->modify($req);
                 
                         // post postRoute (if any)
@@ -225,6 +227,7 @@ class Route
                 
                     // do route
                     if ($allow) {
+                        $req->setIfEmpty('__handler__', array($obj_filt_e02f213c, 'modify_something'));
                         $return = $obj_filt_e02f213c->modify_something($req);
                 
                         // post postRoute (if any)
@@ -254,6 +257,7 @@ class Route
                 
                     // do route
                     if ($allow) {
+                        $req->setIfEmpty('__handler__', array($obj_filt_e02f213c, 'get'));
                         $return = $obj_filt_e02f213c->get($req);
                 
                         // post postRoute (if any)
@@ -283,6 +287,7 @@ class Route
                 
                     // do route
                     if ($allow) {
+                        $req->setIfEmpty('__handler__', array($obj_filt_e02f213c, 'modify'));
                         $return = $obj_filt_e02f213c->modify($req);
                 
                         // post postRoute (if any)
@@ -308,6 +313,7 @@ class Route
                 
                     // do route
                     if ($allow) {
+                        $req->setIfEmpty('__handler__', array($obj_filt_e02f213c, 'modify_something'));
                         $return = $obj_filt_e02f213c->modify_something($req);
                 
                         // post postRoute (if any)
@@ -335,6 +341,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\some_function');
                     $return = \some_function($req);
             
                     // post postRoute (if any)
@@ -359,6 +366,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', array($obj_filt_2d89b930, 'index'));
                     $return = $obj_filt_2d89b930->index($req);
             
                     // post postRoute (if any)
@@ -388,6 +396,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\some_function');
                     $return = \some_function($req);
             
                     // post postRoute (if any)
@@ -417,6 +426,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\some_function');
                     $return = \some_function($req);
             
                     // post postRoute (if any)
@@ -439,6 +449,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\simple');
                     $return = \simple($req);
             
                     // post postRoute (if any)
@@ -461,6 +472,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\soo');
                     $return = \soo($req);
             
                     // post postRoute (if any)
@@ -487,6 +499,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\empty_level_1');
                     $return = \empty_level_1($req);
             
                     // post postRoute (if any)
@@ -508,6 +521,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\empty_level_2');
                     $return = \empty_level_2($req);
             
                     // post postRoute (if any)

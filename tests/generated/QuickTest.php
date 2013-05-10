@@ -164,6 +164,7 @@ class Route
                 
                     // do route
                     if ($allow) {
+                        $req->setIfEmpty('__handler__', '\\Controller');
                         $return = \Controller($req);
                 
                         // post postRoute (if any)
@@ -193,6 +194,7 @@ class Route
                 
                     // do route
                     if ($allow) {
+                        $req->setIfEmpty('__handler__', '\\Controller');
                         $return = \Controller($req);
                 
                         // post postRoute (if any)
@@ -220,6 +222,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\TestingMultiple');
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
@@ -246,6 +249,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\TestingMultiple');
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
@@ -272,6 +276,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\TestingMultiple');
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
@@ -297,6 +302,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', array($obj_filt_23cd7755, 'Bar'));
                     $return = $obj_filt_23cd7755->Bar($req);
             
                     // post postRoute (if any)
@@ -337,6 +343,7 @@ class Route
             
                 // do route
                 if ($allow) {
+                    $req->setIfEmpty('__handler__', array($obj_filt_23cd7755, 'TestingComplexUri'));
                     $return = $obj_filt_23cd7755->TestingComplexUri($req);
             
                     // post postRoute (if any)
