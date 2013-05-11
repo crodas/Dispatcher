@@ -185,14 +185,15 @@ class Compiler
             $url->setArguments($args['set']);
         }
 
+        foreach ($this->all_filters as $type => $filters) {
+            foreach ($filters as $filter) {
+                $url->addFilter($type, $filter, $routeAnnotation->getOne($name));
+            }
+        }
+
+
         foreach ($routeAnnotation as $annotation) {
             $name = strtolower($annotation['method']);
-
-            foreach ($this->all_filters as $type => $filters) {
-                foreach ($filters as $filter) {
-                    $url->addFilter($type, $filter, $routeAnnotation->getOne($name));
-                }
-            }
 
             if (!empty($this->route_filters[$name])) {
                 foreach ($this->route_filters[$name] as $filter) {
