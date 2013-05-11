@@ -175,17 +175,6 @@ class Route
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
                 ));
                     }
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
-                    if ($allow) {
-                        $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
-                    }
                 if (empty($file_e0cf7353)) {
                    $file_e0cf7353 = 1;
                    require_once __DIR__ . "/../input/route_filters.php";
@@ -201,15 +190,6 @@ class Route
                         $return = $obj_filt_2d89b930->save($req);
                 
                         // post postRoute (if any)
-                        if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "/../input/filter.php";
-                        }
-                        if (empty($obj_filt_91adc016)) {
-                            $obj_filt_91adc016 = new \SomeSillyClass;
-                        }
-                        $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
                         if (empty($file_e55749ee)) {
                            $file_e55749ee = 1;
                            require_once __DIR__ . "/../input/filter.php";
@@ -249,17 +229,6 @@ class Route
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
                 ));
                     }
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
-                    if ($allow) {
-                        $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
-                    }
                 
                     // do route
                     if ($allow) {
@@ -267,15 +236,6 @@ class Route
                         $return = $obj_filt_e02f213c->modify($req);
                 
                         // post postRoute (if any)
-                        if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "/../input/filter.php";
-                        }
-                        if (empty($obj_filt_91adc016)) {
-                            $obj_filt_91adc016 = new \SomeSillyClass;
-                        }
-                        $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
                         if (empty($file_e55749ee)) {
                            $file_e55749ee = 1;
                            require_once __DIR__ . "/../input/filter.php";
@@ -315,28 +275,6 @@ class Route
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
                 ));
                     }
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
-                    if ($allow) {
-                        $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
-                    }
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
-                    if ($allow) {
-                        $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
-                    }
                 
                     // do route
                     if ($allow) {
@@ -344,24 +282,6 @@ class Route
                         $return = $obj_filt_e02f213c->modify_something($req);
                 
                         // post postRoute (if any)
-                        if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "/../input/filter.php";
-                        }
-                        if (empty($obj_filt_91adc016)) {
-                            $obj_filt_91adc016 = new \SomeSillyClass;
-                        }
-                        $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
-                        if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "/../input/filter.php";
-                        }
-                        if (empty($obj_filt_91adc016)) {
-                            $obj_filt_91adc016 = new \SomeSillyClass;
-                        }
-                        $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
                         if (empty($file_e55749ee)) {
                            $file_e55749ee = 1;
                            require_once __DIR__ . "/../input/filter.php";
@@ -455,17 +375,6 @@ class Route
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
                 ));
                     }
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
-                    if ($allow) {
-                        $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
-                    }
                 
                     // do route
                     if ($allow) {
@@ -473,15 +382,6 @@ class Route
                         $return = $obj_filt_e02f213c->modify($req);
                 
                         // post postRoute (if any)
-                        if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "/../input/filter.php";
-                        }
-                        if (empty($obj_filt_91adc016)) {
-                            $obj_filt_91adc016 = new \SomeSillyClass;
-                        }
-                        $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
                         if (empty($file_e55749ee)) {
                            $file_e55749ee = 1;
                            require_once __DIR__ . "/../input/filter.php";
@@ -521,28 +421,6 @@ class Route
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
                 ));
                     }
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
-                    if ($allow) {
-                        $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
-                    }
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "/../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
-                    if ($allow) {
-                        $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
-                    }
                 
                     // do route
                     if ($allow) {
@@ -550,24 +428,6 @@ class Route
                         $return = $obj_filt_e02f213c->modify_something($req);
                 
                         // post postRoute (if any)
-                        if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "/../input/filter.php";
-                        }
-                        if (empty($obj_filt_91adc016)) {
-                            $obj_filt_91adc016 = new \SomeSillyClass;
-                        }
-                        $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
-                        if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "/../input/filter.php";
-                        }
-                        if (empty($obj_filt_91adc016)) {
-                            $obj_filt_91adc016 = new \SomeSillyClass;
-                        }
-                        $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
                         if (empty($file_e55749ee)) {
                            $file_e55749ee = 1;
                            require_once __DIR__ . "/../input/filter.php";
@@ -609,28 +469,6 @@ class Route
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
             ));
                 }
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "/../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
-                if ($allow) {
-                    $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
-                }
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "/../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
-                if ($allow) {
-                    $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
-                }
             
                 // do route
                 if ($allow) {
@@ -638,24 +476,6 @@ class Route
                     $return = \some_function($req);
             
                     // post postRoute (if any)
-                    if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "/../input/filter.php";
-                    }
-                    if (empty($obj_filt_91adc016)) {
-                        $obj_filt_91adc016 = new \SomeSillyClass;
-                    }
-                    $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
-                    if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "/../input/filter.php";
-                    }
-                    if (empty($obj_filt_91adc016)) {
-                        $obj_filt_91adc016 = new \SomeSillyClass;
-                    }
-                    $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
                     if (empty($file_e55749ee)) {
                        $file_e55749ee = 1;
                        require_once __DIR__ . "/../input/filter.php";
@@ -744,28 +564,6 @@ class Route
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
             ));
                 }
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "/../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
-                if ($allow) {
-                    $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
-                }
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "/../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
-                if ($allow) {
-                    $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
-                }
             
                 // do route
                 if ($allow) {
@@ -773,24 +571,6 @@ class Route
                     $return = \some_function($req);
             
                     // post postRoute (if any)
-                    if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "/../input/filter.php";
-                    }
-                    if (empty($obj_filt_91adc016)) {
-                        $obj_filt_91adc016 = new \SomeSillyClass;
-                    }
-                    $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
-                    if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "/../input/filter.php";
-                    }
-                    if (empty($obj_filt_91adc016)) {
-                        $obj_filt_91adc016 = new \SomeSillyClass;
-                    }
-                    $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
                     if (empty($file_e55749ee)) {
                        $file_e55749ee = 1;
                        require_once __DIR__ . "/../input/filter.php";
@@ -834,28 +614,6 @@ class Route
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
             ));
                 }
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "/../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
-                if ($allow) {
-                    $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
-                }
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "/../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
-                if ($allow) {
-                    $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
-                }
             
                 // do route
                 if ($allow) {
@@ -863,24 +621,6 @@ class Route
                     $return = \some_function($req);
             
                     // post postRoute (if any)
-                    if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "/../input/filter.php";
-                    }
-                    if (empty($obj_filt_91adc016)) {
-                        $obj_filt_91adc016 = new \SomeSillyClass;
-                    }
-                    $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
-                    if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "/../input/filter.php";
-                    }
-                    if (empty($obj_filt_91adc016)) {
-                        $obj_filt_91adc016 = new \SomeSillyClass;
-                    }
-                    $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
                     if (empty($file_e55749ee)) {
                        $file_e55749ee = 1;
                        require_once __DIR__ . "/../input/filter.php";

@@ -187,7 +187,7 @@ class Compiler
 
         foreach ($this->all_filters as $type => $filters) {
             foreach ($filters as $filter) {
-                $url->addFilter($type, $filter, $routeAnnotation->getOne($name));
+                $url->addFilter($type, $filter);
             }
         }
 

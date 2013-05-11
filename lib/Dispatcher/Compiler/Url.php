@@ -69,7 +69,7 @@ class Url
         return $weight;
     }
 
-    public function addFilter($type, Annotation $def, $args)
+    public function addFilter($type, Annotation $def, $args = array())
     {
         if (empty($this->filters[$type])) {
             $this->filters[$type] = array();
