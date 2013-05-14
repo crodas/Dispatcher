@@ -127,7 +127,6 @@ class Generator
         foreach (array_unique($this->files) as $file) {
             $ann = new FileParser($file);
             $ann->getAnnotations($annotations);
-            $isCached &= $ann->isCached();
             $files[] = $file;
             $dirs[]  = dirname($file);
         }
@@ -135,8 +134,8 @@ class Generator
         foreach (array_unique($this->dirs) as $dir) {
             $ann = new DirParser($dir);
             $ann->getAnnotations($annotations);
-            $isCached &= $ann->isCached();
-            $dirs      = array();
+            $dirs[] = $dir;
+            $files  = array_merge($files, $ann->getFiles());
         }
 
         $cache->watchDirs($dirs)
