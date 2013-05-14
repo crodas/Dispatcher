@@ -138,6 +138,10 @@ class Generator
             $files  = array_merge($files, $ann->getFiles());
         }
 
+        foreach ($files as $file) {
+            $dirs[] = dirname($file);
+        }
+
         $cache->watchDirs($dirs)
             ->watchFiles($files)
             ->watch();
