@@ -5,7 +5,8 @@
     "require": {
         "crodas/notoj": "*",
         "crodas/artifex": "*",
-        "symfony/console": "*"
+        "symfony/console": "*",
+        "crodas/watch-files": "*"
     },
     "authors": [
         {

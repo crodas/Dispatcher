@@ -39,7 +39,8 @@ namespace Dispatcher;
 
 use Notoj\Dir as DirParser,
     Notoj\File as FileParser,
-    Notoj\Annotations;
+    Notoj\Annotations,
+    WatchFiles\Watch;
 
 class Generator
 {
@@ -113,25 +114,34 @@ class Generator
 
     public function generate()
     {
+        $cache = new Watch($this->output . '.cache');
+        if (!$cache->hasChanged()) {
+            return;
+        }
+
         $annotations = new Annotations;
         $isCached = $this->output && file_exists($this->output);
+        $files    = array();
+        $dirs     = array();
 
         foreach (array_unique($this->files) as $file) {
             $ann = new FileParser($file);
             $ann->getAnnotations($annotations);
             $isCached &= $ann->isCached();
+            $files[] = $file;
+            $dirs[]  = dirname($file);
         }
 
         foreach (array_unique($this->dirs) as $dir) {
             $ann = new DirParser($dir);
             $ann->getAnnotations($annotations);
             $isCached &= $ann->isCached();
+            $dirs      = array();
         }
 
-        if ($isCached) {
-            /* nothing to do */
-            return;
-        }
+        $cache->watchDirs($dirs)
+            ->watchFiles($files)
+            ->watch();
         
         $compiler = new Compiler($this, $annotations);
         if (!empty($this->output)) {
