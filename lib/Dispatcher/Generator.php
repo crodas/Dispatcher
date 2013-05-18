@@ -115,9 +115,19 @@ class Generator
     public function generate()
     {
         $cache = new Watch($this->output . '.cache');
+        $dirs  = $this->dirs;
+        foreach ($this->files as $file) {
+            $dirs[] = dirname($file);
+        }
+
+        $cache->watchFiles($this->files);
+        $cache->watchDirs($dirs);
+
         if (!$cache->hasChanged()) {
             return;
         }
+
+        $cache->watch();
 
         $annotations = new Annotations;
         $isCached = $this->output && file_exists($this->output);
@@ -142,9 +152,6 @@ class Generator
             $dirs[] = dirname($file);
         }
 
-        $cache->watchDirs($dirs)
-            ->watchFiles($files)
-            ->watch();
         
         $compiler = new Compiler($this, $annotations);
         if (!empty($this->output)) {
