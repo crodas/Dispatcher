@@ -127,8 +127,6 @@ class Generator
             return;
         }
 
-        $cache->watch();
-
         $annotations = new Annotations;
         $isCached = $this->output && file_exists($this->output);
         $files    = array();
@@ -147,6 +145,12 @@ class Generator
             $dirs[] = $dir;
             $files  = array_merge($files, $ann->getFiles());
         }
+        foreach ($files as $file) {
+            $dirs[] = dirname($file);
+        }
+
+        $cache->watchFiles($files)->watchDirs($dirs);
+        $cache->watch();
 
         foreach ($files as $file) {
             $dirs[] = dirname($file);
