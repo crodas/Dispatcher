@@ -182,6 +182,13 @@ class Route
                     if ($allow) {
                         $allow &= \CheckSession($req, NULL);
                     }
+                if (empty($file_e0cf7353)) {
+                   $file_e0cf7353 = 1;
+                   require_once __DIR__ . "/../input/route_filters.php";
+                }
+                    if ($allow) {
+                        $allow &= \CheckSession_another($req, NULL);
+                    }
                 
                     // do route
                     if ($allow) {
@@ -526,6 +533,13 @@ class Route
                 if ($allow) {
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
             ));
+                }
+            if (empty($file_e0cf7353)) {
+               $file_e0cf7353 = 1;
+               require_once __DIR__ . "/../input/route_filters.php";
+            }
+                if ($allow) {
+                    $allow &= \CheckSession_another($req, NULL);
                 }
             
                 // do route
