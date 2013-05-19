@@ -168,6 +168,14 @@ class Route
                         $return = \Controller($req);
                 
                         // post postRoute (if any)
+                        if (empty($file_92cd6d5b)) {
+                           $file_92cd6d5b = 1;
+                           require_once __DIR__ . "/../QuickTest.php";
+                        }
+                        \__last_for_all($req, array (
+                ), $return);
+                
+                
                 
                         return $return;
                     }
@@ -198,6 +206,14 @@ class Route
                         $return = \Controller($req);
                 
                         // post postRoute (if any)
+                        if (empty($file_92cd6d5b)) {
+                           $file_92cd6d5b = 1;
+                           require_once __DIR__ . "/../QuickTest.php";
+                        }
+                        \__last_for_all($req, array (
+                ), $return);
+                
+                
                 
                         return $return;
                     }
@@ -226,6 +242,14 @@ class Route
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    \__last_for_all($req, array (
+            ), $return);
+            
+            
             
                     return $return;
                 }
@@ -253,6 +277,14 @@ class Route
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    \__last_for_all($req, array (
+            ), $return);
+            
+            
             
                     return $return;
                 }
@@ -280,11 +312,62 @@ class Route
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    \__last_for_all($req, array (
+            ), $return);
+            
+            
             
                     return $return;
                 }
             }
             // }}} end of /foo/bar/{foo}
+            break;
+        case 1:
+            // Routes for /buffer {{{
+            if ($parts[0] === 'buffer') {
+                if (empty($file_92cd6d5b)) {
+                   $file_92cd6d5b = 1;
+                   require_once __DIR__ . "/../QuickTest.php";
+                }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            if (empty($file_92cd6d5b)) {
+               $file_92cd6d5b = 1;
+               require_once __DIR__ . "/../QuickTest.php";
+            }
+                if ($allow) {
+                    $allow &= \__buffer_start($req, NULL);
+                }
+            
+                // do route
+                if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\TestBuffer');
+                    $return = \TestBuffer($req);
+            
+                    // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    \__last_for_all($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    \__buffer_end($req, NULL, $return);
+            
+            
+            
+                    return $return;
+                }
+            }
+            // }}} end of /buffer
             break;
         case 2:
             // Routes for /foo/method {{{
@@ -306,6 +389,14 @@ class Route
                     $return = $obj_filt_23cd7755->Bar($req);
             
                     // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    \__last_for_all($req, array (
+            ), $return);
+            
+            
             
                     return $return;
                 }
@@ -347,6 +438,14 @@ class Route
                     $return = $obj_filt_23cd7755->TestingComplexUri($req);
             
                     // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    \__last_for_all($req, array (
+            ), $return);
+            
+            
             
                     return $return;
                 }

@@ -44,6 +44,14 @@ if (__expr__) {
         #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
         $return = __filterFnc__;
         #* end
+        
+        #* $last = $object->getFilters('Last')
+        # foreach ($last as $filter)
+        #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
+        __filterFnc__;
+        #* end
+
+
 
         return $return;
     }

@@ -1,5 +1,24 @@
 <?php
 
+/** @Last */
+function __last_for_all($req)
+{
+    $req->set('last_for_all', true);
+}
+
+/** @preRoute buffer */
+function __buffer_start($req)
+{
+    ob_start();
+    return true;
+}
+
+/** @Last buffer */
+function __buffer_end($req, $args, $return)
+{
+    $req->set('__buffer__', ob_get_clean());
+}
+
 /** @Filter foo */
 function filter_1($Req) {
     $Req->set('filter_1', true);
@@ -16,6 +35,12 @@ function filter_2() {
  */
 function TestingMultiple()
 {
+}
+
+/** @Route("/buffer") @buffer */
+function TestBuffer()
+{
+    echo "Hi there!\n";
 }
 
 /**
@@ -167,4 +192,17 @@ class QuickTest extends \phpunit_framework_testcase
         $num = $route->doRoute($req, array('REQUEST_URI' => '/xxx/barfoo'));
         $this->assertEquals($num, $req->get('return'));
    }
+
+    /**
+     *  @depends testCompile
+     */
+    public function testLast()
+    {
+        $route = new \QuickTest\Route;
+        $req   = new \QuickTest\Request;
+        $req->set('phpunit', $this);
+        $route->doRoute($req, array('REQUEST_URI' => '/buffer'));
+        $this->assertEquals($req->get('__buffer__'), "Hi there!\n");
+        $this->assertTrue($req->get('last_for_all'));
+    }
 }

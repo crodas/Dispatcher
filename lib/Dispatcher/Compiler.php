@@ -145,7 +145,7 @@ class Compiler
         }
 
         $this->route_filters = array();
-        foreach(array('preRoute', 'postRoute') as $type) {
+        foreach(array('preRoute', 'postRoute', 'Last') as $type) {
             foreach ($this->annotations->get($type) as $filterRouter) {
                 foreach ($filterRouter->get($type) as $filter) {
                     $name = !empty($filter['args']) ? strtolower(current($filter['args'])) : null;
