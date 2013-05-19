@@ -180,8 +180,7 @@ class Route
                    require_once __DIR__ . "/../input/route_filters.php";
                 }
                     if ($allow) {
-                        $allow &= \CheckSession($req, array (
-                ));
+                        $allow &= \CheckSession($req, NULL);
                     }
                 
                     // do route

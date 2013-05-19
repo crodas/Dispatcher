@@ -192,20 +192,27 @@ class Compiler
         }
 
 
+        $annotations = array();
         foreach ($routeAnnotation as $annotation) {
             $name = strtolower($annotation['method']);
 
             if (!empty($this->route_filters[$name])) {
+                $annotations[] = $name;
                 foreach ($this->route_filters[$name] as $filter) {
-                    $url->addFilter($filter[0], $filter[1], $routeAnnotation->getOne($name));
+                    $url->addFilter($filter[0], $filter[1], $annotation['args']);
                 }
-                if (!empty($class['class']) && $class['class']->get($name)) {
+            }
+        }
+        if (!empty($class['class'])) {
+            foreach ($annotations as $name) {
+                foreach ($class['class']->get($name) as $annotation) {
                     foreach ($this->route_filters[$name] as $filter) {
-                        $url->addFilter($filter[0], $filter[1], $class['class']->GetOne($name));
+                        $url->addFilter($filter[0], $filter[1], $annotation['args']);
                     }
                 }
             }
         }
+
 
         if ($routeAnnotation->has('Method')) {
             foreach($routeAnnotation->get('Method') as $method) {
