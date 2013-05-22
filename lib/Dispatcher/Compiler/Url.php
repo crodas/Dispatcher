@@ -69,12 +69,12 @@ class Url
         return $weight;
     }
 
-    public function addFilter($type, Annotation $def, $args = array())
+    public function addFilter($type, Annotation $def, $args = array(), $weight = 10)
     {
         if (empty($this->filters[$type])) {
             $this->filters[$type] = array();
         }
-        $this->filters[$type][] = array($def, $args);
+        $this->filters[$type][] = array($def, $args, $weight);
     }
 
     public function getFilters($type)
@@ -82,6 +82,10 @@ class Url
         if (empty($this->filters[$type])) {
             return array();
         }
+        usort($this->filters[$type], function($a, $b) {
+            return $b[2] - $a[2];
+        });
+
         return $this->filters[$type];
     }
 

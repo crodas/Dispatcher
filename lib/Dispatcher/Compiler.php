@@ -145,15 +145,22 @@ class Compiler
         }
 
         $this->route_filters = array();
-        foreach(array('preRoute', 'postRoute', 'Last') as $type) {
+        foreach(array('preRoute', 'postRoute') as $type) {
             foreach ($this->annotations->get($type) as $filterRouter) {
                 foreach ($filterRouter->get($type) as $filter) {
                     $name = !empty($filter['args']) ? strtolower(current($filter['args'])) : null;
+                    $weight = 10;
                     if (empty($name)) {
-                        $this->all_filters[$type][] = $filterRouter;
+                        $this->all_filters[$type][] = array($filterRouter, $weight);
                         continue;
                     }
-                    $this->route_filters[$name][] = array($type, $filterRouter);
+                    foreach ($filterRouter->get('First') as $last) {
+                        $weight -= 10;
+                    }
+                    foreach ($filterRouter->get('Last') as $last) {
+                        $weight += 10;
+                    }
+                    $this->route_filters[$name][] = array($type, $filterRouter, $weight);
                 }
             }
         }
@@ -185,9 +192,10 @@ class Compiler
             $url->setArguments($args['set']);
         }
 
+        $base = 0;
         foreach ($this->all_filters as $type => $filters) {
             foreach ($filters as $filter) {
-                $url->addFilter($type, $filter);
+                $url->addFilter($type, $filter[0], array(), $filter[1]+ ++$base);
             }
         }
 
@@ -197,7 +205,7 @@ class Compiler
 
             if (!empty($this->route_filters[$name])) {
                 foreach ($this->route_filters[$name] as $filter) {
-                    $url->addFilter($filter[0], $filter[1], $annotation['args']);
+                    $url->addFilter($filter[0], $filter[1], $annotation['args'], $filter[2]+ ++$base);
                 }
             }
         }

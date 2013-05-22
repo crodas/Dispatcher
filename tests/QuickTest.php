@@ -1,9 +1,26 @@
 <?php
 
-/** @Last */
-function __last_for_all($req)
+/** @preRoute @Last */
+function __first($req) {
+    $phpunit = $req->get('phpunit');
+    $phpunit->assertTrue($req->Get('__b'));
+    $req->set('__a', 'xxx');
+    return true;
+}
+
+/** @preRoute @First */
+function __last($req) {
+    $phpunit = $req->get('phpunit');
+    $phpunit->assertNull($req->Get('__a'));
+    $req->set('__b', true);
+    return true;
+}
+
+/** @postRoute @Last */
+function __last_for_all($req, $args, $return)
 {
     $req->set('last_for_all', true);
+    return $return;
 }
 
 /** @preRoute buffer */
@@ -13,10 +30,11 @@ function __buffer_start($req)
     return true;
 }
 
-/** @Last buffer */
+/** @postRoute buffer @Last */
 function __buffer_end($req, $args, $return)
 {
     $req->set('__buffer__', ob_get_clean());
+    return $return;
 }
 
 /** @Filter foo */
