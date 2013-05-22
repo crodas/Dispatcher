@@ -83,7 +83,7 @@ class Url
             return array();
         }
         usort($this->filters[$type], function($a, $b) {
-            return $b[2] - $a[2];
+            return $a[2] - $b[2];
         });
 
         return $this->filters[$type];

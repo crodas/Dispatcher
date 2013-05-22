@@ -1,4 +1,19 @@
 <?php
+/** @postRoute @Last */
+function __1last($req, $args, $return) {
+    $phpunit = $req->get('phpunit');
+    $phpunit->assertTrue($req->Get('__1b'));
+    $req->set('__1a', 'xxx');
+    return $return;
+}
+
+/** @postRoute @First */
+function __1first($req, $args, $return) {
+    $phpunit = $req->get('phpunit');
+    $phpunit->assertNull($req->Get('__1a'));
+    $req->set('__1b', true);
+    return $return;
+}
 
 /** @preRoute @Last */
 function __last($req) {

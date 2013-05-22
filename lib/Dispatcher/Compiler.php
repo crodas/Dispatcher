@@ -150,15 +150,15 @@ class Compiler
                 foreach ($filterRouter->get($type) as $filter) {
                     $name = !empty($filter['args']) ? strtolower(current($filter['args'])) : null;
                     $weight = 10;
-                    if (empty($name)) {
-                        $this->all_filters[$type][] = array($filterRouter, $weight);
-                        continue;
-                    }
                     foreach ($filterRouter->get('First') as $last) {
                         $weight -= 10;
                     }
                     foreach ($filterRouter->get('Last') as $last) {
                         $weight += 10;
+                    }
+                    if (empty($name)) {
+                        $this->all_filters[$type][] = array($filterRouter, $weight);
+                        continue;
                     }
                     $this->route_filters[$name][] = array($type, $filterRouter, $weight);
                 }

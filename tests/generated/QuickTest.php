@@ -188,6 +188,18 @@ class Route
                            $file_92cd6d5b = 1;
                            require_once __DIR__ . "/../QuickTest.php";
                         }
+                        $return = \__1first($req, array (
+                ), $return);
+                        if (empty($file_92cd6d5b)) {
+                           $file_92cd6d5b = 1;
+                           require_once __DIR__ . "/../QuickTest.php";
+                        }
+                        $return = \__1last($req, array (
+                ), $return);
+                        if (empty($file_92cd6d5b)) {
+                           $file_92cd6d5b = 1;
+                           require_once __DIR__ . "/../QuickTest.php";
+                        }
                         $return = \__last_for_all($req, array (
                 ), $return);
                 
@@ -238,6 +250,18 @@ class Route
                         $return = \Controller($req);
                 
                         // post postRoute (if any)
+                        if (empty($file_92cd6d5b)) {
+                           $file_92cd6d5b = 1;
+                           require_once __DIR__ . "/../QuickTest.php";
+                        }
+                        $return = \__1first($req, array (
+                ), $return);
+                        if (empty($file_92cd6d5b)) {
+                           $file_92cd6d5b = 1;
+                           require_once __DIR__ . "/../QuickTest.php";
+                        }
+                        $return = \__1last($req, array (
+                ), $return);
                         if (empty($file_92cd6d5b)) {
                            $file_92cd6d5b = 1;
                            require_once __DIR__ . "/../QuickTest.php";
@@ -294,6 +318,18 @@ class Route
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
                     }
+                    $return = \__1first($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1last($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
                     $return = \__last_for_all($req, array (
             ), $return);
             
@@ -341,6 +377,18 @@ class Route
                     $return = \TestingMultiple($req);
             
                     // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1first($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1last($req, array (
+            ), $return);
                     if (empty($file_92cd6d5b)) {
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
@@ -396,6 +444,18 @@ class Route
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
                     }
+                    $return = \__1first($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1last($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
                     $return = \__last_for_all($req, array (
             ), $return);
             
@@ -421,15 +481,15 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__buffer_start($req, NULL);
+                    $allow &= \__first($req, array (
+            ));
                 }
             if (empty($file_92cd6d5b)) {
                $file_92cd6d5b = 1;
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__first($req, array (
-            ));
+                    $allow &= \__buffer_start($req, NULL);
                 }
             if (empty($file_92cd6d5b)) {
                $file_92cd6d5b = 1;
@@ -450,13 +510,25 @@ class Route
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
                     }
-                    $return = \__buffer_end($req, NULL, $return);
+                    $return = \__1first($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1last($req, array (
+            ), $return);
                     if (empty($file_92cd6d5b)) {
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
                     }
                     $return = \__last_for_all($req, array (
             ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__buffer_end($req, NULL, $return);
             
             
             
@@ -501,6 +573,18 @@ class Route
                     $return = $obj_filt_23cd7755->Bar($req);
             
                     // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1first($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1last($req, array (
+            ), $return);
                     if (empty($file_92cd6d5b)) {
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
@@ -566,6 +650,18 @@ class Route
                     $return = $obj_filt_23cd7755->TestingComplexUri($req);
             
                     // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1first($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1last($req, array (
+            ), $return);
                     if (empty($file_92cd6d5b)) {
                        $file_92cd6d5b = 1;
                        require_once __DIR__ . "/../QuickTest.php";
