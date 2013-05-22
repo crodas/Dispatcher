@@ -166,7 +166,7 @@ class Route
                    require_once __DIR__ . "/../QuickTest.php";
                 }
                     if ($allow) {
-                        $allow &= \__last($req, array (
+                        $allow &= \__first($req, array (
                 ));
                     }
                 if (empty($file_92cd6d5b)) {
@@ -174,7 +174,7 @@ class Route
                    require_once __DIR__ . "/../QuickTest.php";
                 }
                     if ($allow) {
-                        $allow &= \__first($req, array (
+                        $allow &= \__last($req, array (
                 ));
                     }
                 
@@ -220,7 +220,7 @@ class Route
                    require_once __DIR__ . "/../QuickTest.php";
                 }
                     if ($allow) {
-                        $allow &= \__last($req, array (
+                        $allow &= \__first($req, array (
                 ));
                     }
                 if (empty($file_92cd6d5b)) {
@@ -228,7 +228,7 @@ class Route
                    require_once __DIR__ . "/../QuickTest.php";
                 }
                     if ($allow) {
-                        $allow &= \__first($req, array (
+                        $allow &= \__last($req, array (
                 ));
                     }
                 
@@ -272,7 +272,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__last($req, array (
+                    $allow &= \__first($req, array (
             ));
                 }
             if (empty($file_92cd6d5b)) {
@@ -280,7 +280,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__first($req, array (
+                    $allow &= \__last($req, array (
             ));
                 }
             
@@ -323,7 +323,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__last($req, array (
+                    $allow &= \__first($req, array (
             ));
                 }
             if (empty($file_92cd6d5b)) {
@@ -331,7 +331,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__first($req, array (
+                    $allow &= \__last($req, array (
             ));
                 }
             
@@ -374,7 +374,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__last($req, array (
+                    $allow &= \__first($req, array (
             ));
                 }
             if (empty($file_92cd6d5b)) {
@@ -382,7 +382,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__first($req, array (
+                    $allow &= \__last($req, array (
             ));
                 }
             
@@ -428,7 +428,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__last($req, array (
+                    $allow &= \__first($req, array (
             ));
                 }
             if (empty($file_92cd6d5b)) {
@@ -436,7 +436,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__first($req, array (
+                    $allow &= \__last($req, array (
             ));
                 }
             
@@ -483,7 +483,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__last($req, array (
+                    $allow &= \__first($req, array (
             ));
                 }
             if (empty($file_92cd6d5b)) {
@@ -491,7 +491,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__first($req, array (
+                    $allow &= \__last($req, array (
             ));
                 }
             
@@ -548,7 +548,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__last($req, array (
+                    $allow &= \__first($req, array (
             ));
                 }
             if (empty($file_92cd6d5b)) {
@@ -556,7 +556,7 @@ class Route
                require_once __DIR__ . "/../QuickTest.php";
             }
                 if ($allow) {
-                    $allow &= \__first($req, array (
+                    $allow &= \__last($req, array (
             ));
                 }
             

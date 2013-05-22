@@ -1,7 +1,7 @@
 <?php
 
 /** @preRoute @Last */
-function __first($req) {
+function __last($req) {
     $phpunit = $req->get('phpunit');
     $phpunit->assertTrue($req->Get('__b'));
     $req->set('__a', 'xxx');
@@ -9,7 +9,7 @@ function __first($req) {
 }
 
 /** @preRoute @First */
-function __last($req) {
+function __first($req) {
     $phpunit = $req->get('phpunit');
     $phpunit->assertNull($req->Get('__a'));
     $req->set('__b', true);
