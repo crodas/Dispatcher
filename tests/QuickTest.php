@@ -1,4 +1,8 @@
 <?php
+/** @NotFound */
+function __not_found($req) {
+}
+
 /** @postRoute @Last */
 function __1last($req, $args, $return) {
     $phpunit = $req->get('phpunit');

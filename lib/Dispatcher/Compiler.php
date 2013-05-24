@@ -166,28 +166,12 @@ class Compiler
         }
     }
 
-    protected function processRoute($routeAnnotation, Array $route)
+    protected function getUrl($routeAnnotation, $route)
     {
-        $args  = empty($route['args']) ? array() : $route['args'];
-        $route = current($args);
-        $class = null;
-
-        if ($routeAnnotation->isMethod()) {
-            $class = $this->annotations->getClassInfo($routeAnnotation['class']);
-            if (!empty($class['class'])) {
-                $baseRoute = $class['class']->getOne('Route');
-                if (!empty($baseRoute)) {
-                    $route = current($baseRoute) . '/' . $route;
-                }
-            }
-        }
-
-        if (empty($route)) {
-            throw new \RuntimeException("@Route must have an argument");
-        }
-
         $url = new Url($routeAnnotation);
-        $url->setRoute($route);
+        if (!empty($route)) {
+            $url->setRoute($route);
+        }
         if (isset($args['set'])) {
             $url->setArguments($args['set']);
         }
@@ -198,7 +182,6 @@ class Compiler
                 $url->addFilter($type, $filter[0], array(), $filter[1]+ ++$base);
             }
         }
-
 
         foreach ($routeAnnotation as $annotation) {
             $name = strtolower($annotation['method']);
@@ -220,6 +203,31 @@ class Compiler
             }
         }
 
+        return $url;
+
+    }
+
+    protected function processRoute($routeAnnotation, Array $route)
+    {
+        $args  = empty($route['args']) ? array() : $route['args'];
+        $route = current($args);
+        $class = null;
+
+        if ($routeAnnotation->isMethod()) {
+            $class = $this->annotations->getClassInfo($routeAnnotation['class']);
+            if (!empty($class['class'])) {
+                $baseRoute = $class['class']->getOne('Route');
+                if (!empty($baseRoute)) {
+                    $route = current($baseRoute) . '/' . $route;
+                }
+            }
+        }
+
+        if (empty($route)) {
+            throw new \RuntimeException("@Route must have an argument");
+        }
+
+        $url = $this->getUrl($routeAnnotation, $route);
 
         if ($routeAnnotation->has('Method')) {
             foreach($routeAnnotation->get('Method') as $method) {
@@ -261,6 +269,11 @@ class Compiler
             foreach ($routeAnnotation->get('Route') as $route) {
                 $this->processRoute($routeAnnotation, $route);
             }
+        }
+
+        $notfound = current($this->annotations->get('NotFound'));
+        if ($notfound) {
+            //var_Dump($this->getUrl($notfound, null));exit;
         }
     }
     
