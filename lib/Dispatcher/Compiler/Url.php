@@ -41,11 +41,11 @@ use Notoj\Annotation;
 
 class Url
 {
-    protected $route;
+    protected $route = '';
     protected $def;
-    protected $parts;
-    protected $args = array();
-    protected $method = 'ALL';
+    protected $parts   = array();
+    protected $args    = array();
+    protected $method  = 'ALL';
     protected $filters = array();
 
     protected $allowedMethods = array('GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'ALL');
@@ -151,6 +151,10 @@ class Url
     public function setRoute($route)
     {
         $this->route = $route;
+        if ($route == '@NotFound') {
+            return;
+        }
+
         $this->parts = array_values(array_filter(explode("/", $route)));
         $this->parts = array_map(function($part, $index){ 
             return new Component($part, $index);

@@ -51,6 +51,7 @@ class Compiler
     protected $filters = array();
     protected $all_filters   = array();
     protected $route_filters = array();
+    protected $not_found = array();
 
     public function __construct(Generator $conf, Annotations $annotations)
     {
@@ -271,9 +272,8 @@ class Compiler
             }
         }
 
-        $notfound = current($this->annotations->get('NotFound'));
-        if ($notfound) {
-            //var_Dump($this->getUrl($notfound, null));exit;
+        foreach($this->annotations->get('NotFound') as $route) {
+            $this->not_found[] = $this->getUrl($route, '@NotFound');
         }
     }
     
@@ -318,6 +318,10 @@ class Compiler
         return implode("/", $realPath) . '/' . basename($file1); 
     }
 
+    public function getNotFoundHandler()
+    {
+        return (Array)$this->not_found;
+    }
 
     protected function compile()
     {
@@ -334,7 +338,7 @@ class Compiler
         $config = $this->config;
         $output = $this->config->getOutput();
         $self   = $this;
-        $args   = compact('groups', 'config');
+        $args   = compact('self', 'groups', 'config');
         $vm = \Artifex::load(__DIR__ . '/Template/Main.tpl.php', $args);
         $vm->doInclude('Switch.tpl.php');
         $vm->doInclude('Url.tpl.php');

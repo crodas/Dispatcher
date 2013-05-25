@@ -153,6 +153,8 @@ class Route
 
         #* render($groups)
 
+        #* render($self->getNotFoundHandler())
+
         throw new NotFoundException;
     }
 }

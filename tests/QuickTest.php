@@ -1,6 +1,7 @@
 <?php
 /** @NotFound */
 function __not_found($req) {
+    $req->set('__not_found__', true);
 }
 
 /** @postRoute @Last */
@@ -206,7 +207,6 @@ class QuickTest extends \phpunit_framework_testcase
 
     /**
      *  @depends testCompile
-     *  @expectedException \QuickTest\NotFoundException
      */
     public function test404()
     {
@@ -214,12 +214,11 @@ class QuickTest extends \phpunit_framework_testcase
         $req   = new \QuickTest\Request;
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/function/something'));
-        $this->assertEquals($num, $req->get('return'));
+        $this->assertTrue($req->get('__not_found__'));
     }
 
     /**
      *  @depends testCompile
-     *  @expectedException \QuickTest\NotFoundException
      */
     public function test404WithFilter()
     {
@@ -227,7 +226,7 @@ class QuickTest extends \phpunit_framework_testcase
         $req   = new \QuickTest\Request;
         $req->set('phpunit', $this);
         $num = $route->doRoute($req, array('REQUEST_URI' => '/xxx/barfoo'));
-        $this->assertEquals($num, $req->get('return'));
+        $this->assertTrue($req->get('__not_found__'));
    }
 
     /**
