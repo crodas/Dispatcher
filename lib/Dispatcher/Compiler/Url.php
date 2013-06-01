@@ -47,12 +47,23 @@ class Url
     protected $args    = array();
     protected $method  = 'ALL';
     protected $filters = array();
+    protected $name;
 
     protected $allowedMethods = array('GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'ALL');
 
     public function __construct(Annotation $def)
     {
         $this->def = $def;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
     public function getWeight()
@@ -164,5 +175,48 @@ class Url
     public function getParts()
     {
         return $this->parts;
+    }
+
+    public function getRouteFilter()
+    {
+        $expr[] = '$count == ' . count($this->getVariables());
+        $pos    = 0;
+        foreach ($this->parts as $part) {
+            switch($part->getType()){
+            case Component::MIXED:
+            case Component::VARIABLE:
+                foreach ($part->getParts() as $part) {
+                    if ($part[0] == Component::VARIABLE) {
+                        $expr[] = '(!empty($args["' . $part[2] .'"]) || !empty($args[' . ($pos++) .']))';
+                    }
+                }
+            }
+        }
+        return implode(' && ', $expr);
+    }
+
+    public function getRouteExpr()
+    {
+        $expr = "";
+        $pos  = 0;
+        foreach ($this->parts as $part) {
+            switch($part->getType()){
+            case Component::CONSTANT:
+                $expr .= "/" . addslashes($part);
+                break;
+            case Component::MIXED:
+            case Component::VARIABLE:
+                $expr .= "/";
+                foreach ($part->getParts() as $part) {
+                    if ($part[0] == Component::VARIABLE) {
+                        $expr .= '" . (!empty($args["' . $part[2] .'"]) ? $args["'. $part[2] . '"] : $args[' . ($pos++) .']) . "';
+                    } else {
+                        $expr .= addslashes($part[1]);
+                    }
+                }
+            }
+        }
+
+        return '"'. $expr. '"';
     }
 }

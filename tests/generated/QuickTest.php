@@ -12,6 +12,10 @@ class NotFoundException extends \Exception
 {
 }
 
+class RouteNotFoundException extends \Exception 
+{
+}
+
 interface FilterCache
 {
     public function has($key);
@@ -465,6 +469,69 @@ class Route
                 }
             }
             // }}} end of /foo/bar/{foo}
+            
+            if (empty($file_92cd6d5b)) {
+               $file_92cd6d5b = 1;
+               require_once __DIR__ . "/../QuickTest.php";
+            }
+            // Routes for /foo/bar/xxx-{bar:xx} {{{
+            if ($parts[0] === 'foo' && $parts[1] === 'bar' && preg_match('/xxx\\-(.+)/', $parts[2], $matches_2) > 0 && \filter_2($req, 'xx', $matches_2[1])) {
+                $req->setIfEmpty('xx', $matches_2[1]);
+                if (empty($file_92cd6d5b)) {
+                   $file_92cd6d5b = 1;
+                   require_once __DIR__ . "/../QuickTest.php";
+                }
+            
+                //run preRoute filters (if any)
+                $allow = true;
+            if (empty($file_92cd6d5b)) {
+               $file_92cd6d5b = 1;
+               require_once __DIR__ . "/../QuickTest.php";
+            }
+                if ($allow) {
+                    $allow &= \__first($req, array (
+            ));
+                }
+            if (empty($file_92cd6d5b)) {
+               $file_92cd6d5b = 1;
+               require_once __DIR__ . "/../QuickTest.php";
+            }
+                if ($allow) {
+                    $allow &= \__last($req, array (
+            ));
+                }
+            
+                // do route
+                if ($allow) {
+                    $req->setIfEmpty('__handler__', '\\TestingMultiple');
+                    $return = \TestingMultiple($req);
+            
+                    // post postRoute (if any)
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1first($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__1last($req, array (
+            ), $return);
+                    if (empty($file_92cd6d5b)) {
+                       $file_92cd6d5b = 1;
+                       require_once __DIR__ . "/../QuickTest.php";
+                    }
+                    $return = \__last_for_all($req, array (
+            ), $return);
+            
+            
+            
+                    return $return;
+                }
+            }
+            // }}} end of /foo/bar/xxx-{bar:xx}
             break;
         case 1:
             // Routes for /buffer {{{
@@ -789,5 +856,39 @@ class Route
         // }}} end of @NotFound
 
         throw new NotFoundException;
+    }
+
+    public static function getRoute($name, $args = array())
+    {
+        if (!is_array($args)) {
+            $args = func_get_args();
+            array_shift($args);
+        }
+
+        $count = count($args);
+        switch ($name) {
+        case 'foobar_x':
+            if ($count == 1 && (!empty($args["bar"]) || !empty($args[0]))) {
+                return "/foo/bar/" . (!empty($args["bar"]) ? $args["bar"] : $args[0]) . "";
+            }
+
+            throw new RouteNotFoundException("Invalid arguments for route foobar_x, possible routes:\n/foo/bar/{bar} (1 arguments) 
+");
+
+        case 'foobar_xx':
+            if ($count == 1 && (!empty($args["xx"]) || !empty($args[0]))) {
+                return "/foo/bar/xxx-" . (!empty($args["xx"]) ? $args["xx"] : $args[0]) . "";
+            }
+            if ($count == 0) {
+                return "/foo/bar/xxx";
+            }
+
+            throw new RouteNotFoundException("Invalid arguments for route foobar_xx, possible routes:\n/foo/bar/xxx-{bar:xx} (1 arguments) 
+/foo/bar/xxx (0 arguments) 
+");
+
+        }
+
+        throw new RouteNotFoundException("There is not route name $name");
     }
 }
