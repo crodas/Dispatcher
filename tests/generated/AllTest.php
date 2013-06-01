@@ -12,6 +12,10 @@ class NotFoundException extends \Exception
 {
 }
 
+class RouteNotFoundException extends \Exception 
+{
+}
+
 interface FilterCache
 {
     public function has($key);
@@ -842,5 +846,27 @@ class Route
         
 
         throw new NotFoundException;
+    }
+
+    public static function getRoute($name, $args = array())
+    {
+        if (!is_array($args)) {
+            $args = func_get_args();
+            array_shift($args);
+        }
+
+        $count = count($args);
+        switch ($name) {
+        case 'route_with_id':
+            if ($count == 1 && (!empty($args["__id__"]) || !empty($args[0]))) {
+                return "/" . (!empty($args["__id__"]) ? $args["__id__"] : $args[0]) . "";
+            }
+
+            throw new RouteNotFoundException("Invalid arguments for route route_with_id, possible routes:\n/{__id__} (1 arguments) 
+");
+
+        }
+
+        throw new RouteNotFoundException("There is not route name $name");
     }
 }

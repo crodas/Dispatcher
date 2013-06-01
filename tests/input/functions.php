@@ -5,7 +5,7 @@ function __filter__($req, $name, $value) {
     return $value == "id";
 }
 
-/** @Route("/{__id__}") */
+/** @Route("/{__id__}", route_with_id) */
 function empty_level_1($req) {
     return __FUNCTION__;
 }

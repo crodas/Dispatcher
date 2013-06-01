@@ -68,8 +68,9 @@ function filter_2() {
 
 /**
  *  @Route("/foo/bar/{foo}")
- *  @Route("/foo/bar/{bar}")
- *  @Route("/foo/bar/xxx")
+ *  @Route("/foo/bar/{bar}", "foobar_x")
+ *  @Route("/foo/bar/xxx-{bar:xx}", "foobar_xx")
+ *  @Route("/foo/bar/xxx", foobar_xx)
  */
 function TestingMultiple()
 {
@@ -240,5 +241,33 @@ class QuickTest extends \phpunit_framework_testcase
         $route->doRoute($req, array('REQUEST_URI' => '/buffer'));
         $this->assertEquals($req->get('__buffer__'), "Hi there!\n");
         $this->assertTrue($req->get('last_for_all'));
+    }
+
+    /**
+     *  @depends testCompile
+     */
+    public function testGenerator()
+    {
+        $this->assertequals(\quicktest\route::getroute("foobar_x", 'foobar'), '/foo/bar/foobar');
+        $this->assertEquals(\QuickTest\Route::getRoute("foobar_xx", 'foobar'), '/foo/bar/xxx-foobar');
+        $this->assertEquals(\QuickTest\Route::getRoute("foobar_xx"), '/foo/bar/xxx');
+    }
+
+    /**
+     *  @depends testCompile
+     *  @expectedException QuickTest\RouteNotFoundException
+     */
+    public function testGeneratorNotFound()
+    {
+        \QuickTest\Route::getRoute("foobar_xdsdasdada");
+    }
+
+    /**
+     *  @depends testCompile
+     *  @expectedException QuickTest\RouteNotFoundException
+     */
+    public function testGeneratorInvalidArgs()
+    {
+        \quicktest\route::getroute("foobar_x", 'foobar', 'xxx');
     }
 }
