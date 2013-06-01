@@ -119,10 +119,11 @@ class Component
                 } else if ($i != 0) {
                     throw new RuntimeException("If you use multiple variable they should be separated by a constant");
                 }
-                $pos = $i + 1;
-                $i   = strpos($str, '}', $i);
-                $tmp = substr($str, $pos, $i - $pos);
-                $parts[] = array(self::VARIABLE, $tmp);
+                $pos  = $i + 1;
+                $i    = strpos($str, '}', $i);
+                $tmp  = substr($str, $pos, $i - $pos);
+                $name = explode(":", $tmp, 2);
+                $parts[] = array(self::VARIABLE, $tmp, end($name));
                 break;
             default: 
                 $buffer .= $str[$i];

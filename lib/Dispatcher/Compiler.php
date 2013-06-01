@@ -167,14 +167,18 @@ class Compiler
         }
     }
 
-    protected function getUrl($routeAnnotation, $route)
+    protected function getUrl($routeAnnotation, $route, $args = array())
     {
         $url = new Url($routeAnnotation);
         if (!empty($route)) {
             $url->setRoute($route);
         }
+
         if (isset($args['set'])) {
             $url->setArguments($args['set']);
+        }
+        if (!empty($args[1]) || !empty($args['name'])) {
+            $url->setName(empty($args[1]) ? $args['name'] : $args[1]);
         }
 
         $base = 0;
@@ -228,7 +232,7 @@ class Compiler
             throw new \RuntimeException("@Route must have an argument");
         }
 
-        $url = $this->getUrl($routeAnnotation, $route);
+        $url = $this->getUrl($routeAnnotation, $route, $args);
 
         if ($routeAnnotation->has('Method')) {
             foreach($routeAnnotation->get('Method') as $method) {
@@ -316,6 +320,21 @@ class Compiler
         }
 
         return implode("/", $realPath) . '/' . basename($file1); 
+    }
+
+    public function getNamedUrls()
+    {
+        $urls = array();
+        foreach ($this->urls as $url) {
+            $name = $url->getName();
+            if (empty($name)) continue;
+            if (empty($urls[$name])) {
+                $urls[$name] = array('routes' => array(), 'exception' => '');
+            }
+            $urls[$name]['routes'][]   = $url;
+            $urls[$name]['exception'] .= $url->getRouteDefinition() . " (" . count($url->getVariables()) . " arguments) \n";
+        }
+        return $urls;
     }
 
     public function getNotFoundHandler()
