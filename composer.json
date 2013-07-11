@@ -6,7 +6,8 @@
         "crodas/notoj": "*",
         "crodas/artifex": "*",
         "symfony/console": "*",
-        "crodas/watch-files": "*"
+        "crodas/watch-files": "*",
+        "illuminate/view": "4.1.x"
     },
     "authors": [
         {
