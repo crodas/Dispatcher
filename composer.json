@@ -9,6 +9,8 @@
         "crodas/watch-files": "*",
         "illuminate/view": "4.1.x"
     },
+    "license": "BSD-4-Clause",
+    "version": "v0.1.1",
     "authors": [
         {
             "name": "César D. Rodas",
