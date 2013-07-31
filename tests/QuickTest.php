@@ -145,17 +145,17 @@ class QuickTest extends \phpunit_framework_testcase
 {
     public function testCompile()
     {
-        $gen  = new Dispatcher\Generator;
         $file = __DIR__ . '/generated/' . __CLASS__ . '.php';
-        $this->assertFalse(file_Exists($file));
-        $gen->addFile(__FILE__); 
-        $gen->setNamespace(__CLASS__);
-        $gen->setOutput($file);
-        $gen->generate();
 
+        $router = new Dispatcher\Router($file);
+        $router
+            ->addFile(__FILE__)
+            ->setNamespace(__CLASS__);
+
+        $this->assertFalse(file_Exists($file));
+        $router->load();
         $this->assertTrue(file_Exists($file));
 
-        require ($file);
     }
 
     /**
