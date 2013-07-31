@@ -6,11 +6,10 @@
         "crodas/notoj": "*",
         "crodas/artifex": "*",
         "symfony/console": "*",
-        "crodas/watch-files": "*",
-        "illuminate/view": "4.1.x"
+        "crodas/watch-files": "*"
     },
     "license": "BSD-4-Clause",
-    "version": "v0.1.1",
+    "version": "v0.1.2",
     "authors": [
         {
             "name": "César D. Rodas",
