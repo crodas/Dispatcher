@@ -114,6 +114,9 @@ class Generator
 
     public function generate()
     {
+        if (empty($this->output)) {
+            throw new \RuntimeException("You need to set an output file");
+        }
         $cache = new Watch($this->output . '.cache');
         $dirs  = $this->dirs;
         foreach ($this->files as $file) {
