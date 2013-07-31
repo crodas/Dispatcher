@@ -8,40 +8,27 @@ The generated Router class searchs for the appropiate `controller` for the curre
 How to use it
 -------------
 
-This is how to use the compiler:
-
 ```php
 // compiler
-$dispatcher = new \Dispatcher\Generator;
-$dispatcher
-  ->addDirectory(__DIR__ . "/../projects") // where our controllers are located
-  ->setNamespace("Project\\Router") // We want the bootstrap file in its own namespace
-  ->setOutput(__DIR__ . "/../libs/bootstrap.php") // Where we want to save it
-  ->generate();  // do your magic!
+$router = new \Dispatcher\Router("/tmp/router.php");
+$router->
+  // where our controllers are located
+  ->addDirectory(__DIR__ . "/../projects") 
+  // Do we want to give it a custom namespace?
+  ->setNamespace("Project\\Router"); 
+
+// Do the router
+$router->doRoute();
 ```
 
-And this is how to use the generated code:
+By default `Dispatcher` is production friendly, that means the router code is generated *only* when the file is missing.
+
+It is very easy however to enable development mode. By doing this, the compiler would rebuild the router on any change.
 
 ```php
-// Require
-require __DIR__ . "/../libs/bootstrap.php"
-$router = new \Project\Router\Route;
-try {                                                 
-    $router->fromRequest(); // route current Request (based on $_SERVER)          
-} catch (\Project\Router\NotFoundException $e) {                    
-    die('page not found'); // page not found
-} catch (Exception $e) {
-    die('unknown error'); //another exception thrown by our app
-} 
+$router->development();
+
 ```
-
-It is possible to use compiler to generate code inside our application, however it will load the whole compiler in every request. If you need this behaviour we recommend to turn on Notoj's cache:
-
-```php
-\Notoj\Notoj::enableCache("/tmp/out-app-annotations-cache.php");
-```
-
-By doing that Notoj will tell the engine when it is neccesary to compiler (when some file has change). Even though it is pretty efficient we recommend for production to generate at the bootstrap file once (for instance a deploying). Soon we will provide an phar executable to make this easy.
 
 The annotations
 ---------------
