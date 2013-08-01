@@ -42,6 +42,13 @@ class Request
         return $this->changes;
     }
 
+    public function notFound()
+    {
+        
+
+        throw new NotFoundException;
+    }
+
     public function setIfEmpty($name, $value)
     {
         if (empty($this->var[$name])) {
