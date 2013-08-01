@@ -42,6 +42,67 @@ class Request
         return $this->changes;
     }
 
+    public function notFound()
+    {
+        // Routes for @NotFound {{{
+            if (empty($file_92cd6d5b)) {
+               $file_92cd6d5b = 1;
+               require_once __DIR__ . "/../QuickTest.php";
+            }
+        
+            //run preRoute filters (if any)
+            $allow = true;
+        if (empty($file_92cd6d5b)) {
+           $file_92cd6d5b = 1;
+           require_once __DIR__ . "/../QuickTest.php";
+        }
+            if ($allow) {
+                $allow &= \__first($req, array (
+        ));
+            }
+        if (empty($file_92cd6d5b)) {
+           $file_92cd6d5b = 1;
+           require_once __DIR__ . "/../QuickTest.php";
+        }
+            if ($allow) {
+                $allow &= \__last($req, array (
+        ));
+            }
+        
+            // do route
+            if ($allow) {
+                $req->setIfEmpty('__handler__', '\\__not_found');
+                $return = \__not_found($req);
+        
+                // post postRoute (if any)
+                if (empty($file_92cd6d5b)) {
+                   $file_92cd6d5b = 1;
+                   require_once __DIR__ . "/../QuickTest.php";
+                }
+                $return = \__1first($req, array (
+        ), $return);
+                if (empty($file_92cd6d5b)) {
+                   $file_92cd6d5b = 1;
+                   require_once __DIR__ . "/../QuickTest.php";
+                }
+                $return = \__1last($req, array (
+        ), $return);
+                if (empty($file_92cd6d5b)) {
+                   $file_92cd6d5b = 1;
+                   require_once __DIR__ . "/../QuickTest.php";
+                }
+                $return = \__last_for_all($req, array (
+        ), $return);
+        
+        
+        
+                return $return;
+            }
+        // }}} end of @NotFound
+
+        throw new NotFoundException;
+    }
+
     public function setIfEmpty($name, $value)
     {
         if (empty($this->var[$name])) {

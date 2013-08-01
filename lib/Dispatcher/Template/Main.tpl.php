@@ -45,6 +45,14 @@ class Request
         return $this->changes;
     }
 
+    public function notFound()
+    {
+        $req = $this;
+        #* render($self->getNotFoundHandler())
+
+        throw new NotFoundException;
+    }
+
     public function setIfEmpty($name, $value)
     {
         if (empty($this->var[$name])) {
