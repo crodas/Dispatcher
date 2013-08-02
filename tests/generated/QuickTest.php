@@ -106,7 +106,7 @@ class Request
 
     public function notFound()
     {
-        if ($this->handleNotFound()) {
+        if ($this->handleNotFound() !== false) {
             /** 
              * Was it handled? Yes!
              */
