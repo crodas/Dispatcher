@@ -42,8 +42,9 @@ class Request
         return $this->changes;
     }
 
-    public function notFound()
+    protected function handleNotFound()
     {
+        $req = $this;
         // Routes for @NotFound {{{
             if (empty($file_92cd6d5b)) {
                $file_92cd6d5b = 1;
@@ -99,6 +100,18 @@ class Request
                 return $return;
             }
         // }}} end of @NotFound
+
+        return false;
+    }
+
+    public function notFound()
+    {
+        if ($this->handleNotFound()) {
+            /** 
+             * Was it handled? Yes!
+             */
+            exit;
+        }
 
         throw new NotFoundException;
     }
