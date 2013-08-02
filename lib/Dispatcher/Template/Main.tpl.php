@@ -45,10 +45,22 @@ class Request
         return $this->changes;
     }
 
-    public function notFound()
+    protected function handleNotFound()
     {
         $req = $this;
         #* render($self->getNotFoundHandler())
+
+        return false;
+    }
+
+    public function notFound()
+    {
+        if ($this->handleNotFound() !== false) {
+            /** 
+             * Was it handled? Yes!
+             */
+            exit;
+        }
 
         throw new NotFoundException;
     }

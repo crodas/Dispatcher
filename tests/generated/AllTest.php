@@ -42,9 +42,22 @@ class Request
         return $this->changes;
     }
 
+    protected function handleNotFound()
+    {
+        $req = $this;
+        
+
+        return false;
+    }
+
     public function notFound()
     {
-        
+        if ($this->handleNotFound()) {
+            /** 
+             * Was it handled? Yes!
+             */
+            exit;
+        }
 
         throw new NotFoundException;
     }
