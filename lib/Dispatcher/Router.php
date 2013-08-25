@@ -86,6 +86,6 @@ class Router extends Generator
             $server = $_SERVER;
         }
 
-        return $this->_router->doRoute($req, $server);
+        return $this->_router->doRoute($req ?: $this->newRequest(), $server);
     }
 }
