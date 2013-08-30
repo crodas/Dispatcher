@@ -6,7 +6,8 @@
         "crodas/notoj": "*",
         "crodas/artifex": "*",
         "symfony/console": "*",
-        "crodas/watch-files": "*"
+        "crodas/watch-files": "*",
+        "crodas/path": "*"
     },
     "license": "BSD-4-Clause",
     "version": "v0.1.4",

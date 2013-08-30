@@ -41,7 +41,8 @@ use Notoj\Annotations,
     Dispatcher\Compiler\Component,
     Dispatcher\Compiler\Url,
     Dispatcher\Compiler\UrlGroup_Switch,
-    Dispatcher\Compiler\UrlGroup_If;
+    Dispatcher\Compiler\UrlGroup_If,
+    crodas\Path;
 
 class Compiler
 {
@@ -296,44 +297,6 @@ class Compiler
         return compact('filter', 'name');
     }
 
-    public function getRelativePath($file1, $file2)
-    {
-        $slash = DIRECTORY_SEPARATOR;
-
-        $dir1 = trim(realpath(dirname($file1)), $slash);
-        $dir2 = trim(realpath(dirname($file2)), $slash);
-        $to   = explode($slash, $dir1);
-        $from = explode($slash, $dir2);
-
-        if ($slash == '\\') {
-            // F*cking windows ;-)
-            if (strncasecmp($dir1, $dir2, 2) != 0) {
-                // There is no relative path
-                return $dir1;
-            }
-            $dir1 = substr($dir1, 2);
-            $dir2 = substr($dir2, 2);
-        }
-
-        $realPath = $to;
-
-        foreach ($from as $depth => $dir) {
-            if(isset($to[$depth]) && $dir === $to[$depth]) {
-                array_shift($realPath);
-            } else {
-                $remaining = count($from) - $depth;
-                if($remaining) {
-                    // add traversals up to first matching dir
-                    $padLength = (count($realPath) + $remaining) * -1;
-                    $realPath  = array_pad($realPath, $padLength, '..');
-                    break;
-                }
-            }
-        }
-
-        return implode("/", $realPath) . '/' . basename($file1); 
-    }
-
     public function getNamedUrls()
     {
         $urls = array();
@@ -420,7 +383,7 @@ class Compiler
             $fileHash = '$file_' . substr(sha1($annotation['file']), 0, 8);
             $filePath = $annotation['file'];
             if (!empty($output)) {
-                $filePath = $self->getRelativePath($annotation['file'], $output);
+                $filePath = Path::getRelative($annotation['file'], $output);
             }
 
             // prepare loading of the method/function
