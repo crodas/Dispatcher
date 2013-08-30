@@ -156,6 +156,7 @@ class QuickTest extends \phpunit_framework_testcase
         $router->load();
         $this->assertTrue(file_Exists($file));
 
+        $this->assertTrue($router->newRequest() instanceof QuickTest\Request);
     }
 
     /**

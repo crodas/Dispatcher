@@ -46,12 +46,19 @@ class Router extends Generator
     public function __construct($output)
     {
         $this->setOutput($output);
+        $this->setNamespace(__CLASS__ . "\\Generated"); 
     }
 
     public function development()
     {
         $this->development = true;
         return $this;
+    }
+
+    public function newRequest()
+    {
+        $class = $this->getNamespace() . "\\Request";;
+        return new $class;
     }
     
     public function load()
@@ -79,6 +86,6 @@ class Router extends Generator
             $server = $_SERVER;
         }
 
-        return $this->_router->doRoute($req, $server);
+        return $this->_router->doRoute($req ?: $this->newRequest(), $server);
     }
 }
