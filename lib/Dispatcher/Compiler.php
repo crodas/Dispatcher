@@ -298,10 +298,12 @@ class Compiler
 
     public function getRelativePath($file1, $file2)
     {
-        $dir1 = trim(realpath(dirname($file1)),'/');
-        $dir2 = trim(realpath(dirname($file2)),'/');
-        $to   = explode('/', $dir1);
-        $from = explode('/', $dir2);
+        $slash = DIRECTORY_SEPARATOR;
+
+        $dir1 = trim(realpath(dirname($file1)), $slash);
+        $dir2 = trim(realpath(dirname($file2)), $slash);
+        $to   = explode($slash, $dir1);
+        $from = explode($slash, $dir2);
 
         if ($slash == '\\') {
             // F*cking windows ;-)
