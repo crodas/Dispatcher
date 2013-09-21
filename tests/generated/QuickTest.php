@@ -549,7 +549,7 @@ class Route
                require_once __DIR__ . "//../QuickTest.php";
             }
             // Routes for /foo/bar/xxx-{bar:xx} {{{
-            if ($parts[0] === 'foo' && $parts[1] === 'bar' && preg_match('/xxx\\-(.+)/', $parts[2], $matches_2) > 0 && \filter_2($req, 'xx', $matches_2[1])) {
+            if ($parts[0] === 'foo' && $parts[1] === 'bar' && preg_match('/^xxx\\-(.+)/', $parts[2], $matches_2) > 0 && \filter_2($req, 'xx', $matches_2[1])) {
                 $req->setIfEmpty('xx', $matches_2[1]);
                 if (empty($file_92cd6d5b)) {
                    $file_92cd6d5b = 1;
@@ -755,7 +755,7 @@ class Route
                 $obj_filt_23cd7755 = new \Foo;
             }
             // Routes for /foo/{foobar}.{ext:extension} {{{
-            if ($parts[0] === 'foo' && preg_match('/(.+)\\.(.+)/', $parts[1], $matches_1) > 0 && $obj_filt_23cd7755->simple_filter($req, 'foobar', $matches_1[1]) && $obj_filt_23cd7755->ext_filter($req, 'extension', $matches_1[2])) {
+            if ($parts[0] === 'foo' && preg_match('/^(.+)\\.(.+)/', $parts[1], $matches_1) > 0 && $obj_filt_23cd7755->simple_filter($req, 'foobar', $matches_1[1]) && $obj_filt_23cd7755->ext_filter($req, 'extension', $matches_1[2])) {
                 $req->setIfEmpty('foobar', $matches_1[1]);
                 $req->setIfEmpty('extension', $matches_1[2]);
                 if (empty($file_92cd6d5b)) {

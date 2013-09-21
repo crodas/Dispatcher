@@ -725,7 +725,7 @@ class Route
             // }}} end of /deadly-simple
             
             // Routes for /zzzsfasd_prefix_{id} {{{
-            if (preg_match('/zzzsfasd_prefix_(.+)/', $parts[0], $matches_0) > 0) {
+            if (preg_match('/^zzzsfasd_prefix_(.+)/', $parts[0], $matches_0) > 0) {
                 $req->setIfEmpty('id', $matches_0[1]);
                 if (empty($file_2053a8ae)) {
                    $file_2053a8ae = 1;
