@@ -85,7 +85,7 @@ class Component
                     }
                 }
             }
-            $regex = var_export("/" . implode("", $regex) . "/", true);
+            $regex = var_export("/^" . implode("", $regex) . "/", true);
             $expr  = "preg_match($regex, \$parts[$this->index], \$matches_$this->index) > 0";
             if (count($filters)) {
                 $expr .= ' && ' .implode(' && ', $filters);
