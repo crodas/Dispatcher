@@ -13,7 +13,7 @@ namespace Dispatcher\Service;
  */
 function dispatcher_service($config)
 {
-    $router = new \Dispatcher\Router( $config['temp_dir'] . '/dispatcher:' . $config['name']  . '.php');
+    $router = new \Dispatcher\Router( $config['temp_dir'] . '/dispatcher__' . $config['name']  . '.php');
     foreach ($config['dir'] as $dir) {
         $router->addDirectory($dir);
     }
