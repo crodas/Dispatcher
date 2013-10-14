@@ -193,7 +193,9 @@ class Compiler
 
         if ($routeAnnotation->isMethod()) {
             $class = $this->annotations->getClassInfo($routeAnnotation['class']);
-            $filters = array_merge($filters, (array)$class['class']);
+            if (!empty($class['class'])) {
+                $filters = array_merge((array)$class['class'], $filters);
+            }
         }
 
         foreach ($filters as $annotation) {
