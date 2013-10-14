@@ -189,7 +189,14 @@ class Compiler
             }
         }
 
-        foreach ($routeAnnotation as $annotation) {
+        $filters = (array)$routeAnnotation;
+
+        if ($routeAnnotation->isMethod()) {
+            $class = $this->annotations->getClassInfo($routeAnnotation['class']);
+            $filters = array_merge($filters, (array)$class['class']);
+        }
+
+        foreach ($filters as $annotation) {
             $name = strtolower($annotation['method']);
 
             if (!empty($this->route_filters[$name])) {
@@ -198,19 +205,8 @@ class Compiler
                 }
             }
         }
-        if (!empty($class['class'])) {
-            foreach ($class['class'] as $annotation) {
-                $name = strtolower($annotation['method']);
-                if (!empty($this->route_filters[$name])) {
-                    foreach ($this->route_filters[$name] as $filter) {
-                        $url->addFilter($filter[0], $filter[1], $annotation['args']);
-                    }
-                }
-            }
-        }
 
         return $url;
-
     }
 
     protected function processRoute($routeAnnotation, Array $route)
