@@ -7,10 +7,11 @@
         "crodas/artifex": "*",
         "symfony/console": "*",
         "crodas/watch-files": "*",
-        "crodas/path": "*"
+        "crodas/path": "*",
+        "crodas/simple-view-engine": "~0.1"
     },
     "license": "BSD-4-Clause",
-    "version": "v0.1.8",
+    "version": "v0.1.9",
     "authors": [
         {
             "name": "César D. Rodas",

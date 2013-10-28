@@ -8,11 +8,11 @@
  */
 namespace QuickTest;
 
-class NotFoundException extends \Exception 
+class NotFoundException extends \Exception
 {
 }
 
-class RouteNotFoundException extends \Exception 
+class RouteNotFoundException extends \Exception
 {
 }
 
@@ -46,59 +46,59 @@ class Request
     {
         $req = $this;
         // Routes for @NotFound {{{
+        if (empty($file_92cd6d5b)) {
+            $file_92cd6d5b = 1;
+            require_once __DIR__ . "//../QuickTest.php";
+        }
+        
+        //run preRoute filters (if any)
+        $allow = true;
+        if (empty($file_92cd6d5b)) {
+            $file_92cd6d5b = 1;
+            require_once __DIR__ . "//../QuickTest.php";
+        }
+        if ($allow) {
+            $allow &= \__first($req, array (
+                ));
+        }
+        if (empty($file_92cd6d5b)) {
+            $file_92cd6d5b = 1;
+            require_once __DIR__ . "//../QuickTest.php";
+        }
+        if ($allow) {
+            $allow &= \__last($req, array (
+                ));
+        }
+        
+        // do route
+        if ($allow) {
+            $req->setIfEmpty('__handler__', '\\__not_found');
+            $return = \__not_found($req);
+        
+            // post postRoute (if any)
             if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
+                $file_92cd6d5b = 1;
+                require_once __DIR__ . "//../QuickTest.php";
             }
+            $return = \__1first($req, array (
+                ), $return);
+            if (empty($file_92cd6d5b)) {
+                $file_92cd6d5b = 1;
+                require_once __DIR__ . "//../QuickTest.php";
+            }
+            $return = \__1last($req, array (
+                ), $return);
+            if (empty($file_92cd6d5b)) {
+                $file_92cd6d5b = 1;
+                require_once __DIR__ . "//../QuickTest.php";
+            }
+            $return = \__last_for_all($req, array (
+                ), $return);
         
-            //run preRoute filters (if any)
-            $allow = true;
-        if (empty($file_92cd6d5b)) {
-           $file_92cd6d5b = 1;
-           require_once __DIR__ . "//../QuickTest.php";
+        
+        
+            return $return;
         }
-            if ($allow) {
-                $allow &= \__first($req, array (
-        ));
-            }
-        if (empty($file_92cd6d5b)) {
-           $file_92cd6d5b = 1;
-           require_once __DIR__ . "//../QuickTest.php";
-        }
-            if ($allow) {
-                $allow &= \__last($req, array (
-        ));
-            }
-        
-            // do route
-            if ($allow) {
-                $req->setIfEmpty('__handler__', '\\__not_found');
-                $return = \__not_found($req);
-        
-                // post postRoute (if any)
-                if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
-                }
-                $return = \__1first($req, array (
-        ), $return);
-                if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
-                }
-                $return = \__1last($req, array (
-        ), $return);
-                if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
-                }
-                $return = \__last_for_all($req, array (
-        ), $return);
-        
-        
-        
-                return $return;
-            }
         // }}} end of @NotFound
 
         return false;
@@ -200,7 +200,7 @@ class Route
             $set[$key] = $req->get($key);
         }
 
-        $this->cache->set($objid, serialize(compact('return', 'set')), 3600); 
+        $this->cache->set($objid, serialize(compact('return', 'set')), 3600);
 
         
         return $return;
@@ -233,27 +233,27 @@ class Route
                 // Routes for /foo/function {{{
                 if ($parts[0] === 'foo' && $parts[1] === 'function') {
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
-                }
+                    if (empty($file_92cd6d5b)) {
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
+                    }
                     if ($allow) {
                         $allow &= \__first($req, array (
-                ));
+                            ));
                     }
-                if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
-                }
+                    if (empty($file_92cd6d5b)) {
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
+                    }
                     if ($allow) {
                         $allow &= \__last($req, array (
-                ));
+                            ));
                     }
                 
                     // do route
@@ -263,23 +263,23 @@ class Route
                 
                         // post postRoute (if any)
                         if (empty($file_92cd6d5b)) {
-                           $file_92cd6d5b = 1;
-                           require_once __DIR__ . "//../QuickTest.php";
+                            $file_92cd6d5b = 1;
+                            require_once __DIR__ . "//../QuickTest.php";
                         }
                         $return = \__1first($req, array (
-                ), $return);
+                            ), $return);
                         if (empty($file_92cd6d5b)) {
-                           $file_92cd6d5b = 1;
-                           require_once __DIR__ . "//../QuickTest.php";
+                            $file_92cd6d5b = 1;
+                            require_once __DIR__ . "//../QuickTest.php";
                         }
                         $return = \__1last($req, array (
-                ), $return);
+                            ), $return);
                         if (empty($file_92cd6d5b)) {
-                           $file_92cd6d5b = 1;
-                           require_once __DIR__ . "//../QuickTest.php";
+                            $file_92cd6d5b = 1;
+                            require_once __DIR__ . "//../QuickTest.php";
                         }
                         $return = \__last_for_all($req, array (
-                ), $return);
+                            ), $return);
                 
                 
                 
@@ -287,10 +287,10 @@ class Route
                     }
                 }
                 // }}} end of /foo/function
-                
+
                 if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
                 }
                 if (empty($obj_filt_23cd7755)) {
                     $obj_filt_23cd7755 = new \Foo;
@@ -299,27 +299,27 @@ class Route
                 if ($parts[0] === 'xxx' && (!empty($filter_8843d7f9_1) || ($filter_8843d7f9_1=$obj_filt_23cd7755->simple_filter($req, 'foobar', $parts[1])))) {
                     $req->setIfEmpty('foobar', $parts[1]);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
-                }
+                    if (empty($file_92cd6d5b)) {
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
+                    }
                     if ($allow) {
                         $allow &= \__first($req, array (
-                ));
+                            ));
                     }
-                if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
-                }
+                    if (empty($file_92cd6d5b)) {
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
+                    }
                     if ($allow) {
                         $allow &= \__last($req, array (
-                ));
+                            ));
                     }
                 
                     // do route
@@ -329,23 +329,23 @@ class Route
                 
                         // post postRoute (if any)
                         if (empty($file_92cd6d5b)) {
-                           $file_92cd6d5b = 1;
-                           require_once __DIR__ . "//../QuickTest.php";
+                            $file_92cd6d5b = 1;
+                            require_once __DIR__ . "//../QuickTest.php";
                         }
                         $return = \__1first($req, array (
-                ), $return);
+                            ), $return);
                         if (empty($file_92cd6d5b)) {
-                           $file_92cd6d5b = 1;
-                           require_once __DIR__ . "//../QuickTest.php";
+                            $file_92cd6d5b = 1;
+                            require_once __DIR__ . "//../QuickTest.php";
                         }
                         $return = \__1last($req, array (
-                ), $return);
+                            ), $return);
                         if (empty($file_92cd6d5b)) {
-                           $file_92cd6d5b = 1;
-                           require_once __DIR__ . "//../QuickTest.php";
+                            $file_92cd6d5b = 1;
+                            require_once __DIR__ . "//../QuickTest.php";
                         }
                         $return = \__last_for_all($req, array (
-                ), $return);
+                            ), $return);
                 
                 
                 
@@ -363,27 +363,27 @@ class Route
             // Routes for /foo/bar/xxx {{{
             if ($parts[0] === 'foo' && $parts[1] === 'bar' && $parts[2] === 'xxx') {
                 if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__first($req, array (
-            ));
+                        ));
                 }
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__last($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -393,23 +393,23 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1first($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1last($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__last_for_all($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -417,36 +417,36 @@ class Route
                 }
             }
             // }}} end of /foo/bar/xxx
-            
+
             if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
+                $file_92cd6d5b = 1;
+                require_once __DIR__ . "//../QuickTest.php";
             }
             // Routes for /foo/bar/{bar} {{{
             if ($parts[0] === 'foo' && $parts[1] === 'bar' && (!empty($filter_62cdb702_2) || ($filter_62cdb702_2=\filter_2($req, 'bar', $parts[2])))) {
                 $req->setIfEmpty('bar', $parts[2]);
                 if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__first($req, array (
-            ));
+                        ));
                 }
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__last($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -456,23 +456,23 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1first($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1last($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__last_for_all($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -480,36 +480,36 @@ class Route
                 }
             }
             // }}} end of /foo/bar/{bar}
-            
+
             if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
+                $file_92cd6d5b = 1;
+                require_once __DIR__ . "//../QuickTest.php";
             }
             // Routes for /foo/bar/{foo} {{{
             if ($parts[0] === 'foo' && $parts[1] === 'bar' && (!empty($filter_0beec7b5_2) || ($filter_0beec7b5_2=\filter_1($req, 'foo', $parts[2])))) {
                 $req->setIfEmpty('foo', $parts[2]);
                 if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__first($req, array (
-            ));
+                        ));
                 }
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__last($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -519,23 +519,23 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1first($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1last($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__last_for_all($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -543,36 +543,36 @@ class Route
                 }
             }
             // }}} end of /foo/bar/{foo}
-            
+
             if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
+                $file_92cd6d5b = 1;
+                require_once __DIR__ . "//../QuickTest.php";
             }
             // Routes for /foo/bar/xxx-{bar:xx} {{{
             if ($parts[0] === 'foo' && $parts[1] === 'bar' && preg_match('/^xxx\\-(.+)/', $parts[2], $matches_2) > 0 && \filter_2($req, 'xx', $matches_2[1])) {
                 $req->setIfEmpty('xx', $matches_2[1]);
                 if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__first($req, array (
-            ));
+                        ));
                 }
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__last($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -582,23 +582,23 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1first($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1last($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__last_for_all($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -611,34 +611,34 @@ class Route
             // Routes for /buffer {{{
             if ($parts[0] === 'buffer') {
                 if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__first($req, array (
-            ));
+                        ));
                 }
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__buffer_start($req, NULL);
                 }
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__last($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -648,26 +648,26 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1first($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1last($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__last_for_all($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__buffer_end($req, NULL, $return);
             
@@ -682,8 +682,8 @@ class Route
             // Routes for /foo/method {{{
             if ($parts[0] === 'foo' && $parts[1] === 'method') {
                 if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
                 }
                 if (empty($obj_filt_23cd7755)) {
                     $obj_filt_23cd7755 = new \Foo;
@@ -691,21 +691,21 @@ class Route
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__first($req, array (
-            ));
+                        ));
                 }
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__last($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -715,23 +715,23 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1first($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1last($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__last_for_all($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -739,17 +739,17 @@ class Route
                 }
             }
             // }}} end of /foo/method
-            
+
             if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
+                $file_92cd6d5b = 1;
+                require_once __DIR__ . "//../QuickTest.php";
             }
             if (empty($obj_filt_23cd7755)) {
                 $obj_filt_23cd7755 = new \Foo;
             }
             if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
+                $file_92cd6d5b = 1;
+                require_once __DIR__ . "//../QuickTest.php";
             }
             if (empty($obj_filt_23cd7755)) {
                 $obj_filt_23cd7755 = new \Foo;
@@ -759,8 +759,8 @@ class Route
                 $req->setIfEmpty('foobar', $matches_1[1]);
                 $req->setIfEmpty('extension', $matches_1[2]);
                 if (empty($file_92cd6d5b)) {
-                   $file_92cd6d5b = 1;
-                   require_once __DIR__ . "//../QuickTest.php";
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
                 }
                 if (empty($obj_filt_23cd7755)) {
                     $obj_filt_23cd7755 = new \Foo;
@@ -768,21 +768,21 @@ class Route
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__first($req, array (
-            ));
+                        ));
                 }
-            if (empty($file_92cd6d5b)) {
-               $file_92cd6d5b = 1;
-               require_once __DIR__ . "//../QuickTest.php";
-            }
+                if (empty($file_92cd6d5b)) {
+                    $file_92cd6d5b = 1;
+                    require_once __DIR__ . "//../QuickTest.php";
+                }
                 if ($allow) {
                     $allow &= \__last($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -792,23 +792,23 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1first($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__1last($req, array (
-            ), $return);
+                        ), $return);
                     if (empty($file_92cd6d5b)) {
-                       $file_92cd6d5b = 1;
-                       require_once __DIR__ . "//../QuickTest.php";
+                        $file_92cd6d5b = 1;
+                        require_once __DIR__ . "//../QuickTest.php";
                     }
                     $return = \__last_for_all($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -821,111 +821,111 @@ class Route
 
         // Routes for @NotFound {{{
 
+        if (empty($file_92cd6d5b)) {
+
+            $file_92cd6d5b = 1;
+
+            require_once __DIR__ . "//../QuickTest.php";
+
+        }
+
+        
+
+        //run preRoute filters (if any)
+
+        $allow = true;
+
+        if (empty($file_92cd6d5b)) {
+
+            $file_92cd6d5b = 1;
+
+            require_once __DIR__ . "//../QuickTest.php";
+
+        }
+
+        if ($allow) {
+
+            $allow &= \__first($req, array (
+
+                ));
+
+        }
+
+        if (empty($file_92cd6d5b)) {
+
+            $file_92cd6d5b = 1;
+
+            require_once __DIR__ . "//../QuickTest.php";
+
+        }
+
+        if ($allow) {
+
+            $allow &= \__last($req, array (
+
+                ));
+
+        }
+
+        
+
+        // do route
+
+        if ($allow) {
+
+            $req->setIfEmpty('__handler__', '\\__not_found');
+
+            $return = \__not_found($req);
+
+        
+
+            // post postRoute (if any)
+
             if (empty($file_92cd6d5b)) {
 
-               $file_92cd6d5b = 1;
+                $file_92cd6d5b = 1;
 
-               require_once __DIR__ . "//../QuickTest.php";
+                require_once __DIR__ . "//../QuickTest.php";
 
             }
 
+            $return = \__1first($req, array (
+
+                ), $return);
+
+            if (empty($file_92cd6d5b)) {
+
+                $file_92cd6d5b = 1;
+
+                require_once __DIR__ . "//../QuickTest.php";
+
+            }
+
+            $return = \__1last($req, array (
+
+                ), $return);
+
+            if (empty($file_92cd6d5b)) {
+
+                $file_92cd6d5b = 1;
+
+                require_once __DIR__ . "//../QuickTest.php";
+
+            }
+
+            $return = \__last_for_all($req, array (
+
+                ), $return);
+
         
 
-            //run preRoute filters (if any)
+        
 
-            $allow = true;
+        
 
-        if (empty($file_92cd6d5b)) {
-
-           $file_92cd6d5b = 1;
-
-           require_once __DIR__ . "//../QuickTest.php";
+            return $return;
 
         }
-
-            if ($allow) {
-
-                $allow &= \__first($req, array (
-
-        ));
-
-            }
-
-        if (empty($file_92cd6d5b)) {
-
-           $file_92cd6d5b = 1;
-
-           require_once __DIR__ . "//../QuickTest.php";
-
-        }
-
-            if ($allow) {
-
-                $allow &= \__last($req, array (
-
-        ));
-
-            }
-
-        
-
-            // do route
-
-            if ($allow) {
-
-                $req->setIfEmpty('__handler__', '\\__not_found');
-
-                $return = \__not_found($req);
-
-        
-
-                // post postRoute (if any)
-
-                if (empty($file_92cd6d5b)) {
-
-                   $file_92cd6d5b = 1;
-
-                   require_once __DIR__ . "//../QuickTest.php";
-
-                }
-
-                $return = \__1first($req, array (
-
-        ), $return);
-
-                if (empty($file_92cd6d5b)) {
-
-                   $file_92cd6d5b = 1;
-
-                   require_once __DIR__ . "//../QuickTest.php";
-
-                }
-
-                $return = \__1last($req, array (
-
-        ), $return);
-
-                if (empty($file_92cd6d5b)) {
-
-                   $file_92cd6d5b = 1;
-
-                   require_once __DIR__ . "//../QuickTest.php";
-
-                }
-
-                $return = \__last_for_all($req, array (
-
-        ), $return);
-
-        
-
-        
-
-        
-
-                return $return;
-
-            }
 
         // }}} end of @NotFound
 

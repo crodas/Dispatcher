@@ -8,11 +8,11 @@
  */
 namespace AllTest;
 
-class NotFoundException extends \Exception 
+class NotFoundException extends \Exception
 {
 }
 
-class RouteNotFoundException extends \Exception 
+class RouteNotFoundException extends \Exception
 {
 }
 
@@ -146,7 +146,7 @@ class Route
             $set[$key] = $req->get($key);
         }
 
-        $this->cache->set($objid, serialize(compact('return', 'set')), 3600); 
+        $this->cache->set($objid, serialize(compact('return', 'set')), 3600);
 
         
         return $return;
@@ -179,8 +179,8 @@ class Route
                 // Routes for /prefix/ {{{
                 if ($parts[0] === 'prefix') {
                     if (empty($file_ce8f643f)) {
-                       $file_ce8f643f = 1;
-                       require_once __DIR__ . "//../input/class.php";
+                        $file_ce8f643f = 1;
+                        require_once __DIR__ . "//../input/class.php";
                     }
                     if (empty($obj_filt_2d89b930)) {
                         $obj_filt_2d89b930 = new \SomeClass;
@@ -188,28 +188,28 @@ class Route
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "//../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
+                    if (empty($file_e55749ee)) {
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
+                    }
+                    if (empty($obj_filt_91adc016)) {
+                        $obj_filt_91adc016 = new \SomeSillyClass;
+                    }
                     if ($allow) {
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
+                            ));
                     }
-                if (empty($file_e0cf7353)) {
-                   $file_e0cf7353 = 1;
-                   require_once __DIR__ . "//../input/route_filters.php";
-                }
+                    if (empty($file_e0cf7353)) {
+                        $file_e0cf7353 = 1;
+                        require_once __DIR__ . "//../input/route_filters.php";
+                    }
                     if ($allow) {
                         $allow &= \CheckSession_another($req, NULL);
                     }
-                if (empty($file_e0cf7353)) {
-                   $file_e0cf7353 = 1;
-                   require_once __DIR__ . "//../input/route_filters.php";
-                }
+                    if (empty($file_e0cf7353)) {
+                        $file_e0cf7353 = 1;
+                        require_once __DIR__ . "//../input/route_filters.php";
+                    }
                     if ($allow) {
                         $allow &= \CheckSession($req, NULL);
                     }
@@ -221,14 +221,14 @@ class Route
                 
                         // post postRoute (if any)
                         if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "//../input/filter.php";
+                            $file_e55749ee = 1;
+                            require_once __DIR__ . "//../input/filter.php";
                         }
                         if (empty($obj_filt_91adc016)) {
                             $obj_filt_91adc016 = new \SomeSillyClass;
                         }
                         $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
+                            ), $return);
                 
                 
                 
@@ -241,8 +241,8 @@ class Route
                 // Routes for /foobar/12345/ {{{
                 if ($parts[0] === 'foobar' && $parts[1] === '12345') {
                     if (empty($file_b40be1df)) {
-                       $file_b40be1df = 1;
-                       require_once __DIR__ . "//../input/method.php";
+                        $file_b40be1df = 1;
+                        require_once __DIR__ . "//../input/method.php";
                     }
                     if (empty($obj_filt_e02f213c)) {
                         $obj_filt_e02f213c = new \SomeMethodController;
@@ -250,16 +250,16 @@ class Route
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "//../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
+                    if (empty($file_e55749ee)) {
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
+                    }
+                    if (empty($obj_filt_91adc016)) {
+                        $obj_filt_91adc016 = new \SomeSillyClass;
+                    }
                     if ($allow) {
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
+                            ));
                     }
                 
                     // do route
@@ -269,14 +269,14 @@ class Route
                 
                         // post postRoute (if any)
                         if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "//../input/filter.php";
+                            $file_e55749ee = 1;
+                            require_once __DIR__ . "//../input/filter.php";
                         }
                         if (empty($obj_filt_91adc016)) {
                             $obj_filt_91adc016 = new \SomeSillyClass;
                         }
                         $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
+                            ), $return);
                 
                 
                 
@@ -289,8 +289,8 @@ class Route
                 // Routes for /foobar/12345//something {{{
                 if ($parts[0] === 'foobar' && $parts[1] === '12345' && $parts[2] === 'something') {
                     if (empty($file_b40be1df)) {
-                       $file_b40be1df = 1;
-                       require_once __DIR__ . "//../input/method.php";
+                        $file_b40be1df = 1;
+                        require_once __DIR__ . "//../input/method.php";
                     }
                     if (empty($obj_filt_e02f213c)) {
                         $obj_filt_e02f213c = new \SomeMethodController;
@@ -298,16 +298,16 @@ class Route
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "//../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
+                    if (empty($file_e55749ee)) {
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
+                    }
+                    if (empty($obj_filt_91adc016)) {
+                        $obj_filt_91adc016 = new \SomeSillyClass;
+                    }
                     if ($allow) {
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
+                            ));
                     }
                 
                     // do route
@@ -317,14 +317,14 @@ class Route
                 
                         // post postRoute (if any)
                         if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "//../input/filter.php";
+                            $file_e55749ee = 1;
+                            require_once __DIR__ . "//../input/filter.php";
                         }
                         if (empty($obj_filt_91adc016)) {
                             $obj_filt_91adc016 = new \SomeSillyClass;
                         }
                         $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
+                            ), $return);
                 
                 
                 
@@ -341,8 +341,8 @@ class Route
                 // Routes for /foobar/12345/ {{{
                 if ($parts[0] === 'foobar' && $parts[1] === '12345') {
                     if (empty($file_b40be1df)) {
-                       $file_b40be1df = 1;
-                       require_once __DIR__ . "//../input/method.php";
+                        $file_b40be1df = 1;
+                        require_once __DIR__ . "//../input/method.php";
                     }
                     if (empty($obj_filt_e02f213c)) {
                         $obj_filt_e02f213c = new \SomeMethodController;
@@ -350,16 +350,16 @@ class Route
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "//../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
+                    if (empty($file_e55749ee)) {
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
+                    }
+                    if (empty($obj_filt_91adc016)) {
+                        $obj_filt_91adc016 = new \SomeSillyClass;
+                    }
                     if ($allow) {
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
+                            ));
                     }
                 
                     // do route
@@ -369,14 +369,14 @@ class Route
                 
                         // post postRoute (if any)
                         if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "//../input/filter.php";
+                            $file_e55749ee = 1;
+                            require_once __DIR__ . "//../input/filter.php";
                         }
                         if (empty($obj_filt_91adc016)) {
                             $obj_filt_91adc016 = new \SomeSillyClass;
                         }
                         $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
+                            ), $return);
                 
                 
                 
@@ -393,8 +393,8 @@ class Route
                 // Routes for /foobar/12345/ {{{
                 if ($parts[0] === 'foobar' && $parts[1] === '12345') {
                     if (empty($file_b40be1df)) {
-                       $file_b40be1df = 1;
-                       require_once __DIR__ . "//../input/method.php";
+                        $file_b40be1df = 1;
+                        require_once __DIR__ . "//../input/method.php";
                     }
                     if (empty($obj_filt_e02f213c)) {
                         $obj_filt_e02f213c = new \SomeMethodController;
@@ -402,16 +402,16 @@ class Route
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "//../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
+                    if (empty($file_e55749ee)) {
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
+                    }
+                    if (empty($obj_filt_91adc016)) {
+                        $obj_filt_91adc016 = new \SomeSillyClass;
+                    }
                     if ($allow) {
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
+                            ));
                     }
                 
                     // do route
@@ -421,14 +421,14 @@ class Route
                 
                         // post postRoute (if any)
                         if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "//../input/filter.php";
+                            $file_e55749ee = 1;
+                            require_once __DIR__ . "//../input/filter.php";
                         }
                         if (empty($obj_filt_91adc016)) {
                             $obj_filt_91adc016 = new \SomeSillyClass;
                         }
                         $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
+                            ), $return);
                 
                 
                 
@@ -441,8 +441,8 @@ class Route
                 // Routes for /foobar/12345//something {{{
                 if ($parts[0] === 'foobar' && $parts[1] === '12345' && $parts[2] === 'something') {
                     if (empty($file_b40be1df)) {
-                       $file_b40be1df = 1;
-                       require_once __DIR__ . "//../input/method.php";
+                        $file_b40be1df = 1;
+                        require_once __DIR__ . "//../input/method.php";
                     }
                     if (empty($obj_filt_e02f213c)) {
                         $obj_filt_e02f213c = new \SomeMethodController;
@@ -450,16 +450,16 @@ class Route
                 
                     //run preRoute filters (if any)
                     $allow = true;
-                if (empty($file_e55749ee)) {
-                   $file_e55749ee = 1;
-                   require_once __DIR__ . "//../input/filter.php";
-                }
-                if (empty($obj_filt_91adc016)) {
-                    $obj_filt_91adc016 = new \SomeSillyClass;
-                }
+                    if (empty($file_e55749ee)) {
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
+                    }
+                    if (empty($obj_filt_91adc016)) {
+                        $obj_filt_91adc016 = new \SomeSillyClass;
+                    }
                     if ($allow) {
                         $allow &= $obj_filt_91adc016->_all_filter($req, array (
-                ));
+                            ));
                     }
                 
                     // do route
@@ -469,14 +469,14 @@ class Route
                 
                         // post postRoute (if any)
                         if (empty($file_e55749ee)) {
-                           $file_e55749ee = 1;
-                           require_once __DIR__ . "//../input/filter.php";
+                            $file_e55749ee = 1;
+                            require_once __DIR__ . "//../input/filter.php";
                         }
                         if (empty($obj_filt_91adc016)) {
                             $obj_filt_91adc016 = new \SomeSillyClass;
                         }
                         $return = $obj_filt_91adc016->_all_filter_post($req, array (
-                ), $return);
+                            ), $return);
                 
                 
                 
@@ -494,22 +494,22 @@ class Route
             // Routes for /function/reverse {{{
             if ($parts[0] === 'function' && $parts[1] === 'reverse') {
                 if (empty($file_2053a8ae)) {
-                   $file_2053a8ae = 1;
-                   require_once __DIR__ . "//../input/functions.php";
+                    $file_2053a8ae = 1;
+                    require_once __DIR__ . "//../input/functions.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
+                if (empty($file_e55749ee)) {
+                    $file_e55749ee = 1;
+                    require_once __DIR__ . "//../input/filter.php";
+                }
+                if (empty($obj_filt_91adc016)) {
+                    $obj_filt_91adc016 = new \SomeSillyClass;
+                }
                 if ($allow) {
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -519,14 +519,14 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "//../input/filter.php";
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
                     }
                     if (empty($obj_filt_91adc016)) {
                         $obj_filt_91adc016 = new \SomeSillyClass;
                     }
                     $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -534,12 +534,12 @@ class Route
                 }
             }
             // }}} end of /function/reverse
-            
+
             // Routes for /prefix//some {{{
             if ($parts[0] === 'prefix' && $parts[1] === 'some') {
                 if (empty($file_ce8f643f)) {
-                   $file_ce8f643f = 1;
-                   require_once __DIR__ . "//../input/class.php";
+                    $file_ce8f643f = 1;
+                    require_once __DIR__ . "//../input/class.php";
                 }
                 if (empty($obj_filt_2d89b930)) {
                     $obj_filt_2d89b930 = new \SomeClass;
@@ -547,21 +547,21 @@ class Route
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
+                if (empty($file_e55749ee)) {
+                    $file_e55749ee = 1;
+                    require_once __DIR__ . "//../input/filter.php";
+                }
+                if (empty($obj_filt_91adc016)) {
+                    $obj_filt_91adc016 = new \SomeSillyClass;
+                }
                 if ($allow) {
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
+                        ));
                 }
-            if (empty($file_e0cf7353)) {
-               $file_e0cf7353 = 1;
-               require_once __DIR__ . "//../input/route_filters.php";
-            }
+                if (empty($file_e0cf7353)) {
+                    $file_e0cf7353 = 1;
+                    require_once __DIR__ . "//../input/route_filters.php";
+                }
                 if ($allow) {
                     $allow &= \CheckSession_another($req, NULL);
                 }
@@ -573,14 +573,14 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "//../input/filter.php";
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
                     }
                     if (empty($obj_filt_91adc016)) {
                         $obj_filt_91adc016 = new \SomeSillyClass;
                     }
                     $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -588,10 +588,10 @@ class Route
                 }
             }
             // }}} end of /prefix//some
-            
+
             if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
+                $file_e55749ee = 1;
+                require_once __DIR__ . "//../input/filter.php";
             }
             if (empty($obj_filt_91adc016)) {
                 $obj_filt_91adc016 = new \SomeSillyClass;
@@ -600,22 +600,22 @@ class Route
             if ($parts[0] === 'ifempty' && (!empty($filter_1ded59a9_1) || ($filter_1ded59a9_1=$this->doCachedFilter(array($obj_filt_91adc016, 'filter_set'), $req, 'algo-alias', $parts[1], 1)))) {
                 $req->setIfEmpty('algo-alias', $parts[1]);
                 if (empty($file_2053a8ae)) {
-                   $file_2053a8ae = 1;
-                   require_once __DIR__ . "//../input/functions.php";
+                    $file_2053a8ae = 1;
+                    require_once __DIR__ . "//../input/functions.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
+                if (empty($file_e55749ee)) {
+                    $file_e55749ee = 1;
+                    require_once __DIR__ . "//../input/filter.php";
+                }
+                if (empty($obj_filt_91adc016)) {
+                    $obj_filt_91adc016 = new \SomeSillyClass;
+                }
                 if ($allow) {
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -625,14 +625,14 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "//../input/filter.php";
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
                     }
                     if (empty($obj_filt_91adc016)) {
                         $obj_filt_91adc016 = new \SomeSillyClass;
                     }
                     $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -640,10 +640,10 @@ class Route
                 }
             }
             // }}} end of /ifempty/{something:algo-alias}
-            
+
             if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
+                $file_e55749ee = 1;
+                require_once __DIR__ . "//../input/filter.php";
             }
             if (empty($obj_filt_91adc016)) {
                 $obj_filt_91adc016 = new \SomeSillyClass;
@@ -652,22 +652,22 @@ class Route
             if ($parts[0] === 'function' && (!empty($filter_75470a30_1) || ($filter_75470a30_1=$obj_filt_91adc016->filter_reverse($req, 'reverse', $parts[1])))) {
                 $req->setIfEmpty('reverse', $parts[1]);
                 if (empty($file_2053a8ae)) {
-                   $file_2053a8ae = 1;
-                   require_once __DIR__ . "//../input/functions.php";
+                    $file_2053a8ae = 1;
+                    require_once __DIR__ . "//../input/functions.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
+                if (empty($file_e55749ee)) {
+                    $file_e55749ee = 1;
+                    require_once __DIR__ . "//../input/filter.php";
+                }
+                if (empty($obj_filt_91adc016)) {
+                    $obj_filt_91adc016 = new \SomeSillyClass;
+                }
                 if ($allow) {
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -677,14 +677,14 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "//../input/filter.php";
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
                     }
                     if (empty($obj_filt_91adc016)) {
                         $obj_filt_91adc016 = new \SomeSillyClass;
                     }
                     $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -697,22 +697,22 @@ class Route
             // Routes for /deadly-simple {{{
             if ($parts[0] === 'deadly-simple') {
                 if (empty($file_2053a8ae)) {
-                   $file_2053a8ae = 1;
-                   require_once __DIR__ . "//../input/functions.php";
+                    $file_2053a8ae = 1;
+                    require_once __DIR__ . "//../input/functions.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
+                if (empty($file_e55749ee)) {
+                    $file_e55749ee = 1;
+                    require_once __DIR__ . "//../input/filter.php";
+                }
+                if (empty($obj_filt_91adc016)) {
+                    $obj_filt_91adc016 = new \SomeSillyClass;
+                }
                 if ($allow) {
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -722,14 +722,14 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "//../input/filter.php";
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
                     }
                     if (empty($obj_filt_91adc016)) {
                         $obj_filt_91adc016 = new \SomeSillyClass;
                     }
                     $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -737,27 +737,27 @@ class Route
                 }
             }
             // }}} end of /deadly-simple
-            
+
             // Routes for /zzzsfasd_prefix_{id} {{{
             if (preg_match('/^zzzsfasd_prefix_(.+)/', $parts[0], $matches_0) > 0) {
                 $req->setIfEmpty('id', $matches_0[1]);
                 if (empty($file_2053a8ae)) {
-                   $file_2053a8ae = 1;
-                   require_once __DIR__ . "//../input/functions.php";
+                    $file_2053a8ae = 1;
+                    require_once __DIR__ . "//../input/functions.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
+                if (empty($file_e55749ee)) {
+                    $file_e55749ee = 1;
+                    require_once __DIR__ . "//../input/filter.php";
+                }
+                if (empty($obj_filt_91adc016)) {
+                    $obj_filt_91adc016 = new \SomeSillyClass;
+                }
                 if ($allow) {
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -767,14 +767,14 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "//../input/filter.php";
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
                     }
                     if (empty($obj_filt_91adc016)) {
                         $obj_filt_91adc016 = new \SomeSillyClass;
                     }
                     $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -782,31 +782,31 @@ class Route
                 }
             }
             // }}} end of /zzzsfasd_prefix_{id}
-            
+
             if (empty($file_2053a8ae)) {
-               $file_2053a8ae = 1;
-               require_once __DIR__ . "//../input/functions.php";
+                $file_2053a8ae = 1;
+                require_once __DIR__ . "//../input/functions.php";
             }
             // Routes for /{__id__} {{{
             if ((!empty($filter_99149840_0) || ($filter_99149840_0=\__filter__($req, '__id__', $parts[0])))) {
                 $req->setIfEmpty('__id__', $parts[0]);
                 if (empty($file_2053a8ae)) {
-                   $file_2053a8ae = 1;
-                   require_once __DIR__ . "//../input/functions.php";
+                    $file_2053a8ae = 1;
+                    require_once __DIR__ . "//../input/functions.php";
                 }
             
                 //run preRoute filters (if any)
                 $allow = true;
-            if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
-            }
-            if (empty($obj_filt_91adc016)) {
-                $obj_filt_91adc016 = new \SomeSillyClass;
-            }
+                if (empty($file_e55749ee)) {
+                    $file_e55749ee = 1;
+                    require_once __DIR__ . "//../input/filter.php";
+                }
+                if (empty($obj_filt_91adc016)) {
+                    $obj_filt_91adc016 = new \SomeSillyClass;
+                }
                 if ($allow) {
                     $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
+                        ));
                 }
             
                 // do route
@@ -816,14 +816,14 @@ class Route
             
                     // post postRoute (if any)
                     if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "//../input/filter.php";
+                        $file_e55749ee = 1;
+                        require_once __DIR__ . "//../input/filter.php";
                     }
                     if (empty($obj_filt_91adc016)) {
                         $obj_filt_91adc016 = new \SomeSillyClass;
                     }
                     $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
+                        ), $return);
             
             
             
@@ -834,45 +834,45 @@ class Route
             break;
         case 0:
             // Routes for / {{{
-                if (empty($file_2053a8ae)) {
-                   $file_2053a8ae = 1;
-                   require_once __DIR__ . "//../input/functions.php";
-                }
+            if (empty($file_2053a8ae)) {
+                $file_2053a8ae = 1;
+                require_once __DIR__ . "//../input/functions.php";
+            }
             
-                //run preRoute filters (if any)
-                $allow = true;
+            //run preRoute filters (if any)
+            $allow = true;
             if (empty($file_e55749ee)) {
-               $file_e55749ee = 1;
-               require_once __DIR__ . "//../input/filter.php";
+                $file_e55749ee = 1;
+                require_once __DIR__ . "//../input/filter.php";
             }
             if (empty($obj_filt_91adc016)) {
                 $obj_filt_91adc016 = new \SomeSillyClass;
             }
-                if ($allow) {
-                    $allow &= $obj_filt_91adc016->_all_filter($req, array (
-            ));
+            if ($allow) {
+                $allow &= $obj_filt_91adc016->_all_filter($req, array (
+                    ));
+            }
+            
+            // do route
+            if ($allow) {
+                $req->setIfEmpty('__handler__', '\\empty_level_2');
+                $return = \empty_level_2($req);
+            
+                // post postRoute (if any)
+                if (empty($file_e55749ee)) {
+                    $file_e55749ee = 1;
+                    require_once __DIR__ . "//../input/filter.php";
                 }
-            
-                // do route
-                if ($allow) {
-                    $req->setIfEmpty('__handler__', '\\empty_level_2');
-                    $return = \empty_level_2($req);
-            
-                    // post postRoute (if any)
-                    if (empty($file_e55749ee)) {
-                       $file_e55749ee = 1;
-                       require_once __DIR__ . "//../input/filter.php";
-                    }
-                    if (empty($obj_filt_91adc016)) {
-                        $obj_filt_91adc016 = new \SomeSillyClass;
-                    }
-                    $return = $obj_filt_91adc016->_all_filter_post($req, array (
-            ), $return);
-            
-            
-            
-                    return $return;
+                if (empty($obj_filt_91adc016)) {
+                    $obj_filt_91adc016 = new \SomeSillyClass;
                 }
+                $return = $obj_filt_91adc016->_all_filter_post($req, array (
+                    ), $return);
+            
+            
+            
+                return $return;
+            }
             // }}} end of /
             break;
         }
