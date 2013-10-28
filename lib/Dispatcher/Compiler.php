@@ -42,6 +42,7 @@ use Notoj\Annotations,
     Dispatcher\Compiler\Url,
     Dispatcher\Compiler\UrlGroup_Switch,
     Dispatcher\Compiler\UrlGroup_If,
+    crodas\SimpleView\FixCode,
     crodas\Path;
 
 class Compiler
@@ -451,7 +452,7 @@ class Compiler
             return implode(' && ', array_filter($expr));
         });
 
-        $this->output = $vm->run();
+        $this->output = FixCode::fix($vm->run());
     }
     
     public function getOutput()
