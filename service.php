@@ -4,10 +4,10 @@ namespace Dispatcher\Service;
 
 /**
  *  @Service(dispatcher, {
- *      dir: { type: 'hash', required: true},
+ *      dir: { type: 'array_dir', required: true},
  *      name: { default: 'generated'},
  *      ns:  { default: 'Dispatcher\Generated'},
- *      temp_dir: { default: '/tmp' },
+ *      temp_dir: { default: '/tmp', type: dir },
  *      devel: {default: true}
  *  }, {shared: true})
  */
