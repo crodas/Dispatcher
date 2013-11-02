@@ -3,11 +3,11 @@
     "description": "Dispatcher generator",
     "minimum-stability": "dev",
     "require": {
-        "crodas/notoj": "*",
-        "crodas/artifex": "*",
+        "crodas/notoj": "~0.1",
+        "crodas/artifex": "~0.1",
         "symfony/console": "*",
-        "crodas/watch-files": "*",
-        "crodas/path": "*",
+        "crodas/watch-files": "~0.1",
+        "crodas/path": "~0.1",
         "crodas/simple-view-engine": "~0.1"
     },
     "license": "BSD-4-Clause",
