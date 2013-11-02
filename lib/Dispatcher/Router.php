@@ -60,6 +60,11 @@ class Router extends Generator
         $class = $this->getNamespace() . "\\Request";;
         return new $class;
     }
+
+    public function getRoute($name, Array $args = array())
+    {
+        return $this->load()->getRoute($name, $args);
+    }
     
     public function load()
     {
