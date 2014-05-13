@@ -43,7 +43,7 @@ use Notoj\Annotations,
     Dispatcher\Compiler\UrlGroup_Switch,
     Dispatcher\Compiler\UrlGroup_If,
     crodas\SimpleView\FixCode,
-    crodas\Path;
+    crodas\FileUtil\Path;
 
 class Compiler
 {

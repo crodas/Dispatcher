@@ -64,7 +64,14 @@ class UrlGroup
                 $group->sort($callback);
                 continue;
             }
+
             usort($group, $callback);
+
+            foreach ($group as $record) {
+                if ($record instanceof self) {
+                    usort($record->urls, $callback);
+                }
+            }
         }
     }
 

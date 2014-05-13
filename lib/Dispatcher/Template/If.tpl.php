@@ -1,7 +1,8 @@
 <?php
 #* function render_if($object)
 #   $expr  = expr($object->getExpr())
-if (__expr__) {
+#   $weight = $object->getWeight()
+if (__expr__) { // __weight__
     #* render($object->getUrls())
 }
 #* end
