@@ -1,7 +1,7 @@
 <?php
 /*
   +---------------------------------------------------------------------------------+
-  | Copyright (c) 2012 César Rodas                                                  |
+  | Copyright (c) 2014 César Rodas                                                  |
   +---------------------------------------------------------------------------------+
   | Redistribution and use in source and binary forms, with or without              |
   | modification, are permitted provided that the following conditions are met:     |
@@ -64,7 +64,14 @@ class UrlGroup
                 $group->sort($callback);
                 continue;
             }
+
             usort($group, $callback);
+
+            foreach ($group as $record) {
+                if ($record instanceof self) {
+                    usort($record->urls, $callback);
+                }
+            }
         }
     }
 

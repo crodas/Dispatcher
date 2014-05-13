@@ -3,7 +3,8 @@
 #* function render_url($object) 
 #   $route    = $object->getRouteDefinition()
 #   $expr     = expr($object->getParts())
-// Routes for __route__ {{{
+#   $weight   = $object->getWeight()
+// Routes for __route__ - __weight__ {{{
 #* if ($expr)
 if (__expr__) {
 #* end

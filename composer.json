@@ -2,16 +2,19 @@
     "name": "crodas/dispatcher",
     "description": "Dispatcher generator",
     "minimum-stability": "dev",
+    "require-dev": {
+        "crodas/cli": "*"
+    },
     "require": {
         "crodas/notoj": "~0.1",
         "crodas/artifex": "~0.1",
-        "symfony/console": "*",
         "crodas/watch-files": "~0.1",
-        "crodas/path": "~0.1",
+        "crodas/file-util": "~0.1",
         "crodas/simple-view-engine": "~0.1"
     },
+
     "license": "BSD-4-Clause",
-    "version": "v0.1.12",
+    "version": "v0.1.13",
     "authors": [
         {
             "name": "César D. Rodas",

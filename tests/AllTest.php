@@ -22,6 +22,22 @@ class AllTest extends \phpunit_framework_testcase
         // add mockup cache class
         require __DIR__ . "/input/cache_class.php";
     }
+    
+    /** @depends testCompile */
+    public function testBug01Sorting()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $out = $route->doRoute($req, array('REQUEST_URI' => '/foo/barxxx'));
+        $this->assertEquals($out, 'bug01\foobar');
+
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $out = $route->doRoute($req, array('REQUEST_URI' => '/foo/bar'));
+        $this->assertEquals($out, 'bug01\barfoo');
+    }
 
     /** @depends testCompile */
     public function testUrlSorting()

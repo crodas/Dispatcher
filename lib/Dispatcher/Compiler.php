@@ -1,7 +1,7 @@
 <?php
 /*
   +---------------------------------------------------------------------------------+
-  | Copyright (c) 2012 César Rodas                                                  |
+  | Copyright (c) 2014 César Rodas                                                  |
   +---------------------------------------------------------------------------------+
   | Redistribution and use in source and binary forms, with or without              |
   | modification, are permitted provided that the following conditions are met:     |
@@ -43,7 +43,7 @@ use Notoj\Annotations,
     Dispatcher\Compiler\UrlGroup_Switch,
     Dispatcher\Compiler\UrlGroup_If,
     crodas\SimpleView\FixCode,
-    crodas\Path;
+    crodas\FileUtil\Path;
 
 class Compiler
 {
