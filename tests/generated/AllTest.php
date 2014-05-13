@@ -494,9 +494,9 @@ class Route
             if ($parts[0] === 'foo') { // 1
                 // Routes for /foo/bar - 2 {{{
                 if ($parts[0] === 'foo' && $parts[1] === 'bar') {
-                    if (empty($file_bce7a4f2)) {
-                        $file_bce7a4f2 = 1;
-                        require_once __DIR__ . "//../input/Bug1.php";
+                    if (empty($file_7bb32286)) {
+                        $file_7bb32286 = 1;
+                        require_once __DIR__ . "//../input/bug01.php";
                     }
                 
                     //run preRoute filters (if any)
@@ -539,9 +539,9 @@ class Route
                 // Routes for /foo/{id} - 21 {{{
                 if ($parts[0] === 'foo') {
                     $req->setIfEmpty('id', $parts[1]);
-                    if (empty($file_bce7a4f2)) {
-                        $file_bce7a4f2 = 1;
-                        require_once __DIR__ . "//../input/Bug1.php";
+                    if (empty($file_7bb32286)) {
+                        $file_7bb32286 = 1;
+                        require_once __DIR__ . "//../input/bug01.php";
                     }
                 
                     //run preRoute filters (if any)
