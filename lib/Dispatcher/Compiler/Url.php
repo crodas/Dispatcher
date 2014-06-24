@@ -172,6 +172,18 @@ class Url
         }, $this->parts, array_keys($this->parts));
     }
 
+    public function isComplex()
+    {
+        foreach($this->parts as $id => $part) {
+            switch($part->getType()){
+            case Component::LOOP:
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getParts()
     {
         return $this->parts;

@@ -161,6 +161,21 @@ class Route
         return $this->doRoute($req, $_SERVER);
     }
 
+    /** @Handler for /{foo}+/loop_ */
+    protected function complex_url_0()
+    {
+        return false;
+    }
+
+    protected function handleComplexUrl(Request $req, $parts, $length, $server)
+    {
+        $is_candidate = $length >= 2;
+        if ($is_candidate && $this->complex_url_0($req, $parts, $length, $server) == true) {
+            return true;
+        }
+        throw new NotFoundException;
+    }
+
     public function doRoute(Request $req, $server)
     {
         $uri    = $server['REQUEST_URI'];
@@ -969,8 +984,10 @@ class Route
         }
 
         
-
-        throw new NotFoundException;
+        
+        // We couldn't find any handler for the URL,
+        // let's find in our complex url set (if there is any)
+        $this->handleComplexUrl($req, $parts, $length, $server);
     }
 
     public static function getRoute($name, $args = array())

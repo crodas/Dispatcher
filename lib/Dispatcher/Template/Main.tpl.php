@@ -164,6 +164,28 @@ class Route
         return $this->doRoute($req, $_SERVER);
     }
 
+    #* foreach($self->getComplexUrls() as $i => $url)
+    #   $route    = $url->getRouteDefinition()
+    /** @Handler for __route___ */
+    protected function complex_url___i__()
+    {
+        return false;
+    }
+    #* end
+
+    protected function handleComplexUrl(Request $req, $parts, $length, $server)
+    {
+        #* foreach($self->getComplexUrls() as $i => $url)
+        #   $mlength = $url->getMinLength()
+        #   $consts  = $url->getConstants()
+        $is_candidate = $length >= __@mlength__;
+        if ($is_candidate && $this->complex_url___i__($req, $parts, $length, $server) == true) {
+            return true;
+        }
+        #* end
+    throw new NotFoundException;
+    }
+
     public function doRoute(Request $req, $server)
     {
         $uri    = $server['REQUEST_URI'];
@@ -178,8 +200,10 @@ class Route
         #* render($groups)
 
         #* render($self->getNotFoundHandler())
-
-        throw new NotFoundException;
+        
+        // We couldn't find any handler for the URL,
+        // let's find in our complex url set (if there is any)
+        $this->handleComplexUrl($req, $parts, $length, $server);
     }
 
     public static function getRoute($name, $args = array())

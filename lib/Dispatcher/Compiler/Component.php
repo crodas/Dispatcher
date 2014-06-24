@@ -45,6 +45,7 @@ class Component
     const CONSTANT  = 1;
     const VARIABLE  = 20;
     const MIXED     = 30;
+    const LOOP      = 40;
 
     protected $raw;
     protected $type;
@@ -99,6 +100,10 @@ class Component
             $f['filter'] = $callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
             $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_$this->index";
             $expr = "(!empty($name) || ($name={$f['filter']}))";
+            break;
+
+        case self::LOOP:
+            return "";
         }
 
         return $expr;
@@ -145,6 +150,10 @@ class Component
                     break;
                 }
             }
+        }
+
+        if (substr($buffer, -1) == '+') {
+            $this->type = self::LOOP;
         }
     }
 
