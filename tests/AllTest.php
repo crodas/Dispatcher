@@ -198,4 +198,13 @@ class AllTest extends \phpunit_framework_testcase
         $this->assertEquals($controller, $req->get('controller'));
     }
 
+    public function testComplexUrl()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $controller = $route->doRoute($req, array('REQUEST_URI' => "/loop/1/2/3/loop/4/5/bar"));
+        $this->assertEquals($controller, $req->get('controller'));
+    }
+
 }

@@ -49,11 +49,31 @@ class ComplexUrl extends Url
         foreach (get_object_vars($url) as $key => $value) {
             $this->$key = $value;
         }
+        foreach ($this->parts as $part) {
+            $part->setIndex('$i');
+        }
     }
 
     public function getMinLength()
     {
         return count($this->parts);
+    }
+
+    public function getFirstConstant()
+    {
+        if ($this->parts[0]->getType() == Component::CONSTANT) {
+            return (string)$this->parts[0];
+        }
+        return false;
+    }
+
+    public function getLastConstant()
+    {
+        $last = count($this->parts)-1;
+        if ($this->parts[$last]->getType() == Component::CONSTANT) {
+            return (string)$this->parts[$last];
+        }
+        return false;
     }
 
     public function getConstants()

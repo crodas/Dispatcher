@@ -161,15 +161,35 @@ class Route
         return $this->doRoute($req, $_SERVER);
     }
 
-    /** @Handler for /{foo}+/loop_ */
-    protected function complex_url_0()
+    /** @Handler for /loop-{numeric}/l-{numeric}+/loop/{numeric}+/bar_ */
+    protected function complex_url_0($req, $parts, $length, $server)
     {
-        return false;
+        $x = 0;
+        if (!(preg_match('/^loop\\-(.+)/', $parts[$x], $matches_$i) > 0)) {
+            return false;
+        }
+        ++$x;
+        if (!($parts[$x] === 'loop')) {
+            return false;
+        }
+        ++$i;
+        if (!($parts[$i] === 'bar')) {
+            return false;
+        }
+        ++$i;
+
+        return true;
     }
 
     protected function handleComplexUrl(Request $req, $parts, $length, $server)
     {
-        $is_candidate = $length >= 2;
+        $is_candidate = $length >= 5
+        && $parts[$length-1] == 'bar'
+        && count(array_intersect($parts, array (
+                    0 => 'loop',
+                    1 => 'bar',
+                ))) == 2
+        ;
         if ($is_candidate && $this->complex_url_0($req, $parts, $length, $server) == true) {
             return true;
         }

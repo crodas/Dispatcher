@@ -157,6 +157,24 @@ class Component
         }
     }
 
+    public function setIndex($index)
+    {
+        $this->index = $index;
+    }
+
+    public function isRepetitive()
+    {
+        return $this->type == self::LOOP;
+    }
+
+    public function isConstant()
+    {
+        if ($this->type == self::CONSTANT) {
+            return $this->raw;
+        }
+        return false;
+    }
+
     public function getParts()
     {
         return $this->parts;

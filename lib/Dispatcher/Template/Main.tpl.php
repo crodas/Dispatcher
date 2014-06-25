@@ -167,9 +167,24 @@ class Route
     #* foreach($self->getComplexUrls() as $i => $url)
     #   $route    = $url->getRouteDefinition()
     /** @Handler for __route___ */
-    protected function complex_url___i__()
+    protected function complex_url___i__($req, $parts, $length, $server)
     {
-        return false;
+        $i = 0;
+        #* foreach ($url->getParts() as $part)
+        #   $expr  = expr($part)
+        #   if ($part->isRepetitive())
+
+        #*  else
+        #*       if ($expr)
+            if (!(__expr__)) {
+                return false;
+            }
+        #*      end
+            ++$i;
+        #*   end
+        #* end
+
+        return true;
     }
     #* end
 
@@ -178,7 +193,20 @@ class Route
         #* foreach($self->getComplexUrls() as $i => $url)
         #   $mlength = $url->getMinLength()
         #   $consts  = $url->getConstants()
-        $is_candidate = $length >= __@mlength__;
+        #   $lconsts = count($consts)
+        #   $cfirst  = $url->getFirstConstant()
+        #   $clast   = $url->getLastConstant()
+        $is_candidate = $length >= __@mlength__
+        #* if ($cfirst)
+            && $parts[0] == __@cfirst__
+        #* end
+        #* if ($clast)
+            && $parts[$length-1] == __@clast__
+        #* end
+        #* if (count($consts) > 0)
+            && count(array_intersect($parts, __@consts__)) == __@lconsts__
+        #* end
+            ;
         if ($is_candidate && $this->complex_url___i__($req, $parts, $length, $server) == true) {
             return true;
         }

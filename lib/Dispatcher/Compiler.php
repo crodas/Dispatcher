@@ -454,7 +454,10 @@ class Compiler
         /**
          *  Generate expressions
          */
-        $vm->registerFunction('expr', function(Array $rules) use ($self, $callback) {
+        $vm->registerFunction('expr', function($rules) use ($self, $callback) {
+            if (!is_array($rules)) {
+                $rules = array($rules);
+            }
             if (count($rules) == 0) return '';
             $expr = array();
             foreach ($rules as $rule) {
