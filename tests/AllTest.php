@@ -205,6 +205,10 @@ class AllTest extends \phpunit_framework_testcase
         $req->set('phpunit', $this);
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/loop-00/l-1-1/l-2-3/l-3-4/loop/4/5/bar"));
         $this->assertEquals($controller, $req->get('controller'));
+        $this->assertEquals($req->get('numeric'), '00');
+        $this->assertEquals($req->get('a'), ['1', '2', '3']);
+        $this->assertEquals($req->get('x'), ['1', '3', '4']);
+        $this->assertEquals($req->get('b'), ['4', '5']);
     }
 
 }
