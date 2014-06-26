@@ -9,6 +9,7 @@ function numeric($req, $name, $value)
 /**
  *  @Route("/{foobar_nofilter}+/route")
  *  @Route("/router/{foobar_nofilter}+")
+ *  @Route("/routex/{foobar_nofilter}+/all")
  */
 function yet_another($req) {
     return __FUNCTION__;

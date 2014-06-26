@@ -212,6 +212,12 @@ class AllTest extends \phpunit_framework_testcase
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/router/hola/que/tal"));
         $this->assertEquals($controller, $req->get('controller'));
         $this->assertEquals($req->get('foobar_nofilter'), ['hola', 'que', 'tal']);
+
+        $route = new Route;
+        $req   = new Request;
+        $controller = $route->doRoute($req, array('REQUEST_URI' => "/routex/hola/que/tal/all"));
+        $this->assertEquals($controller, $req->get('controller'));
+        $this->assertEquals($req->get('foobar_nofilter'), ['hola', 'que', 'tal']);
     }
 
     public function testComplexUrl()
