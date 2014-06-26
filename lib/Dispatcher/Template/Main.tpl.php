@@ -181,7 +181,7 @@ class Route
             #* foreach ($part->getVariables('crodas') as $name => $var)
             #   if (count($var) == 1)
             #       $variable = "parts[$i]"
-            #   else
+            #   else 
             #       $variable = "matches_0[" . $var[1] . "]"
             #   end
                 $args[__@name__][] =  $__variable__;
@@ -189,11 +189,22 @@ class Route
             ++$i;
         }
 
+            #* else 
+            #   $no_filter = $part
             #* end
         // end
 
         #*  else
         #*       if ($expr)
+        #           if (!empty($no_filter))
+        while ($i < $length && !(__expr__)) {
+            #* foreach ($no_filter->getVariables('crodas') as $name => $var)
+            $args[__@name__][] = $parts[$i];
+            #* end
+            ++$i;
+        }
+        #*               $no_filter = false
+        #*          end
             if (!(__expr__)) {
                 return false;
             }
@@ -209,6 +220,15 @@ class Route
             ++$i;
         #*   end
         #* end
+
+        #* if (!empty($no_filter))
+        while ($i < $length) {
+            #* foreach ($no_filter->getVariables('crodas') as $name => $var)
+            $args[__@name__][] = $parts[$i];
+            #* end
+            ++$i;
+        }
+        #*  end
 
         #* 
         # $zcallback = callback_object($url->getAnnotation())

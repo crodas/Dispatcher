@@ -161,14 +161,128 @@ class Route
         return $this->doRoute($req, $_SERVER);
     }
 
-    /** @Handler for /loop-{numeric}/l-{numeric:a}-{numeric:x}+/loop/{numeric:b}+/bar_ */
+    /** @Handler for /{foobar_nofilter}+/route_ */
     protected function complex_url_0($req, $parts, $length, $server, &$return)
+    {
+        $i = 0;
+        $args = array();
+
+        // repetitive rule for {foobar_nofilter}+
+        // end
+
+        while ($i < $length && !($parts[$i] === 'route')) {
+            $args['foobar_nofilter'][] = $parts[$i];
+            ++$i;
+        }
+        if (!($parts[$i] === 'route')) {
+            return false;
+        }
+        ++$i;
+        if (empty($file_0d112b3b)) {
+            $file_0d112b3b = 1;
+            require_once __DIR__ . "//../input/loop.php";
+        }
+        if (empty($file_e55749ee)) {
+            $file_e55749ee = 1;
+            require_once __DIR__ . "//../input/filter.php";
+        }
+        if (empty($obj_filt_91adc016)) {
+            $obj_filt_91adc016 = new \SomeSillyClass;
+        }
+        if (!$obj_filt_91adc016->_all_filter($req, array (
+                ))) {
+            return false;
+        }
+
+        $req->setIfEmpty('__handler__', '\\yet_another');
+
+        
+        foreach ($args as $key => $value) {
+            $req->set($key, $value);
+        }
+
+        $return = \yet_another($req);
+
+        // post postRoute (if any)
+        if (empty($file_e55749ee)) {
+            $file_e55749ee = 1;
+            require_once __DIR__ . "//../input/filter.php";
+        }
+        if (empty($obj_filt_91adc016)) {
+            $obj_filt_91adc016 = new \SomeSillyClass;
+        }
+        $return = $obj_filt_91adc016->_all_filter_post($req, array (
+            ), $return);
+
+        return true;
+    }
+    /** @Handler for /router/{foobar_nofilter}+_ */
+    protected function complex_url_1($req, $parts, $length, $server, &$return)
+    {
+        $i = 0;
+        $args = array();
+        if (!($parts[$i] === 'router')) {
+            return false;
+        }
+        ++$i;
+
+        // repetitive rule for {foobar_nofilter}+
+        // end
+
+        while ($i < $length) {
+            $args['foobar_nofilter'][] = $parts[$i];
+            ++$i;
+        }
+        if (empty($file_0d112b3b)) {
+            $file_0d112b3b = 1;
+            require_once __DIR__ . "//../input/loop.php";
+        }
+        if (empty($file_e55749ee)) {
+            $file_e55749ee = 1;
+            require_once __DIR__ . "//../input/filter.php";
+        }
+        if (empty($obj_filt_91adc016)) {
+            $obj_filt_91adc016 = new \SomeSillyClass;
+        }
+        if (!$obj_filt_91adc016->_all_filter($req, array (
+                ))) {
+            return false;
+        }
+
+        $req->setIfEmpty('__handler__', '\\yet_another');
+
+        
+        foreach ($args as $key => $value) {
+            $req->set($key, $value);
+        }
+
+        $return = \yet_another($req);
+
+        // post postRoute (if any)
+        if (empty($file_e55749ee)) {
+            $file_e55749ee = 1;
+            require_once __DIR__ . "//../input/filter.php";
+        }
+        if (empty($obj_filt_91adc016)) {
+            $obj_filt_91adc016 = new \SomeSillyClass;
+        }
+        $return = $obj_filt_91adc016->_all_filter_post($req, array (
+            ), $return);
+
+        return true;
+    }
+    /** @Handler for /loop-{numeric}/l-{numeric:a}-{numeric:x}+/loop/{numeric:b}+/bar_ */
+    protected function complex_url_2($req, $parts, $length, $server, &$return)
     {
         $i = 0;
         $args = array();
         if (empty($file_0d112b3b)) {
             $file_0d112b3b = 1;
             require_once __DIR__ . "//../input/loop.php";
+        }
+        while ($i < $length && !(preg_match('/^loop\\-(.+)/', $parts[$i], $matches_0) > 0 && \numeric($req, 'numeric', $matches_0[1]))) {
+            $args['foobar_nofilter'][] = $parts[$i];
+            ++$i;
         }
         if (!(preg_match('/^loop\\-(.+)/', $parts[$i], $matches_0) > 0 && \numeric($req, 'numeric', $matches_0[1]))) {
             return false;
@@ -255,13 +369,30 @@ class Route
 
     protected function handleComplexUrl(Request $req, $parts, $length, $server)
     {
+        $is_candidate = $length >= 2
+        && count(array_intersect($parts, array (
+                    0 => 'route',
+                ))) == 1
+        ;
+        if ($is_candidate && $this->complex_url_0($req, $parts, $length, $server, $r) == true) {
+            return $r;
+        }
+        $is_candidate = $length >= 2
+        && $parts[0] == 'router'
+        && count(array_intersect($parts, array (
+                    0 => 'router',
+                ))) == 1
+        ;
+        if ($is_candidate && $this->complex_url_1($req, $parts, $length, $server, $r) == true) {
+            return $r;
+        }
         $is_candidate = $length >= 5
         && count(array_intersect($parts, array (
                     0 => 'loop',
                     1 => 'bar',
                 ))) == 2
         ;
-        if ($is_candidate && $this->complex_url_0($req, $parts, $length, $server, $r) == true) {
+        if ($is_candidate && $this->complex_url_2($req, $parts, $length, $server, $r) == true) {
             return $r;
         }
         throw new NotFoundException;
