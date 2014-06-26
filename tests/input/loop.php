@@ -10,5 +10,5 @@ function numeric($req, $name, $value)
  *  @Route("/loop-{numeric}/l-{numeric:a}-{numeric:x}+/loop/{numeric:b}+/bar")
  */
 function foobar($req) {
-    return '\foobar';
+    return __FUNCTION__;
 }
