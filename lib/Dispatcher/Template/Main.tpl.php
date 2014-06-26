@@ -167,17 +167,16 @@ class Route
     #* foreach($self->getComplexUrls() as $i => $url)
     #   $route    = $url->getRouteDefinition()
     /** @Handler for __route___ */
-    protected function complex_url___i__($req, $parts, $length, $server)
+    protected function complex_url___i__($req, $parts, $length, $server, &$return)
     {
         $i = 0;
+        $args = array();
         #* foreach ($url->getParts() as $part)
         #   $expr  = expr($part)
         #   if ($part->isRepetitive())
 
         // repetitive rule for __part__
             #* if ($expr)
-        $vars = array();
-
         while (__expr__) {
             #* foreach ($part->getVariables('crodas') as $name => $var)
             #   if (count($var) == 1)
@@ -185,14 +184,11 @@ class Route
             #   else
             #       $variable = "matches_0[" . $var[1] . "]"
             #   end
-                $vars[__@name__][] =  $__variable__;
+                $args[__@name__][] =  $__variable__;
             #* end
             ++$i;
         }
 
-        foreach ($vars as $key => $value) {
-            $req->set($key, $value);
-        }
             #* end
         // end
 
@@ -207,15 +203,47 @@ class Route
             #   else
             #       $variable = "matches_0[" . $var[1] . "]"
             #   end
-                $req->set(__@name__, $__variable__);;
+                $args[__@name__] = $__variable__;
             #* end
         #*      end
             ++$i;
         #*   end
         #* end
 
-        # foreach ($url->getArguments() as $name => $var)
+        #* 
+        # $zcallback = callback_object($url->getAnnotation())
+        # $callback  = callback($url->getAnnotation(), '$req')
+        # $preRoute  = $url->getFilters('preRoute')
+        # $postRoute = $url->getFilters('postRoute')
+        # foreach ($preRoute as $filter)
+        #   $filterFnc = callback($filter[0], '$req', $filter[1])
+        if (!__filterFnc__) {
+            return false;
+        }
+        #* end
+
+        $req->setIfEmpty('__handler__', __zcallback__);
+
+        #* foreach ($url->getArguments() as $name => $var)
         $req->set(__@name__, __@var__);
+        #* end
+        
+        foreach ($args as $key => $value) {
+            $req->set($key, $value);
+        }
+
+        $return = __callback__;
+
+        // post postRoute (if any)
+        #* foreach ($postRoute as $filter)
+        #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
+        $return = __filterFnc__;
+        #* end
+        
+        #* $last = $url->getFilters('Last')
+        # foreach ($last as $filter)
+        #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
+        __filterFnc__;
         #* end
 
         return true;
@@ -229,7 +257,7 @@ class Route
         #   $consts  = $url->getConstants()
         #   $lconsts = count($consts)
         #   $cfirst  = $url->getFirstConstant()
-        #   $clast   = $url->getLastConstant()
+        #   $clast   = $url->getLastConstant
         $is_candidate = $length >= __@mlength__
         #* if ($cfirst)
             && $parts[0] == __@cfirst__
@@ -241,8 +269,8 @@ class Route
             && count(array_intersect($parts, __@consts__)) == __@lconsts__
         #* end
             ;
-        if ($is_candidate && $this->complex_url___i__($req, $parts, $length, $server) == true) {
-            return true;
+        if ($is_candidate && $this->complex_url___i__($req, $parts, $length, $server, $r) == true) {
+            return $r;
         }
         #* end
     throw new NotFoundException;

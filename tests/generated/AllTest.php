@@ -162,9 +162,10 @@ class Route
     }
 
     /** @Handler for /loop-{numeric}/l-{numeric:a}-{numeric:x}+/loop/{numeric:b}+/bar_ */
-    protected function complex_url_0($req, $parts, $length, $server)
+    protected function complex_url_0($req, $parts, $length, $server, &$return)
     {
         $i = 0;
+        $args = array();
         if (empty($file_0d112b3b)) {
             $file_0d112b3b = 1;
             require_once __DIR__ . "//../input/loop.php";
@@ -172,7 +173,7 @@ class Route
         if (!(preg_match('/^loop\\-(.+)/', $parts[$i], $matches_0) > 0 && \numeric($req, 'numeric', $matches_0[1]))) {
             return false;
         }
-        $req->set('numeric', $matches_0[1]);;
+        $args['numeric'] = $matches_0[1];
         ++$i;
         if (empty($file_0d112b3b)) {
             $file_0d112b3b = 1;
@@ -184,17 +185,12 @@ class Route
         }
 
         // repetitive rule for l-{numeric:a}-{numeric:x}+
-        $vars = array();
-
         while (preg_match('/^l\\-(.+)\\-(.+)/', $parts[$i], $matches_0) > 0 && \numeric($req, 'a', $matches_0[1]) && \numeric($req, 'x', $matches_0[2])) {
-            $vars['a'][] =  $matches_0[1];
-            $vars['x'][] =  $matches_0[2];
+            $args['a'][] =  $matches_0[1];
+            $args['x'][] =  $matches_0[2];
             ++$i;
         }
 
-        foreach ($vars as $key => $value) {
-            $req->set($key, $value);
-        }
         // end
 
         if (!($parts[$i] === 'loop')) {
@@ -207,22 +203,52 @@ class Route
         }
 
         // repetitive rule for {numeric:b}+
-        $vars = array();
-
         while (($filter_e9d71f5e_0=\numeric($req, 'b', $parts[$i]))) {
-            $vars['b'][] =  $parts[$i];
+            $args['b'][] =  $parts[$i];
             ++$i;
         }
 
-        foreach ($vars as $key => $value) {
-            $req->set($key, $value);
-        }
         // end
 
         if (!($parts[$i] === 'bar')) {
             return false;
         }
         ++$i;
+        if (empty($file_0d112b3b)) {
+            $file_0d112b3b = 1;
+            require_once __DIR__ . "//../input/loop.php";
+        }
+        if (empty($file_e55749ee)) {
+            $file_e55749ee = 1;
+            require_once __DIR__ . "//../input/filter.php";
+        }
+        if (empty($obj_filt_91adc016)) {
+            $obj_filt_91adc016 = new \SomeSillyClass;
+        }
+        if (!$obj_filt_91adc016->_all_filter($req, array (
+                ))) {
+            return false;
+        }
+
+        $req->setIfEmpty('__handler__', '\\foobar');
+
+        
+        foreach ($args as $key => $value) {
+            $req->set($key, $value);
+        }
+
+        $return = \foobar($req);
+
+        // post postRoute (if any)
+        if (empty($file_e55749ee)) {
+            $file_e55749ee = 1;
+            require_once __DIR__ . "//../input/filter.php";
+        }
+        if (empty($obj_filt_91adc016)) {
+            $obj_filt_91adc016 = new \SomeSillyClass;
+        }
+        $return = $obj_filt_91adc016->_all_filter_post($req, array (
+            ), $return);
 
         return true;
     }
@@ -230,14 +256,13 @@ class Route
     protected function handleComplexUrl(Request $req, $parts, $length, $server)
     {
         $is_candidate = $length >= 5
-        && $parts[$length-1] == 'bar'
         && count(array_intersect($parts, array (
                     0 => 'loop',
                     1 => 'bar',
                 ))) == 2
         ;
-        if ($is_candidate && $this->complex_url_0($req, $parts, $length, $server) == true) {
-            return true;
+        if ($is_candidate && $this->complex_url_0($req, $parts, $length, $server, $r) == true) {
+            return $r;
         }
         throw new NotFoundException;
     }
