@@ -174,14 +174,48 @@ class Route
         #   $expr  = expr($part)
         #   if ($part->isRepetitive())
 
+        // repetitive rule for __part__
+            #* if ($expr)
+        $vars = array();
+
+        while (__expr__) {
+            #* foreach ($part->getVariables('crodas') as $name => $var)
+            #   if (count($var) == 1)
+            #       $variable = "parts[$i]"
+            #   else
+            #       $variable = "matches_0[" . $var[1] . "]"
+            #   end
+                $vars[__@name__][] =  $__variable__;
+            #* end
+            ++$i;
+        }
+
+        foreach ($vars as $key => $value) {
+            $req->set($key, $value);
+        }
+            #* end
+        // end
+
         #*  else
         #*       if ($expr)
             if (!(__expr__)) {
                 return false;
             }
+            #* foreach ($part->getVariables('crodas') as $name => $var)
+            #   if (count($var) == 1)
+            #       $variable = "parts[$i]"
+            #   else
+            #       $variable = "matches_0[" . $var[1] . "]"
+            #   end
+                $req->set(__@name__, $__variable__);;
+            #* end
         #*      end
             ++$i;
         #*   end
+        #* end
+
+        # foreach ($url->getArguments() as $name => $var)
+        $req->set(__@name__, __@var__);
         #* end
 
         return true;

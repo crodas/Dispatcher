@@ -203,7 +203,7 @@ class AllTest extends \phpunit_framework_testcase
         $route = new Route;
         $req   = new Request;
         $req->set('phpunit', $this);
-        $controller = $route->doRoute($req, array('REQUEST_URI' => "/loop/1/2/3/loop/4/5/bar"));
+        $controller = $route->doRoute($req, array('REQUEST_URI' => "/loop-00/l-1-1/l-2-3/l-3-4/loop/4/5/bar"));
         $this->assertEquals($controller, $req->get('controller'));
     }
 

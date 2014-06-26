@@ -161,18 +161,64 @@ class Route
         return $this->doRoute($req, $_SERVER);
     }
 
-    /** @Handler for /loop-{numeric}/l-{numeric}+/loop/{numeric}+/bar_ */
+    /** @Handler for /loop-{numeric}/l-{numeric:a}-{numeric:x}+/loop/{numeric:b}+/bar_ */
     protected function complex_url_0($req, $parts, $length, $server)
     {
-        $x = 0;
-        if (!(preg_match('/^loop\\-(.+)/', $parts[$x], $matches_$i) > 0)) {
+        $i = 0;
+        if (empty($file_0d112b3b)) {
+            $file_0d112b3b = 1;
+            require_once __DIR__ . "//../input/loop.php";
+        }
+        if (!(preg_match('/^loop\\-(.+)/', $parts[$i], $matches_0) > 0 && \numeric($req, 'numeric', $matches_0[1]))) {
             return false;
         }
-        ++$x;
-        if (!($parts[$x] === 'loop')) {
+        $req->set('numeric', $matches_0[1]);;
+        ++$i;
+        if (empty($file_0d112b3b)) {
+            $file_0d112b3b = 1;
+            require_once __DIR__ . "//../input/loop.php";
+        }
+        if (empty($file_0d112b3b)) {
+            $file_0d112b3b = 1;
+            require_once __DIR__ . "//../input/loop.php";
+        }
+
+        // repetitive rule for l-{numeric:a}-{numeric:x}+
+        $vars = array();
+
+        while (preg_match('/^l\\-(.+)\\-(.+)/', $parts[$i], $matches_0) > 0 && \numeric($req, 'a', $matches_0[1]) && \numeric($req, 'x', $matches_0[2])) {
+            $vars['a'][] =  $matches_0[1];
+            $vars['x'][] =  $matches_0[2];
+            ++$i;
+        }
+
+        foreach ($vars as $key => $value) {
+            $req->set($key, $value);
+        }
+        // end
+
+        if (!($parts[$i] === 'loop')) {
             return false;
         }
         ++$i;
+        if (empty($file_0d112b3b)) {
+            $file_0d112b3b = 1;
+            require_once __DIR__ . "//../input/loop.php";
+        }
+
+        // repetitive rule for {numeric:b}+
+        $vars = array();
+
+        while (($filter_e9d71f5e_0=\numeric($req, 'b', $parts[$i]))) {
+            $vars['b'][] =  $parts[$i];
+            ++$i;
+        }
+
+        foreach ($vars as $key => $value) {
+            $req->set($key, $value);
+        }
+        // end
+
         if (!($parts[$i] === 'bar')) {
             return false;
         }

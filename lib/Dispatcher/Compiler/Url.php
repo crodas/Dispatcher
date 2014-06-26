@@ -135,18 +135,7 @@ class Url
             switch($part->getType()){
             case Component::MIXED:
             case Component::VARIABLE:
-                $isVariable = $part->getType() == Component::VARIABLE;
-                $id1 = 1;
-                foreach ($part->getParts() as $part) {
-                    if ($part[0] == Component::VARIABLE) {
-                        $name = ($i=strpos($part[1], ':')) ? substr($part[1], $i+1) : $part[1];
-                        if ($isVariable) {
-                            $vars[$name] = array($id);
-                        } else {
-                            $vars[$name] = array($id, $id1++);
-                        }
-                    }
-                }
+                $vars = array_merge($vars, $part->getVariables($id));
                 break;
             }
         }

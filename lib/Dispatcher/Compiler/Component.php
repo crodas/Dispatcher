@@ -49,7 +49,9 @@ class Component
 
     protected $raw;
     protected $type;
+    protected $stype;
     protected $index;
+    protected $isLoop;
     protected $parts = array();
 
     public function  __construct($part, $index)
@@ -82,12 +84,14 @@ class Component
                     $f = $cmp->getFilterExpr($part[1]);
                     if (!empty($f)) {
                         $i++;
-                        $filters[] = $callback($f['filter'], '$req', $f['name'], "\$matches_{$this->index}[$i]");
+                        $index = (int)$this->index;
+                        $filters[] = $callback($f['filter'], '$req', $f['name'], "\$matches_{$index}[$i]");
                     }
                 }
             }
             $regex = var_export("/^" . implode("", $regex) . "/", true);
-            $expr  = "preg_match($regex, \$parts[$this->index], \$matches_$this->index) > 0";
+            $index = (int)$this->index;
+            $expr  = "preg_match($regex, \$parts[{$this->index}], \$matches_{$index}) > 0";
             if (count($filters)) {
                 $expr .= ' && ' .implode(' && ', $filters);
             }
@@ -98,12 +102,17 @@ class Component
                 return "";
             }
             $f['filter'] = $callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
-            $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_$this->index";
-            $expr = "(!empty($name) || ($name={$f['filter']}))";
+            $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_" . intval($this->index);
+            if ($this->isLoop) {
+                $expr = "($name={$f['filter']})";
+            } else {
+                $expr = "(!empty($name) || ($name={$f['filter']}))";
+            }
             break;
-
         case self::LOOP:
-            return "";
+            $this->type = $this->stype;
+            $expr = $this->getExpr($cmp, $callback);
+            $this->type = self::LOOP;
         }
 
         return $expr;
@@ -139,7 +148,14 @@ class Component
             $parts[] = array(self::CONSTANT, $buffer);
         }
 
-        $this->parts = $parts;
+        $this->isLoop = false;
+        if (substr($buffer, -1) == '+') {
+            $this->isLoop  = true;
+            $parts[count($parts)-1][1] = rtrim($parts[count($parts)-1][1], '+');
+            if (empty($parts[count($parts)-1][1])) {
+                array_pop($parts);
+            }
+        }
 
         foreach ($parts as $part) {
             if (empty($this->type)) {
@@ -152,9 +168,32 @@ class Component
             }
         }
 
-        if (substr($buffer, -1) == '+') {
-            $this->type = self::LOOP;
+        if ($this->isLoop) {
+            $this->stype = $this->type;
+            $this->type  = self::LOOP;
         }
+
+        $this->parts = $parts;
+
+    }
+
+    public function getVariables($id)
+    {
+        $isVariable = $this->getType() == Component::VARIABLE
+             || $this->stype == Component::VARIABLE;
+        $id1 = 1;
+        $vars = array();
+        foreach ($this->getParts() as $part) {
+            if ($part[0] == Component::VARIABLE) {
+                $name = ($i=strpos($part[1], ':')) ? substr($part[1], $i+1) : $part[1];
+                if ($isVariable) {
+                    $vars[$name] = array($id);
+                } else {
+                    $vars[$name] = array($id, $id1++);
+                }
+            }
+        }
+        return $vars;
     }
 
     public function setIndex($index)
