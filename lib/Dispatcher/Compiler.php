@@ -39,6 +39,7 @@ namespace Dispatcher;
 
 use Notoj\Annotations,
     Dispatcher\Compiler\Component,
+    Dispatcher\Compiler\ComplexUrl,
     Dispatcher\Compiler\Url,
     Dispatcher\Compiler\UrlGroup_Switch,
     Dispatcher\Compiler\UrlGroup_If,
@@ -54,6 +55,7 @@ class Compiler
     protected $all_filters   = array();
     protected $route_filters = array();
     protected $not_found = array();
+    protected $complex = array();
 
     public function __construct(Generator $conf, Annotations $annotations)
     {
@@ -67,6 +69,10 @@ class Compiler
     {
         $group = new UrlGroup_Switch('$server["REQUEST_METHOD"]');
         foreach ($urls as $url) {
+            if ($url->isComplex()) {
+                $this->complex[] = new ComplexUrl($url);
+                continue;
+            }
             $method = $url->getMethod();
             if ($method == 'ALL') {
                 $method = '';
@@ -167,6 +173,11 @@ class Compiler
                 }
             }
         }
+    }
+
+    public function getComplexUrls()
+    {
+        return $this->complex;
     }
 
     protected function getUrl($routeAnnotation, $route, $args = array())
@@ -331,7 +342,7 @@ class Compiler
         $config = $this->config;
         $output = $this->config->getOutput();
         $self   = $this;
-        $args   = compact('self', 'groups', 'config');
+        $args   = compact('self', 'groups', 'config', 'complex');
         $vm = \Artifex::load(__DIR__ . '/Template/Main.tpl.php', $args);
         $vm->doInclude('Switch.tpl.php');
         $vm->doInclude('Url.tpl.php');
@@ -443,7 +454,10 @@ class Compiler
         /**
          *  Generate expressions
          */
-        $vm->registerFunction('expr', function(Array $rules) use ($self, $callback) {
+        $vm->registerFunction('expr', function($rules) use ($self, $callback) {
+            if (!is_array($rules)) {
+                $rules = array($rules);
+            }
             if (count($rules) == 0) return '';
             $expr = array();
             foreach ($rules as $rule) {

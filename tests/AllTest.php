@@ -198,4 +198,39 @@ class AllTest extends \phpunit_framework_testcase
         $this->assertEquals($controller, $req->get('controller'));
     }
 
+    public function testComplexUrlWithNoFilter()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $controller = $route->doRoute($req, array('REQUEST_URI' => "/hola/que/tal/route"));
+        $this->assertEquals($controller, $req->get('controller'));
+        $this->assertEquals($req->get('foobar_nofilter'), ['hola', 'que', 'tal']);
+
+        $route = new Route;
+        $req   = new Request;
+        $controller = $route->doRoute($req, array('REQUEST_URI' => "/router/hola/que/tal"));
+        $this->assertEquals($controller, $req->get('controller'));
+        $this->assertEquals($req->get('foobar_nofilter'), ['hola', 'que', 'tal']);
+
+        $route = new Route;
+        $req   = new Request;
+        $controller = $route->doRoute($req, array('REQUEST_URI' => "/routex/hola/que/tal/all"));
+        $this->assertEquals($controller, $req->get('controller'));
+        $this->assertEquals($req->get('foobar_nofilter'), ['hola', 'que', 'tal']);
+    }
+
+    public function testComplexUrl()
+    {
+        $route = new Route;
+        $req   = new Request;
+        $req->set('phpunit', $this);
+        $controller = $route->doRoute($req, array('REQUEST_URI' => "/loop-00/l-1-1/l-2-3/l-3-4/loop/4/5/bar"));
+        $this->assertEquals($controller, $req->get('controller'));
+        $this->assertEquals($req->get('numeric'), '00');
+        $this->assertEquals($req->get('a'), ['1', '2', '3']);
+        $this->assertEquals($req->get('x'), ['1', '3', '4']);
+        $this->assertEquals($req->get('b'), ['4', '5']);
+    }
+
 }
