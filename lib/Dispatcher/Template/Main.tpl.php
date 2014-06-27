@@ -164,6 +164,138 @@ class Route
         return $this->doRoute($req, $_SERVER);
     }
 
+    #* foreach($self->getComplexUrls() as $i => $url)
+    #   $route    = $url->getRouteDefinition()
+    /** @Handler for __route___ */
+    protected function complex_url___i__($req, $parts, $length, $server, &$return)
+    {
+        $i = 0;
+        $args = array();
+        #* foreach ($url->getParts() as $part)
+        #   $expr  = expr($part)
+        #   if ($part->isRepetitive())
+
+        // repetitive rule for __part__
+            #* if ($expr)
+        while (__expr__) {
+            #* foreach ($part->getVariables('crodas') as $name => $var)
+            #   if (count($var) == 1)
+            #       $variable = "parts[$i]"
+            #   else 
+            #       $variable = "matches_0[" . $var[1] . "]"
+            #   end
+                $args[__@name__][] =  $__variable__;
+            #* end
+            ++$i;
+        }
+
+            #* else 
+            #   $no_filter = $part
+            #* end
+        // end
+
+        #*  else
+        #*       if ($expr)
+        #           if (!empty($no_filter))
+        while ($i < $length && !(__expr__)) {
+            #* foreach ($no_filter->getVariables('crodas') as $name => $var)
+            $args[__@name__][] = $parts[$i];
+            #* end
+            ++$i;
+        }
+        #*               $no_filter = false
+        #*          end
+            if (!(__expr__)) {
+                return false;
+            }
+            #* foreach ($part->getVariables('crodas') as $name => $var)
+            #   if (count($var) == 1)
+            #       $variable = "parts[$i]"
+            #   else
+            #       $variable = "matches_0[" . $var[1] . "]"
+            #   end
+                $args[__@name__] = $__variable__;
+            #* end
+        #*      end
+            ++$i;
+        #*   end
+        #* end
+
+        #* if (!empty($no_filter))
+        while ($i < $length) {
+            #* foreach ($no_filter->getVariables('crodas') as $name => $var)
+            $args[__@name__][] = $parts[$i];
+            #* end
+            ++$i;
+        }
+        #*  end
+
+        #* 
+        # $zcallback = callback_object($url->getAnnotation())
+        # $callback  = callback($url->getAnnotation(), '$req')
+        # $preRoute  = $url->getFilters('preRoute')
+        # $postRoute = $url->getFilters('postRoute')
+        # foreach ($preRoute as $filter)
+        #   $filterFnc = callback($filter[0], '$req', $filter[1])
+        if (!__filterFnc__) {
+            return false;
+        }
+        #* end
+
+        $req->setIfEmpty('__handler__', __zcallback__);
+
+        #* foreach ($url->getArguments() as $name => $var)
+        $req->set(__@name__, __@var__);
+        #* end
+        
+        foreach ($args as $key => $value) {
+            $req->set($key, $value);
+        }
+
+        $return = __callback__;
+
+        // post postRoute (if any)
+        #* foreach ($postRoute as $filter)
+        #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
+        $return = __filterFnc__;
+        #* end
+        
+        #* $last = $url->getFilters('Last')
+        # foreach ($last as $filter)
+        #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
+        __filterFnc__;
+        #* end
+
+        return true;
+    }
+    #* end
+
+    protected function handleComplexUrl(Request $req, $parts, $length, $server)
+    {
+        #* foreach($self->getComplexUrls() as $i => $url)
+        #   $mlength = $url->getMinLength()
+        #   $consts  = $url->getConstants()
+        #   $lconsts = count($consts)
+        #   $cfirst  = $url->getFirstConstant()
+        #   $clast   = $url->getLastConstant
+        $is_candidate = $length >= __@mlength__
+        #* if ($cfirst)
+            && $parts[0] == __@cfirst__
+        #* end
+        #* if ($clast)
+            && $parts[$length-1] == __@clast__
+        #* end
+        #* if (count($consts) > 0)
+            && count(array_intersect($parts, __@consts__)) == __@lconsts__
+        #* end
+            ;
+        if ($is_candidate && $this->complex_url___i__($req, $parts, $length, $server, $r) == true) {
+            return $r;
+        }
+        #* end
+    throw new NotFoundException;
+    }
+
     public function doRoute(Request $req, $server)
     {
         $uri    = $server['REQUEST_URI'];
@@ -178,8 +310,10 @@ class Route
         #* render($groups)
 
         #* render($self->getNotFoundHandler())
-
-        throw new NotFoundException;
+        
+        // We couldn't find any handler for the URL,
+        // let's find in our complex url set (if there is any)
+        $this->handleComplexUrl($req, $parts, $length, $server);
     }
 
     public static function getRoute($name, $args = array())
