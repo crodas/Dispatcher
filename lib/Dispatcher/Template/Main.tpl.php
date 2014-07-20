@@ -293,6 +293,9 @@ class Route
             return $r;
         }
         #* end
+
+        #* render($self->getNotFoundHandler())
+        
     throw new NotFoundException;
     }
 
@@ -309,8 +312,6 @@ class Route
 
         #* render($groups)
 
-        #* render($self->getNotFoundHandler())
-        
         // We couldn't find any handler for the URL,
         // let's find in our complex url set (if there is any)
         $this->handleComplexUrl($req, $parts, $length, $server);
