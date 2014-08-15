@@ -43,7 +43,10 @@ if (__expr__) {
         // post postRoute (if any)
         #* foreach ($postRoute as $filter)
         #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
-        $return = __filterFnc__;
+        $response = __filterFnc__;
+        if (is_array($response)) {
+            $return = $response;
+        }
         #* end
         
         #* $last = $object->getFilters('Last')
