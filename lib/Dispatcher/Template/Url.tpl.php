@@ -31,7 +31,7 @@ if (__expr__) {
     #* foreach ($preRoute as $filter)
     #   $filterFnc = callback($filter[0], '$req', $filter[1])
     if ($allow) {
-        $allow &= __filterFnc__;
+        $allow &= (__filterFnc__ !== false);
     }
     #* end
 
