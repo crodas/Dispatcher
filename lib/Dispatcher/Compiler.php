@@ -466,7 +466,8 @@ class Compiler
             return implode(' && ', array_filter($expr));
         });
 
-        $this->output = FixCode::fix($vm->run());
+        $this->output = $vm->run();
+        //$this->output = FixCode::fix($vm->run());
     }
     
     public function getOutput()
