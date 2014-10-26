@@ -6,7 +6,7 @@
         "crodas/cli": "*"
     },
     "require": {
-        "crodas/notoj": "~0.1",
+        "crodas/notoj": ">=0.1.21",
         "crodas/artifex": "~0.1",
         "crodas/watch-files": "~0.1",
         "crodas/file-util": "~0.1",

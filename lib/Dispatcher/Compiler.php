@@ -416,13 +416,22 @@ class Compiler
                 $text  = !empty($param[0]) && $param[0] == '$' ? $param : var_export($param, true);
                 return $text;
             }, $args);
-            $arguments = implode(", ", $args);
 
             // check if the filter is cachable
-            if (count($args) == 3) {
+            switch (count($args)) {
+            case 3:
                 $cache = intval($annotation->getOne('Cache'));
+                break;
+            case 1:
+                $zargs = $annotation->getMetadata();
+                $zargs = $zargs['params'];
+                for ($i = 1; $i < count($zargs); $i++) {
+                    $args[] = '$req->get(' . var_export(substr($zargs[$i], 1), true) . ')';
+                }
+                break;
             }
 
+            $arguments = implode(", ", $args);
             if ($annotation->isFunction()) {
                 // generate code for functions 
                 $function = "\\" . $annotation['function'];
