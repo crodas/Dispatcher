@@ -43,7 +43,7 @@ class Router extends Generator
     protected $loaded;
     protected $_router;
 
-    public function __construct($output)
+    public function __construct($output = '')
     {
         $this->setOutput($output);
         $this->setNamespace(__CLASS__ . "\\Generated"); 
