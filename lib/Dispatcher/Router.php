@@ -70,11 +70,11 @@ class Router extends Generator
     {
         if ($this->loaded) return $this->_router;
 
-        if (!is_file($this->output) || $this->development) {
+        if (!is_file($this->getOutput()) || $this->development) {
             $this->generate();
         }
 
-        require $this->output;
+        require $this->getOutput();
 
         $class = $this->getNamespace() . "\\Route";
 
