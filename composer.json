@@ -6,10 +6,11 @@
         "crodas/cli": "*"
     },
     "require": {
+        "php": ">=5.3",
         "crodas/notoj": ">=0.1.21",
         "crodas/artifex": "~0.1",
         "crodas/watch-files": "~0.1",
-        "crodas/file-util": "~0.1",
+        "crodas/file-util": "~0.1.14",
         "crodas/simple-view-engine": "~0.1"
     },
 
