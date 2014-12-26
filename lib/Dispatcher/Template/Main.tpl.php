@@ -333,6 +333,7 @@ class Route
         $uri    = ($p = strpos($uri, '?')) ? substr($uri, 0, $p) : $uri;
         $parts  = array_values(array_filter(explode("/", $uri)));
         $length = count($parts);
+        $req->uri = $uri;
 
         if (empty($server['REQUEST_METHOD'])) {
             $server['REQUEST_METHOD'] = 'GET';
