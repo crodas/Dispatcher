@@ -31,6 +31,31 @@ class Request
     protected $var = array();
     protected $changes = array();
     protected $watch   = false;
+    protected $begin;
+
+    public function __construct()
+    {
+        $this->begin = microtime(true);
+    }
+
+    public function getResponseTime()
+    {
+        return microtime(true) - $this->begin;
+    }
+
+    #* $types = ["GET", "PUT", "DELETE", "POST"]
+    #* foreach ($types as $type)
+    public function is__type__()
+    {
+        return $_SERVER['REQUEST_METHOD'] === __@type__;
+    }
+    #* end
+
+    public function isAjax()
+    {
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    }
 
     public function watchChanges()
     {
@@ -237,7 +262,7 @@ class Route
         # $postRoute = $url->getFilters('postRoute')
         # foreach ($preRoute as $filter)
         #   $filterFnc = callback($filter[0], '$req', $filter[1])
-        if (!__filterFnc__) {
+        if (__filterFnc__ === false) {
             return false;
         }
         #* end
@@ -257,7 +282,10 @@ class Route
         // post postRoute (if any)
         #* foreach ($postRoute as $filter)
         #   $filterFnc = callback($filter[0], '$req', $filter[1], '$return')
-        $return = __filterFnc__;
+        $response = __filterFnc__;
+        if (is_array($response)) {
+            $return = $response;
+        }
         #* end
         
         #* $last = $url->getFilters('Last')
@@ -305,6 +333,7 @@ class Route
         $uri    = ($p = strpos($uri, '?')) ? substr($uri, 0, $p) : $uri;
         $parts  = array_values(array_filter(explode("/", $uri)));
         $length = count($parts);
+        $req->uri = $uri;
 
         if (empty($server['REQUEST_METHOD'])) {
             $server['REQUEST_METHOD'] = 'GET';

@@ -43,7 +43,7 @@ class Router extends Generator
     protected $loaded;
     protected $_router;
 
-    public function __construct($output)
+    public function __construct($output = '')
     {
         $this->setOutput($output);
         $this->setNamespace(__CLASS__ . "\\Generated"); 
@@ -70,11 +70,11 @@ class Router extends Generator
     {
         if ($this->loaded) return $this->_router;
 
-        if (!is_file($this->output) || $this->development) {
+        if (!is_file($this->getOutput()) || $this->development) {
             $this->generate();
         }
 
-        require $this->output;
+        require $this->getOutput();
 
         $class = $this->getNamespace() . "\\Route";
 

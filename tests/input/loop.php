@@ -11,7 +11,9 @@ function numeric($req, $name, $value)
  *  @Route("/router/{foobar_nofilter}+")
  *  @Route("/routex/{foobar_nofilter}+/all")
  */
-function yet_another($req) {
+function yet_another($req, $foobar_nofilter) {
+    $phpunit = $req->get('phpunit');
+    $phpunit->assertEquals($foobar_nofilter, $req->get('foobar_nofilter'));
     return __FUNCTION__;
 }
 

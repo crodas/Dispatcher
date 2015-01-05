@@ -209,12 +209,14 @@ class AllTest extends \phpunit_framework_testcase
 
         $route = new Route;
         $req   = new Request;
+        $req->set('phpunit', $this);
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/router/hola/que/tal"));
         $this->assertEquals($controller, $req->get('controller'));
         $this->assertEquals($req->get('foobar_nofilter'), array('hola', 'que', 'tal'));
 
         $route = new Route;
         $req   = new Request;
+        $req->set('phpunit', $this);
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/routex/hola/que/tal/all"));
         $this->assertEquals($controller, $req->get('controller'));
         $this->assertEquals($req->get('foobar_nofilter'), array('hola', 'que', 'tal'));
