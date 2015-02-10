@@ -37,8 +37,7 @@
 
 namespace Dispatcher;
 
-use Notoj\Annotations,
-    Dispatcher\Compiler\Component,
+use Dispatcher\Compiler\Component,
     Dispatcher\Compiler\ComplexUrl,
     Dispatcher\Compiler\Url,
     Dispatcher\Compiler\UrlGroup_Switch,
@@ -57,7 +56,7 @@ class Compiler
     protected $not_found = array();
     protected $complex = array();
 
-    public function __construct(Generator $conf, Annotations $annotations)
+    public function __construct(Generator $conf, \Notoj\Filesystem $annotations)
     {
         $this->config      = $conf;
         $this->annotations = $annotations;
@@ -145,34 +144,32 @@ class Compiler
 
     protected function readFilters()
     {
-        foreach ($this->annotations->get('Filter') as $filterAnnotation) {
-            foreach ($filterAnnotation->get('Filter') as $filter) {
-                $name = current($filter['args']);
-                if (empty($name)) continue;
-                $this->filters[$name] = $filterAnnotation;
-            }
+        foreach ($this->annotations->get('Filter', 'Callable') as $filterAnnotation) {
+            $name = current($filterAnnotation->GetARgs());
+            if (empty($name)) continue;
+            $this->filters[$name] = $filterAnnotation->GetObject();
         }
 
         $this->route_filters = array();
-        foreach(array('preRoute', 'postRoute') as $type) {
-            foreach ($this->annotations->get($type) as $filterRouter) {
-                foreach ($filterRouter->get($type) as $filter) {
-                    $name = !empty($filter['args']) ? strtolower(current($filter['args'])) : null;
-                    $weight = 10;
-                    foreach ($filterRouter->get('First') as $last) {
-                        $weight -= 100;
-                    }
-                    foreach ($filterRouter->get('Last') as $last) {
-                        $weight += 100;
-                    }
-                    if (empty($name)) {
-                        $this->all_filters[$type][] = array($filterRouter, $weight);
-                        continue;
-                    }
-                    $this->route_filters[$name][] = array($type, $filterRouter, $weight);
-                }
+        foreach ($this->annotations->get('preroute,postroute', 'Callable') as $filterAnnotation) {
+            $type = $filterAnnotation->getName();
+            $args = $filterAnnotation->getArgs();
+            $name = !empty($args) ? strtolower(current($args)) : null;
+            $weight = 10;
+            if ($filterAnnotation->getParent()->has('First')) {
+                $weight -= 100;
+            } else if ($filterAnnotation->getParent()->has('Last')) {
+                $weight += 100;
             }
+
+            if (empty($name)) {
+                $this->all_filters[$type][] = array($filterAnnotation, $weight);
+                continue;
+            }
+            $this->route_filters[$name][] = array($type, $filterAnnotation, $weight);
+
         }
+
     }
 
     public function getComplexUrls()
@@ -201,21 +198,17 @@ class Compiler
             }
         }
 
-        $filters = (array)$routeAnnotation;
-
         if ($routeAnnotation->isMethod()) {
-            $class = $this->annotations->getClassInfo($routeAnnotation['class']);
-            if (!empty($class['class'])) {
-                $filters = array_merge((array)$class['class'], $filters);
-            }
+            $classAnn = $routeAnnotation->getObject()->getClass()->get('');
+            $filters = array_merge($classAnn, $filters);
         }
 
-        foreach ($filters as $annotation) {
-            $name = strtolower($annotation['method']);
+        foreach ($routeAnnotation->GetParent() as $annotation) {
+            $name = $annotation->getName();
 
             if (!empty($this->route_filters[$name])) {
                 foreach ($this->route_filters[$name] as $filter) {
-                    $url->addFilter($filter[0], $filter[1], $annotation['args'], $filter[2]+ ++$base);
+                    $url->addFilter($filter[0], $filter[1], $annotation->getArgs(), $filter[2]+ ++$base);
                 }
             }
         }
@@ -223,19 +216,17 @@ class Compiler
         return $url;
     }
 
-    protected function processRoute($routeAnnotation, Array $route)
+    protected function processRoute($routeAnnotation, Array $args)
     {
-        $args  = empty($route['args']) ? array() : $route['args'];
         $route = current($args);
         $class = null;
 
         if ($routeAnnotation->isMethod()) {
-            $class = $this->annotations->getClassInfo($routeAnnotation['class']);
-            if (!empty($class['class'])) {
-                $baseRoute = $class['class']->getOne('Route');
-                if (!empty($baseRoute)) {
-                    $route = current($baseRoute) . '/' . $route;
-                }
+            $method = $routeAnnotation->getObject();
+            $class = $method->getClass();
+            $baseRoute = $class->getOne('Route');
+            if (!empty($baseRoute)) {
+                $route = current($baseRoute->getArgs()) . '/' . $route;
             }
         }
 
@@ -245,9 +236,9 @@ class Compiler
 
         $url = $this->getUrl($routeAnnotation, $route, $args);
 
-        if ($routeAnnotation->has('Method')) {
-            foreach($routeAnnotation->get('Method') as $method) {
-                foreach ($method['args'] as $m) {
+        if ($routeAnnotation->getParent()->has('Method')) {
+            foreach($routeAnnotation->getParent()->get('Method') as $method) {
+                foreach ($method->getArgs() as $m) {
                     $nurl = clone $url;
                     $nurl->setMethod($m);
                     $this->urls[] = $nurl;
@@ -267,24 +258,20 @@ class Compiler
         $this->urls = array();
         foreach ($this->annotations->get('Route') as $routeAnnotation) {
             if ($routeAnnotation->isClass()) {
-                if (count($routeAnnotation->get('Route')) > 1) {
+                if (count($routeAnnotation->getParent()->get('Route')) > 1) {
                     throw new \RuntimeException("Classes can have only *one* @Route");
                 }
-                $class = $this->annotations->getClassInfo($routeAnnotation['class']);
-                if (empty($class['method'])) {
-                    continue;
-                }
-                foreach ($class['method'] as $annotation) {
-                    if ($annotation->has('Method') && !$annotation->has('Route')) {
-                        $this->processRoute($annotation, array());
+                $class = $routeAnnotation->getObject();
+                $methods = $class->getMethods('Method');
+                foreach ($methods as $method) {
+                    if (!$method->has('Route')) {
+                        $this->processRoute($method->getOne('Method'), array(""));
                     }
                 }
                 continue;
             }
 
-            foreach ($routeAnnotation->get('Route') as $route) {
-                $this->processRoute($routeAnnotation, $route);
-            }
+            $this->processRoute($routeAnnotation, $routeAnnotation->GetArgs());
         }
 
         foreach($this->annotations->get('NotFound') as $route) {
@@ -375,11 +362,11 @@ class Compiler
 
         $vm->registerFunction('callback_object', $callback=function($annotation) use ($vm, $self, $output) {
             if ($annotation->isFunction()) {
-                return var_export('\\' . $annotation['function'], true);
+                return var_export('\\' . $annotation->getObject()->getName(), true);
             } else if ($annotation->isMethod()) {
-                $class  = "\\" . $annotation['class'];
+                $class  = "\\" . $annotation->getObject()->getClass()->getName();
                 $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
-                return "array($obj, " . var_export($annotation['function'], true) . ')';
+                return "array($obj, " . var_export($annotation->getObject()->GetName(), true) . ')';
             } else {
                 throw new \RuntimeException("Invalid callback");
             }
@@ -390,10 +377,10 @@ class Compiler
          *  a method)
          */
         $vm->registerFunction('callback', $callback=function($annotation) use ($vm, $self, $output) {
-            $fileHash = '$file_' . substr(sha1($annotation['file']), 0, 8);
-            $filePath = $annotation['file'];
+            $fileHash = '$file_' . substr(sha1($annotation->getFile()), 0, 8);
+            $filePath = $annotation->GetFile();
             if (!empty($output)) {
-                $filePath = Path::getRelative($annotation['file'], $output);
+                $filePath = Path::getRelative($annotation->getFile(), $output);
             }
 
             // prepare loading of the method/function
@@ -416,15 +403,24 @@ class Compiler
                 $text  = !empty($param[0]) && $param[0] == '$' ? $param : var_export($param, true);
                 return $text;
             }, $args);
+            
+            if ($annotation instanceof \Notoj\Annotation\Annotation) {
+                $object = $annotation->GetObject();
+            } else {
+                $object = $annotation;
+                $annotation = $annotation->getOne();
+            }
 
             // check if the filter is cachable
             switch (count($args)) {
             case 3:
-                $cache = intval($annotation->getOne('Cache'));
+                $cache = 0;
+                if ($annotation->getParent()->has('Cache')) {
+                    $cache = intval(current($annotation->getParent()->getOne('Cache')->getArgs()));
+                }
                 break;
             case 1:
-                $zargs = $annotation->getMetadata();
-                $zargs = $zargs['params'];
+                $zargs = $annotation->getObject()->GetParameters();
                 for ($i = 1; $i < count($zargs); $i++) {
                     $args[] = '$req->get(' . var_export(substr($zargs[$i], 1), true) . ')';
                 }
@@ -434,7 +430,7 @@ class Compiler
             $arguments = implode(", ", $args);
             if ($annotation->isFunction()) {
                 // generate code for functions 
-                $function = "\\" . $annotation['function'];
+                $function = "\\" . $object->getName();
                 if (!empty($cache)) { 
                     return  '$this->doCachedFilter(' . var_export($function,true) . ", $arguments, $cache)";
                 } else {
@@ -443,8 +439,8 @@ class Compiler
             } else if ($annotation->isMethod()) {
                 // It is a method, *for now* we don't care if the method
                 // is static so we instanciate an object if it wasn't done before
-                $class  = "\\" . $annotation['class'];
-                $method = $annotation['function'];
+                $class  = "\\" . $object->getClass()->getName();
+                $method = $object->getName();
                 $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
                 $vm->printIndented("if (empty($obj)) {\n");
                 $vm->printIndented("    $obj = new $class;\n");

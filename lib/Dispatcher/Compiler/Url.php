@@ -37,7 +37,7 @@
 
 namespace Dispatcher\Compiler;
 
-use Notoj\Annotation;
+use Notoj\Annotation\Annotation;
 
 class Url
 {

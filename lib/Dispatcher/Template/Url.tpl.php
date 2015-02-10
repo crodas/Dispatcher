@@ -23,8 +23,8 @@ if (__expr__) {
     #* end
     # $zcallback = callback_object($object->getAnnotation())
     # $callback  = callback($object->getAnnotation(), '$req')
-    # $preRoute  = $object->getFilters('preRoute')
-    # $postRoute = $object->getFilters('postRoute')
+    # $preRoute  = $object->getFilters('preroute')
+    # $postRoute = $object->getFilters('postroute')
 
     //run preRoute filters (if any)
     $allow = true;

@@ -132,26 +132,19 @@ class Generator
             return;
         }
 
-        $annotations = new Annotations;
         $isCached = $output && file_exists($output);
         $files    = array();
         $dirs     = array();
 
+        $annotations = new \Notoj\Filesystem(array_unique(array_merge($this->dirs, $this->files)));
+
         foreach (array_unique($this->files) as $file) {
-            $ann = new FileParser($file);
-            $ann->getAnnotations($annotations);
             $files[] = $file;
-            $dirs[]  = dirname($file);
+            $dirs[] = dirname($file);
         }
 
         foreach (array_unique($this->dirs) as $dir) {
-            $ann = new DirParser($dir);
-            $ann->getAnnotations($annotations);
             $dirs[] = $dir;
-            $files  = array_merge($files, $ann->getFiles());
-        }
-        foreach ($files as $file) {
-            $dirs[] = dirname($file);
         }
 
         $cache->watchFiles($files)->watchDirs($dirs);
