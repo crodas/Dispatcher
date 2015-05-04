@@ -7,7 +7,7 @@
     },
     "require": {
         "php": ">=5.3",
-        "crodas/notoj": "dev-develop",
+        "crodas/notoj": "^1.0.3",
         "crodas/artifex": "~0.1",
         "crodas/watch-files": "~0.1",
         "crodas/file-util": "~0.1.14",
