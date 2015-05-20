@@ -192,18 +192,20 @@ class Compiler
         }
 
         $base = 0;
+        $filters = $this->all_filters;
         foreach ($this->all_filters as $type => $filters) {
             foreach ($filters as $filter) {
                 $url->addFilter($type, $filter[0], array(), $filter[1]+ ++$base);
             }
         }
 
+        $filters = iterator_to_array($routeAnnotation->GetParent());
         if ($routeAnnotation->isMethod()) {
             $classAnn = $routeAnnotation->getObject()->getClass()->get('');
             $filters = array_merge($classAnn, $filters);
         }
 
-        foreach ($routeAnnotation->GetParent() as $annotation) {
+        foreach ($filters as $annotation) {
             $name = $annotation->getName();
 
             if (!empty($this->route_filters[$name])) {
