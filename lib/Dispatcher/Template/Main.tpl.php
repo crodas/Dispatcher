@@ -274,7 +274,7 @@ class Route
         #* end
         
         foreach ($args as $key => $value) {
-            $req->set($key, $value);
+            $req->setIfEmpty($key, $value);
         }
 
         $return = __callback__;
