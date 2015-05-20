@@ -115,6 +115,7 @@ class AllTest extends \phpunit_framework_testcase
         $req->set('phpunit', $this);
         $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix', 'REQUEST_METHOD' => 'POST'));
         $this->assertEquals($out, 'SomeClass::save');
+        $this->assertTrue($req->get('run_all'));
     }
 
     /** 
