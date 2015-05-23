@@ -46,6 +46,7 @@ class Component
     const VARIABLE  = 20;
     const MIXED     = 30;
     const LOOP      = 40;
+    const EXPENSIVE = 0xfff;
 
     protected $raw;
     protected $type;
@@ -64,13 +65,16 @@ class Component
 
     public function getWeight(Compiler $cmp = null)
     {
-        if (!$cmp) return $this->weight;
+        if (!$cmp) {
+            return $this->weight;
+        }
 
-        if ($this->type == self::VARIABLE || $this->type == self::LOOP) {
+        if (($this->type == self::VARIABLE || $this->type == self::LOOP)) {
             if (!$cmp->getFilterExpr($this->parts[0][1])) {
-                return $this->weight = 0xfff;
+                return $this->weight = self::EXPENSIVE;
             }
         }
+
         return $this->weight = $this->type;
     }
 

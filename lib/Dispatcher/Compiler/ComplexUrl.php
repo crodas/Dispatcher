@@ -38,6 +38,7 @@
 namespace Dispatcher\Compiler;
 
 use RuntimeException;
+use Dispatcher\Compiler;
 
 class ComplexUrl extends Url
 {
@@ -74,6 +75,44 @@ class ComplexUrl extends Url
             return (string)$this->parts[$last];
         }
         return false;
+    }
+
+    /**
+     *  Complex URL weight algorithm
+     *
+     *  The idea is to rank URLs, the more predictive the complex URL is
+     *  the less weight it would have.
+     *
+     *      /foo/{args}+/xxx    => It's easy to calculate (first elements needs to be foo, and last xxx)
+     *      /{args}+            => It's hard, as it matches everything so it needs to be try last
+     *  
+     *  @return int
+     */ 
+    public function getWeight(Compiler $cmp = null)
+    {
+        $info = $this->getRouteInfo();
+        $weight  = 0xffff / $info[ Component::LOOP ];
+
+        foreach ($info as $type => $number) {
+            if ($type != Component::LOOP) {
+                // It is something we can calculate
+                $weight -= (0xff-$type) * $number;
+            }
+        }
+
+        return $weight;
+    }
+
+    public function getRouteInfo()
+    {
+        $types = array();
+        foreach ($this->parts as $part) {
+            if (empty($types[$part->getType()])) {
+                $types[ $part->getType() ] = 0;
+            }
+            $types[ $part->getType() ]++;
+        }
+        return $types;
     }
 
     public function getConstants()
