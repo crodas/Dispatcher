@@ -42,6 +42,7 @@ use Dispatcher\Compiler\Component,
     Dispatcher\Compiler\Url,
     Dispatcher\Compiler\UrlGroup_Switch,
     Dispatcher\Compiler\UrlGroup_If,
+    Notoj\Annotation\Annotation,
     crodas\SimpleView\FixCode,
     crodas\FileUtil\Path;
 
@@ -78,6 +79,10 @@ class Compiler
             }
             $group->addUrl($url, $method);
         }
+        $self = $this;
+        usort($this->complex, function ($a, $b) use ($self) {
+            return $a->getWeight($self) - $b->getWeight($self);
+        });
         return $group;
     }
 
@@ -218,7 +223,7 @@ class Compiler
         return $url;
     }
 
-    protected function processRoute($routeAnnotation, Array $args)
+    protected function processRoute(Annotation $routeAnnotation, Array $args)
     {
         $route = current($args);
         $class = null;
@@ -324,8 +329,9 @@ class Compiler
         $groups = $this->groupByMethod($this->urls);
         $groups->iterate(array($this, 'groupByPartsSize'));
         $groups->iterate(array($this, 'groupByPatterns'));
-        $groups->sort(function($obj1, $obj2) {
-            return $obj1->getWeight() - $obj2->getWeight();
+        $self = $this;
+        $groups->sort(function($obj1, $obj2) use ($self) {
+            return $obj1->getWeight($self) - $obj2->getWeight($self);
         });
 
         $config = $this->config;
