@@ -52,6 +52,7 @@ class Component
     protected $stype;
     protected $index;
     protected $isLoop;
+    protected $weight;
     protected $parts = array();
 
     public function  __construct($part, $index)
@@ -59,6 +60,18 @@ class Component
         $this->raw   = $part;
         $this->index = $index;
         $this->doParse();
+    }
+
+    public function getWeight(Compiler $cmp = null)
+    {
+        if (!$cmp) return $this->weight;
+
+        if ($this->type == self::VARIABLE || $this->type == self::LOOP) {
+            if (!$cmp->getFilterExpr($this->parts[0][1])) {
+                return $this->weight = 0xfff;
+            }
+        }
+        return $this->weight = $this->type;
     }
 
     public function getType()

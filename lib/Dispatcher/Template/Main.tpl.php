@@ -190,8 +190,9 @@ class Route
     }
 
     #* foreach($self->getComplexUrls() as $i => $url)
-    #   $route    = $url->getRouteDefinition()
-    /** @Handler for __route___ */
+    #   $route  = $url->getRouteDefinition()
+    #   $weight = $url->getWeight()
+    /** @Handler for __route__ - __weight__ {{{ */
     protected function complex_url___i__($req, $parts, $length, $server, &$return)
     {
         $i = 0;
@@ -296,6 +297,8 @@ class Route
 
         return true;
     }
+    /* }}} */
+
     #* end
 
     protected function handleComplexUrl(Request $req, $parts, $length, $server)

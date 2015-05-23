@@ -206,21 +206,21 @@ class AllTest extends \phpunit_framework_testcase
         $req->set('phpunit', $this);
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/hola/que/tal/route"));
         $this->assertEquals($controller, $req->get('controller'));
-        $this->assertEquals($req->get('foobar_nofilter'), array('hola', 'que', 'tal'));
+        $this->assertEquals(array('hola', 'que', 'tal'), $req->get('foobar_nofilter'));
 
         $route = new Route;
         $req   = new Request;
         $req->set('phpunit', $this);
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/router/hola/que/tal"));
         $this->assertEquals($controller, $req->get('controller'));
-        $this->assertEquals($req->get('foobar_nofilter'), array('hola', 'que', 'tal'));
+        $this->assertEquals(array('hola', 'que', 'tal'), $req->get('foobar_nofilter'));
 
         $route = new Route;
         $req   = new Request;
         $req->set('phpunit', $this);
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/routex/hola/que/tal/all"));
         $this->assertEquals($controller, $req->get('controller'));
-        $this->assertEquals($req->get('foobar_nofilter'), array('hola', 'que', 'tal'));
+        $this->assertEquals(array('hola', 'que', 'tal'), $req->get('foobar_nofilter'));
     }
 
     public function testComplexUrl()

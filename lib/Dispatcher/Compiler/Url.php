@@ -38,6 +38,7 @@
 namespace Dispatcher\Compiler;
 
 use Notoj\Annotation\Annotation;
+use Dispatcher\Compiler;
 
 class Url
 {
@@ -66,16 +67,11 @@ class Url
         return $this->name;
     }
 
-    public function getWeight()
+    public function getWeight(Compiler $cmp = null)
     {
         $weight = 0;
         foreach ($this->parts as $part) {
-            $weight += $part->GetType();
-        }
-        if (count($this->parts) == 1 && $part->GetType() == Component::VARIABLE) {
-            // the url has only a single component (/{foobar}) so it *must*
-            // the last rule to evaluate
-            return 0xfffff;
+            $weight += $part->getWeight($cmp);
         }
         return $weight;
     }
