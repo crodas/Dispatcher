@@ -37,6 +37,8 @@
 
 namespace Dispatcher\Compiler;
 
+use Dispatcher\Templates;
+
 class UrlGroup_Switch extends UrlGroup
 {
     public function addUrl(Url $url, $type)
@@ -45,5 +47,10 @@ class UrlGroup_Switch extends UrlGroup
             $this->urls[$type] = array();
         }
         $this->urls[$type][] = $url;
+    }
+
+    public function __toString()
+    {
+        return Templates::get('groups/switch')->render(array('self' => $this), true);
     }
 }

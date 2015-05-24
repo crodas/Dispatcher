@@ -64,6 +64,105 @@ class Compiler
 
         $this->compile();
     }
+
+    protected function getAnnotationAndObject($annotation)
+    {
+        if (is_callable(array($annotation, 'getAnnotation'))) {
+            $annotation = $annotation->getAnnotation();
+        }
+        if ($annotation instanceof \Notoj\Annotation\Annotation) {
+            $object = $annotation->GetObject();
+        } else {
+            $object = $annotation;
+            $annotation = $annotation->getOne();
+        }
+
+        return array($annotation, $object);
+    }
+
+    public function callbackObject($annotation)
+    {
+        list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+        if ($annotation->isFunction()) {
+            return var_export($object->getName(), true);
+        }
+
+        $class  = "\\". $object->getClass()->getName();
+        $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
+        return "array({$obj}, ". var_export($object->getName(), true) . ")";
+    }
+
+    public function callbackPrepare($annotation)
+    {
+        list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+        $args = array(
+            'filePath' => $annotation->getFile(),
+            'annotation' => $annotation,
+            'name'      => $object->GetName(),
+            'filter'    => 'is_callable',
+        );
+        if ($annotation->isMethod()) {
+            $class         = "\\" . $object->getClass()->getName();
+            $args['obj']   = '$obj_filt_' . substr(sha1($class), 0, 8);
+            $args['class'] = $class; 
+            $args['name']  = substr($class, 1);
+            $args['filter'] = 'class_exists';
+        }
+        return Templates::get('callback')->render($args, true);
+    }
+
+    public function callback($annotation)
+    {
+        // Get Code representation out of arguments array
+        $args = func_get_args();
+        array_shift($args);
+        $args = array_map(function($param) {
+            $param = is_scalar($param) ? ((string)$param) : $param;
+            $text  = !empty($param[0]) && $param[0] == '$' ? $param : var_export($param, true);
+            return $text;
+        }, $args);
+        
+        list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+
+        // check if the filter is cachable
+        switch (count($args)) {
+        case 3:
+            $cache = 0;
+            if ($annotation->getParent()->has('Cache')) {
+                $cache = intval(current($annotation->getParent()->getOne('Cache')->getArgs()));
+            }
+            break;
+        case 1:
+            $zargs = $annotation->getObject()->GetParameters();
+            for ($i = 1; $i < count($zargs); $i++) {
+                $args[] = '$req->get(' . var_export(substr($zargs[$i], 1), true) . ')';
+            }
+            break;
+        }
+
+        $arguments = implode(", ", $args);
+        if ($annotation->isFunction()) {
+            // generate code for functions 
+            $function = "\\" . $object->getName();
+            if (!empty($cache)) { 
+                return  '$this->doCachedFilter(' . var_export($function,true) . ", $arguments, $cache)";
+            } else {
+                return "$function($arguments)";
+            }
+        } else if ($annotation->isMethod()) {
+            // It is a method, *for now* we don't care if the method
+            // is static so we instanciate an object if it wasn't done before
+            $class  = "\\" . $object->getClass()->getName();
+            $method = $object->getName();
+            $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
+            if (!empty($cache)) { 
+                return  '$this->doCachedFilter(array(' . "{$obj}, '{$method}'), $arguments, $cache)";
+            } else {
+                return "{$obj}->{$method}($arguments)";
+            }
+        }
+        throw new \RuntimeException("Invalid callback");
+    }
     
     protected function groupByMethod(Array $urls)
     {
@@ -184,7 +283,7 @@ class Compiler
 
     protected function getUrl($routeAnnotation, $route, $args = array())
     {
-        $url = new Url($routeAnnotation);
+        $url = new Url($routeAnnotation, $this);
         if (!empty($route)) {
             $url->setRoute($route);
         }
@@ -318,7 +417,7 @@ class Compiler
 
     public function getNotFoundHandler()
     {
-        return (Array)$this->not_found;
+        return current($this->not_found);
     }
 
     protected function compile()
@@ -338,149 +437,8 @@ class Compiler
         $output = $this->config->getOutput();
         $self   = $this;
         $args   = compact('self', 'groups', 'config', 'complex');
-        $vm = \Artifex::load(__DIR__ . '/Template/Main.tpl.php', $args);
-        $vm->doInclude('Switch.tpl.php');
-        $vm->doInclude('Url.tpl.php');
-        $vm->doInclude('If.tpl.php');
-
-        /**
-         *  Convert every Url or UrlGroup object into
-         *  code :-)
-         */
-        $vm->registerFunction('render', function($obj) use ($vm) {
-            if ($obj instanceof UrlGroup_Switch) {
-                $fnc = 'render_group';
-            } else if ($obj instanceof UrlGroup_If) {
-                $fnc = 'render_if';
-            } else if ($obj instanceof Url) {
-                $fnc = 'render_url';
-            } else if (is_array($obj)) {
-                $fnc = $vm->getFunction('render');
-                $buf = '';
-                foreach ($obj as $url) {
-                    $buf .= $fnc($url);
-                }
-                return $buf;
-            } else {
-                throw new \RuntimeException("Don't know how to render " . get_class($obj));
-            }
-            $fnc = $vm->getFunction($fnc);
-            return $fnc($obj);
-        });
-
-        $vm->registerFunction('callback_object', $callback=function($annotation) use ($vm, $self, $output) {
-            if ($annotation->isFunction()) {
-                return var_export('\\' . $annotation->getObject()->getName(), true);
-            } else if ($annotation->isMethod()) {
-                $class  = "\\" . $annotation->getObject()->getClass()->getName();
-                $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
-                return "array($obj, " . var_export($annotation->getObject()->GetName(), true) . ')';
-            } else {
-                throw new \RuntimeException("Invalid callback");
-            }
-        });
-
-        /**
-         *  Generate the callback function (from a function or 
-         *  a method)
-         */
-        $vm->registerFunction('callback', $callback=function($annotation) use ($vm, $self, $output) {
-            $fileHash = '$file_' . substr(sha1($annotation->getFile()), 0, 8);
-            $filePath = $annotation->GetFile();
-            if (!empty($output)) {
-                $filePath = Path::getRelative($annotation->getFile(), $output);
-            }
-
-            // prepare loading of the method/function
-            // by doing this we avoid the need of having an "autoloader", 
-            // also autoloaders doesn't work with functions, this solution does.
-            $vm->printIndented("if (empty($fileHash)) {\n");
-            $vm->printIndented("   $fileHash = 1;\n");
-            if (!empty($output)) {
-                $vm->printIndented('   require_once __DIR__ . "/' . addslashes($filePath) . '";' . "\n");
-            } else {
-                $vm->printIndented('   require_once "' . addslashes($filePath) . '";' . "\n");
-            }
-            $vm->printIndented("}\n");
-
-            // Get Code representation out of arguments array
-            $args = func_get_args();
-            array_shift($args);
-            $args = array_map(function($param) {
-                $param = is_scalar($param) ? ((string)$param) : $param;
-                $text  = !empty($param[0]) && $param[0] == '$' ? $param : var_export($param, true);
-                return $text;
-            }, $args);
-            
-            if ($annotation instanceof \Notoj\Annotation\Annotation) {
-                $object = $annotation->GetObject();
-            } else {
-                $object = $annotation;
-                $annotation = $annotation->getOne();
-            }
-
-            // check if the filter is cachable
-            switch (count($args)) {
-            case 3:
-                $cache = 0;
-                if ($annotation->getParent()->has('Cache')) {
-                    $cache = intval(current($annotation->getParent()->getOne('Cache')->getArgs()));
-                }
-                break;
-            case 1:
-                $zargs = $annotation->getObject()->GetParameters();
-                for ($i = 1; $i < count($zargs); $i++) {
-                    $args[] = '$req->get(' . var_export(substr($zargs[$i], 1), true) . ')';
-                }
-                break;
-            }
-
-            $arguments = implode(", ", $args);
-            if ($annotation->isFunction()) {
-                // generate code for functions 
-                $function = "\\" . $object->getName();
-                if (!empty($cache)) { 
-                    return  '$this->doCachedFilter(' . var_export($function,true) . ", $arguments, $cache)";
-                } else {
-                    return "$function($arguments)";
-                }
-            } else if ($annotation->isMethod()) {
-                // It is a method, *for now* we don't care if the method
-                // is static so we instanciate an object if it wasn't done before
-                $class  = "\\" . $object->getClass()->getName();
-                $method = $object->getName();
-                $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
-                $vm->printIndented("if (empty($obj)) {\n");
-                $vm->printIndented("    $obj = new $class;\n");
-                $vm->printIndented("}\n");
-                if (!empty($cache)) { 
-                    return  '$this->doCachedFilter(array(' . "{$obj}, '{$method}'), $arguments, $cache)";
-                } else {
-                    return "{$obj}->{$method}($arguments)";
-                }
-            } else {
-                throw new \RuntimeException("Invalid callback");
-            }
-        });
-
-        
-        /**
-         *  Generate expressions
-         */
-        $vm->registerFunction('expr', function($rules) use ($self, $callback) {
-            if (!is_array($rules)) {
-                $rules = array($rules);
-            }
-            if (count($rules) == 0) return '';
-            $expr = array();
-            foreach ($rules as $rule) {
-                $expr[] = $rule->getExpr($self, $callback) ?: '';
-            }
-            return implode(' && ', array_filter($expr));
-        });
-
-        $this->output = $vm->run();
-        //$this->output = FixCode::fix($vm->run());
+        $this->output = Templates::get('main')->render($args, true);
+        $this->output = FixCode::fix($this->output);
     }
     
     public function getOutput()

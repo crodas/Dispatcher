@@ -37,6 +37,8 @@
 
 namespace Dispatcher\Compiler;
 
+use Dispatcher\Templates;
+
 class UrlGroup_If extends UrlGroup
 {
     public function getWeight()
@@ -48,9 +50,22 @@ class UrlGroup_If extends UrlGroup
         return $weight;
     }
 
+    public function getExpr()
+    {
+        $expr = array_map(function($expr) {
+            return $expr->getExpr();
+        }, parent::GetExpr());
+        return implode(" && ", $expr);
+    }
+
     public function addUrl(Url $url)
     {
         $this->urls[] = $url;
+    }
+
+    public function __toString()
+    {
+        return Templates::get('groups/if')->render(array('self' => $this), true);
     }
 
 }
