@@ -117,9 +117,6 @@ class Generator
     public function generate()
     {
         $output = $this->getOutput();
-        if (empty($output)) {
-            throw new \RuntimeException("You need to set an output file");
-        }
         $cache = new Watch($output . '.cache');
         $dirs  = array_unique($this->dirs);
         $files = array_unique($this->files);
@@ -137,9 +134,8 @@ class Generator
         $cache->watch();
         
         $compiler = new Compiler($this, $annotations);
-        if (!empty($output)) {
-            file_put_contents($output, $compiler->getOutput());
-        }
+        file_put_contents($output, $compiler->getOutput());
+
         return $compiler->getOutput();
     }
 }
