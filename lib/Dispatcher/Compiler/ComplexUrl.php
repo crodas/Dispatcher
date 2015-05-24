@@ -38,12 +38,14 @@
 namespace Dispatcher\Compiler;
 
 use RuntimeException;
-use Dispatcher\Compiler;
 
 class ComplexUrl extends Url
 {
+    protected $compiler;
+
     public function __construct(Url $url)
     {
+        $this->compiler = $url->compiler;
         if (!$url->isComplex()) {
             throw new RuntimeException("Invalid constructor");
         }
@@ -88,7 +90,7 @@ class ComplexUrl extends Url
      *  
      *  @return int
      */ 
-    public function getWeight(Compiler $cmp = null)
+    public function getWeight()
     {
         $info = $this->getRouteInfo();
         $weight  = 0xffff / $info[ Component::LOOP ];

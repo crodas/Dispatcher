@@ -39,6 +39,7 @@ namespace Dispatcher\Compiler;
 
 use Notoj\Annotation\Annotation;
 use Dispatcher\Compiler;
+use Dispatcher\Templates;
 
 class Url
 {
@@ -50,11 +51,14 @@ class Url
     protected $filters = array();
     protected $name;
 
+    protected $compiler;
+
     protected $allowedMethods = array('GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'ALL');
 
-    public function __construct(Annotation $def)
+    public function __construct(Annotation $def, Compiler $cmp)
     {
         $this->def = $def;
+        $this->compiler = $cmp;
     }
 
     public function setName($name)
@@ -67,11 +71,11 @@ class Url
         return $this->name;
     }
 
-    public function getWeight(Compiler $cmp = null)
+    public function getWeight()
     {
         $weight = 0;
         foreach ($this->parts as $part) {
-            $weight += $part->getWeight($cmp);
+            $weight += $part->getWeight();
         }
         return $weight;
     }
@@ -153,7 +157,7 @@ class Url
 
         $this->parts = array_values(array_filter(explode("/", $route)));
         $this->parts = array_map(function($part, $index){ 
-            return new Component($part, $index);
+            return new Component($part, $index, $this->compiler);
         }, $this->parts, array_keys($this->parts));
     }
 
@@ -192,7 +196,18 @@ class Url
         return implode(' && ', $expr);
     }
 
-    public function getRouteExpr()
+    public function getExpr()
+    {
+        $expr  = array();
+        $rules = (array)$this->getParts();
+        foreach ($rules as $rule) {
+            $expr[] = $rule->getExpr();
+        }
+
+        return implode(' && ', array_filter($expr));
+    }
+
+    public function getGeneratorExpr()
     {
         $expr = "";
         $pos  = 0;
@@ -215,5 +230,18 @@ class Url
         }
 
         return '"'. $expr. '"';
+    }
+
+    public function __toString()
+    {
+        $args = array(
+            'expr' => $this->getExpr(),
+            'preRoute' => $this->getFilters('preroute'),
+            'postRoute' => $this->getFilters('postroute'),
+            'compiler' => $this->compiler,
+            'url' => $this
+        );
+
+        return Templates::get('url')->render($args, true);
     }
 }
