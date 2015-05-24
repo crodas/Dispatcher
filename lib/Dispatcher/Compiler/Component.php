@@ -46,32 +46,35 @@ class Component
     const VARIABLE  = 20;
     const MIXED     = 30;
     const LOOP      = 40;
+    const EXPENSIVE = 0xfff;
 
     protected $raw;
     protected $type;
     protected $stype;
     protected $index;
     protected $isLoop;
-    protected $weight;
     protected $parts = array();
 
-    public function  __construct($part, $index)
+    protected $compiler;
+
+    public function  __construct($part, $index, Compiler $cmp)
     {
         $this->raw   = $part;
         $this->index = $index;
+        $this->compiler = $cmp;
         $this->doParse();
     }
 
-    public function getWeight(Compiler $cmp = null)
+    public function getWeight()
     {
-        if (!$cmp) return $this->weight;
 
-        if ($this->type == self::VARIABLE || $this->type == self::LOOP) {
-            if (!$cmp->getFilterExpr($this->parts[0][1])) {
-                return $this->weight = 0xfff;
+        if (($this->type == self::VARIABLE || $this->type == self::LOOP)) {
+            if (!$this->compiler->getFilterExpr($this->parts[0][1])) {
+                return self::EXPENSIVE;
             }
         }
-        return $this->weight = $this->type;
+
+        return $this->type;
     }
 
     public function getType()
@@ -79,7 +82,22 @@ class Component
         return $this->type;
     }
 
-    public function getExpr(Compiler $cmp, \Closure $callback)
+    public function exprPrepare()
+    {
+        switch ($this->type) {
+        case self::MIXED:
+            break;
+        case self::VARIABLE:
+            $f = $this->compiler->getFilterExpr($this->parts[0][1]);
+            if (!empty($f)) {
+                return $this->compiler->callbackPrepare($f['filter']);
+            }
+        }
+
+        return "";
+    }
+
+    public function getExpr()
     {
         switch ($this->type) {
         case self::CONSTANT:
@@ -94,11 +112,11 @@ class Component
                     $regex[] = preg_quote($part[1]);
                 } else {
                     $regex[] = "(.+)";
-                    $f = $cmp->getFilterExpr($part[1]);
+                    $f = $this->compiler->getFilterExpr($part[1]);
                     if (!empty($f)) {
                         $i++;
                         $index = (int)$this->index;
-                        $filters[] = $callback($f['filter'], '$req', $f['name'], "\$matches_{$index}[$i]");
+                        $filters[] = $this->compiler->callback($f['filter'], '$req', $f['name'], "\$matches_{$index}[$i]");
                     }
                 }
             }
@@ -110,11 +128,11 @@ class Component
             }
             break;
         case self::VARIABLE:
-            $f = $cmp->getFilterExpr($this->parts[0][1]);
+            $f = $this->compiler->getFilterExpr($this->parts[0][1]);
             if (empty($f)) {
                 return "";
             }
-            $f['filter'] = $callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
+            $f['filter'] = $this->compiler->callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
             $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_" . intval($this->index);
             if ($this->isLoop) {
                 $expr = "($name={$f['filter']})";
@@ -124,7 +142,7 @@ class Component
             break;
         case self::LOOP:
             $this->type = $this->stype;
-            $expr = $this->getExpr($cmp, $callback);
+            $expr = $this->getExpr();
             $this->type = self::LOOP;
         }
 
