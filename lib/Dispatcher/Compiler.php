@@ -153,9 +153,8 @@ class Compiler
             $function = "\\" . $object->getName();
             if (!empty($cache)) { 
                 return  '$this->doCachedFilter(' . var_export($function,true) . ", $arguments, $cache)";
-            } else {
-                return "$function($arguments)";
             }
+            return "$function($arguments)";
         } else if ($annotation->isMethod()) {
             // It is a method, *for now* we don't care if the method
             // is static so we instanciate an object if it wasn't done before
@@ -164,9 +163,8 @@ class Compiler
             $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
             if (!empty($cache)) { 
                 return  '$this->doCachedFilter(array(' . "{$obj}, '{$method}'), $arguments, $cache)";
-            } else {
-                return "{$obj}->{$method}($arguments)";
             }
+            return "{$obj}->{$method}($arguments)";
         }
 
         throw new \RuntimeException("Invalid callback");
@@ -209,15 +207,13 @@ class Compiler
         )) == count($arr);
     }
 
-    public function groupByPatterns(Array $urls)
+    protected function getUrlGroupsPatternsIndexes($urls)
     {
-        $indexes  = array();
         $groups   = array();
+        $indexes  = array();
         $patterns = array();
         foreach ($urls as $url) {
-            $parts = array_filter($url->getParts(), function($element) {
-                return $element->getType() == Component::CONSTANT;
-            });
+            $parts = $url->getConstants();
             if (empty($parts)) {
                 $patterns[] = $url;
                 continue;
@@ -233,6 +229,14 @@ class Compiler
                 $indexes[] = array_slice($parts, 0, $i);
             }
         }
+
+        return array($groups, $patterns, $indexes);
+    }
+
+    public function groupByPatterns(Array $urls)
+    {
+        $indexes  = array();
+        list($groups, $patterns, $indexes) = $this->getUrlGroupsPatternsIndexes($urls);
         if (count($groups) > 1) {
             foreach ($indexes as $id => $rules) {
                 if (empty($groups[$id])) continue;

@@ -178,6 +178,13 @@ class Url
         return $this->parts;
     }
 
+    public function getConstants()
+    {
+        return array_filter($this->parts, function($e) {
+            return $e->getType() == Component::CONSTANT;
+        });
+    }
+
     public function getGeneratorFilter()
     {
         $expr[] = '$count == ' . count($this->getVariables());
