@@ -178,7 +178,7 @@ class Url
         return $this->parts;
     }
 
-    public function getRouteFilter()
+    public function getGeneratorFilter()
     {
         $expr[] = '$count == ' . count($this->getVariables());
         $pos    = 0;
@@ -230,6 +230,16 @@ class Url
         }
 
         return '"'. $expr. '"';
+    }
+
+    public function exprPrepare()
+    {
+        $prep = array();
+        foreach ($this->parts as $part) {
+            $prep[] = $part->exprPrepare();
+        }
+
+        return implode("\n", array_filter($prep));
     }
 
     public function __toString()

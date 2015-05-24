@@ -70,8 +70,10 @@ class Request
 
     protected function handleNotFound()
     {
-        $req = $this;
-        #* render($self->getNotFoundHandler())
+        @if ($self->getNotFoundHandler())
+            $req = $this;
+            {{ $self->getNotFoundHandler() }};
+        @end
 
         return false;
     }
@@ -79,9 +81,7 @@ class Request
     public function notFound()
     {
         if ($this->handleNotFound() !== false) {
-            /** 
-             * Was it handled? Yes!
-             */
+            /** Was it handled? Yes! */
             exit;
         }
 
@@ -186,6 +186,36 @@ class Route
         return $this->doRoute($req, $_SERVER);
     }
 
+    @foreach($self->getComplexUrls() as $id => $url)
+        @include('complexurl')
+    @end
+
+    protected function handleComplexUrl(Request $req, $parts, $length, $server)
+    {
+        @foreach ($self->getComplexUrls() as $id => $url)
+            $is_candidate = $length >= {{$url->getMinLength()}}
+            @set($consts, $url->getConstants())
+            @if ($url->getFirstConstant())
+                && $parts[0] == {{@$url->getFirstConstant()}}
+            @end
+            @if ($url->getLastConstant())
+                && $parts[$length-1] == {{@$url->getLastConstant()}}
+            @end
+            @if (count($consts) > 0)
+                && count(array_intersect($parts, {{@$consts}})) == {{count($consts)}}
+            @end
+                ;
+            if ($is_candidate && $this->complexUrl{{$id}}($req, $parts, $length, $server, $r) == true) {
+                return $r;
+            }
+        @end
+
+        @if ($self->getNotFoundHandler())
+            {{ $self->getNotFoundHandler() }};
+        @end
+        throw new NotFoundException;
+    }
+
     public function doRoute(Request $req, $server)
     {
         $uri    = $server['REQUEST_URI'];
@@ -202,7 +232,31 @@ class Route
 
         // We couldn't find any handler for the URL,
         // let's find in our complex url set (if there is any)
-        //$this->handleComplexUrl($req, $parts, $length, $server);
+        $this->handleComplexUrl($req, $parts, $length, $server);
+    }
+
+    public static function getRoute($name, $args = array())
+    {
+        if (!is_array($args)) {
+            $args = func_get_args();
+            array_shift($args);
+        }
+
+        $count = count($args);
+        switch ($name) {
+        @foreach ($self->getNamedUrls() as $name => $route)
+        case {{@$name}}:
+            @foreach ($route['routes'] as $id => $url)
+                if ({{$url->getGeneratorFilter()}}) {
+                    return {{$url->getGeneratorExpr()}};
+                }
+            @end
+            throw new RouteNotFoundException("Invalid arguments for route {{$name}}, possible routes:\n{{$route['exception']}}");
+            break;
+        @end
+        }
+
+        throw new RouteNotFoundException("There is not route name $name");
     }
 
 }

@@ -1,4 +1,5 @@
 @if ($expr)
+    {{ $url->exprPrepare() }}
     if ({{$expr}}) {
 @end
 
@@ -7,7 +8,12 @@
     @end
 
     @foreach ($url->getVariables() as $name => $var)
-    $req->setIfEmpty({{@$name}}, "");
+        @if (count($var) == 1)
+            @set($variable, "parts[" . $var[0] . "]")
+        @else
+            @set($variable, "matches_" . $var[0] . "[" . $var[1] . "]")
+        @end
+        $req->setIfEmpty({{@$name}}, ${{$variable}});
     @end
 
     $allow = true;
