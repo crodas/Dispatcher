@@ -111,23 +111,21 @@ class Compiler
         return Templates::get('callback')->render($args, true);
     }
 
-    public function callback($annotation)
+    protected function getCallbackArgs(Array $args)
     {
-        // Get Code representation out of arguments array
-        $args = func_get_args();
         array_shift($args);
-        $args = array_map(function($param) {
+        return array_map(function($param) {
             $param = is_scalar($param) ? ((string)$param) : $param;
             $text  = !empty($param[0]) && $param[0] == '$' ? $param : var_export($param, true);
             return $text;
         }, $args);
-        
-        list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+    }
 
-        // check if the filter is cachable
+    protected function isCacheable($annotation, Array & $args)
+    {
+        $cache = 0;
         switch (count($args)) {
         case 3:
-            $cache = 0;
             if ($annotation->getParent()->has('Cache')) {
                 $cache = intval(current($annotation->getParent()->getOne('Cache')->getArgs()));
             }
@@ -140,6 +138,15 @@ class Compiler
             break;
         }
 
+        return $cache;
+    }
+
+    public function callback($annotation)
+    {
+        list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+        $args  = $this->getCallbackArgs(func_get_args());
+        $cache = $this->isCacheable($annotation, $args); 
+        
         $arguments = implode(", ", $args);
         if ($annotation->isFunction()) {
             // generate code for functions 
@@ -161,6 +168,7 @@ class Compiler
                 return "{$obj}->{$method}($arguments)";
             }
         }
+
         throw new \RuntimeException("Invalid callback");
     }
     
