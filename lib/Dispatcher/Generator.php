@@ -128,7 +128,6 @@ class Generator
             return;
         }
 
-        $isCached = $output && file_exists($output);
         $annotations = new \Notoj\Filesystem(array_unique(array_merge($dirs, $files)));
         $cache->watchFiles($files)->watchDirs($dirs);
         $cache->watch();
