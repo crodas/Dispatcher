@@ -25,8 +25,8 @@ protected function complexUrl{{$id}}($req, $parts, $length, $server, &$return)
             @end
         @else
             @if ($expr)
+                {{$prep}}
                 @if (!empty($no_filter))
-                    {{$prep}}
                     while ($i < $length && !({{$expr}})) {
                         @foreach($no_filter->getVariables('') as $name => $var)
                             @if (count($var) == 1)
