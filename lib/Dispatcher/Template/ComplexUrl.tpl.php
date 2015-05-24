@@ -73,7 +73,6 @@ protected function complexUrl{{$id}}($req, $parts, $length, $server, &$return)
         }
     @end
     
-    $req->setIfEmpty('__handler__', {{$self->callbackObject($url)}});
     @foreach ($url->getArguments() as $name => $var)
     $req->set({{@$name}}, {{@$var}});
     @end
@@ -81,6 +80,7 @@ protected function complexUrl{{$id}}($req, $parts, $length, $server, &$return)
         $req->setIfEmpty($key, $value);
     }
     {{ $self->callbackPrepare($url) }}
+    $req->setIfEmpty('__handler__', {{$self->callbackObject($url)}});
     $return = {{$self->callback($url, '$req')}};
 
     @foreach ($url->getFilters('postroute') as $filter)

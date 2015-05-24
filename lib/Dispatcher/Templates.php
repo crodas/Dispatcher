@@ -302,8 +302,7 @@ namespace {
                 echo "        " . ($self->callbackPrepare($filter[0])) . "\n        if (";
                 echo $self->callback($filter[0], '$req', $filter[1]) . " === false) {\n            return false;\n        }\n";
             }
-            echo "    \n    \$req->setIfEmpty('__handler__', ";
-            echo $self->callbackObject($url) . ");\n";
+            echo "    \n";
             foreach($url->getArguments() as $name => $var) {
 
                 $this->context['name'] = $name;
@@ -315,7 +314,8 @@ namespace {
                 echo ");\n";
             }
             echo "    foreach (\$args as \$key => \$value) {\n        \$req->setIfEmpty(\$key, \$value);\n    }\n    ";
-            echo $self->callbackPrepare($url) . "\n    \$return = ";
+            echo $self->callbackPrepare($url) . "\n    \$req->setIfEmpty('__handler__', ";
+            echo $self->callbackObject($url) . ");\n    \$return = ";
             echo $self->callback($url, '$req') . ";\n\n";
             foreach($url->getFilters('postroute') as $filter) {
 
