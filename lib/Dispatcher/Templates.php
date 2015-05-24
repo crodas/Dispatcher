@@ -238,9 +238,9 @@ namespace {
                 }
                 else {
                     if ($expr) {
+                        echo "                " . ($prep) . "\n";
                         if (!empty($no_filter)) {
-                            echo "                    " . ($prep) . "\n                    while (\$i < \$length && !(";
-                            echo $expr . ")) {\n";
+                            echo "                    while (\$i < \$length && !(" . ($expr) . ")) {\n";
                             foreach($no_filter->getVariables('') as $name => $var) {
 
                                 $this->context['name'] = $name;
