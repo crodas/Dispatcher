@@ -97,56 +97,72 @@ class Component
         return "";
     }
 
+    protected function exprMixed()
+    {
+        $regex = array();
+        $filters = array();
+        $i = 0;
+        foreach ($this->parts as $id => $part) {
+            if ($part[0] == self::CONSTANT) {
+                $regex[] = preg_quote($part[1]);
+            } else {
+                $regex[] = "(.+)";
+                $f = $this->compiler->getFilterExpr($part[1]);
+                if (!empty($f)) {
+                    $i++;
+                    $index = (int)$this->index;
+                    $filters[] = $this->compiler->callback($f['filter'], '$req', $f['name'], "\$matches_{$index}[$i]");
+                }
+            }
+        }
+        $regex = var_export("/^" . implode("", $regex) . "/", true);
+        $index = (int)$this->index;
+        $expr  = "preg_match($regex, \$parts[{$this->index}], \$matches_{$index}) > 0";
+        if (count($filters)) {
+            $expr .= ' && ' .implode(' && ', $filters);
+        }
+
+        return $expr;
+    }
+
+    protected function exprVariable()
+    {
+        $f = $this->compiler->getFilterExpr($this->parts[0][1]);
+        if (empty($f)) {
+            return "";
+        }
+        $f['filter'] = $this->compiler->callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
+        $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_" . intval($this->index);
+        if ($this->isLoop) {
+            $expr = "($name={$f['filter']})";
+        } else {
+            $expr = "(!empty($name) || ($name={$f['filter']}))";
+        }
+
+        return $expr;
+    }
+
+
     public function getExpr()
     {
         switch ($this->type) {
         case self::CONSTANT:
-            $expr = '$parts[' . $this->index . '] === ' . var_export($this->raw, true);
-            break;
+            return '$parts[' . $this->index . '] === ' . var_export($this->raw, true);
+
         case self::MIXED:
-            $regex = array();
-            $filters = array();
-            $i = 0;
-            foreach ($this->parts as $id => $part) {
-                if ($part[0] == self::CONSTANT) {
-                    $regex[] = preg_quote($part[1]);
-                } else {
-                    $regex[] = "(.+)";
-                    $f = $this->compiler->getFilterExpr($part[1]);
-                    if (!empty($f)) {
-                        $i++;
-                        $index = (int)$this->index;
-                        $filters[] = $this->compiler->callback($f['filter'], '$req', $f['name'], "\$matches_{$index}[$i]");
-                    }
-                }
-            }
-            $regex = var_export("/^" . implode("", $regex) . "/", true);
-            $index = (int)$this->index;
-            $expr  = "preg_match($regex, \$parts[{$this->index}], \$matches_{$index}) > 0";
-            if (count($filters)) {
-                $expr .= ' && ' .implode(' && ', $filters);
-            }
-            break;
+            return $this->exprMixed();
+
         case self::VARIABLE:
-            $f = $this->compiler->getFilterExpr($this->parts[0][1]);
-            if (empty($f)) {
-                return "";
-            }
-            $f['filter'] = $this->compiler->callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
-            $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_" . intval($this->index);
-            if ($this->isLoop) {
-                $expr = "($name={$f['filter']})";
-            } else {
-                $expr = "(!empty($name) || ($name={$f['filter']}))";
-            }
-            break;
+            return $this->exprVariable();
+
         case self::LOOP:
             $this->type = $this->stype;
             $expr = $this->getExpr();
             $this->type = self::LOOP;
+
+            return $expr;
         }
 
-        return $expr;
     }
 
     protected function parseParts()
