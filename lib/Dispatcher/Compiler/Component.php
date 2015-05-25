@@ -149,10 +149,11 @@ class Component
         return $expr;
     }
 
-    public function doParse()
+    protected function parseParts()
     {
         $str = $this->raw;
         $len = strlen($str);
+
         $parts  = array();
         $buffer = "";
         for($i=0; $i < $len; $i++) {
@@ -179,8 +180,16 @@ class Component
             $parts[] = array(self::CONSTANT, $buffer);
         }
 
+        return $parts;
+    }
+
+    public function doParse()
+    {
+        $parts = $this->parseParts();
+
         $this->isLoop = false;
-        if (substr($buffer, -1) == '+') {
+        $last = end($parts);
+        if (substr($last[1], -1) == '+') {
             $this->isLoop  = true;
             $parts[count($parts)-1][1] = rtrim($parts[count($parts)-1][1], '+');
             if (empty($parts[count($parts)-1][1])) {
