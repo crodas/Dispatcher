@@ -183,10 +183,11 @@ class Component
         return $parts;
     }
 
-    protected function parseIsLoop(Array $parts)
+    protected function parseIsLoop()
     {
-        $this->isLoop = false;
+        $parts = $this->parts;
         $last = end($parts);
+        $this->isLoop = false;
         if (substr($last[1], -1) == '+') {
             $this->isLoop  = true;
             $parts[count($parts)-1][1] = rtrim($parts[count($parts)-1][1], '+');
