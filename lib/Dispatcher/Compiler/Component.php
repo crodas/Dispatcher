@@ -180,7 +180,22 @@ class Component
             $parts[] = array(self::CONSTANT, $buffer);
         }
 
-        return $parts;
+        $this->parts = $parts;
+    }
+
+    protected function parseType()
+    {
+        $var = self::LOOP == $this->type ? 'stype' : 'type';
+        foreach ($this->parts as $part) {
+            if (empty($this->$var)) {
+                $this->$var = $part[0];
+            } else {
+                if ($this->$var != $part[0]) {
+                    $this->$var = self::MIXED;
+                    break;
+                }
+            }
+        }
     }
 
     protected function parseIsLoop()
@@ -195,7 +210,6 @@ class Component
                 array_pop($parts);
             }
 
-            $this->stype = $this->type;
             $this->type  = self::LOOP;
         }
 
@@ -204,8 +218,9 @@ class Component
 
     public function doParse()
     {
-        $this->parts = $this->parseParts();
+        $this->parseParts();
         $this->parseIsLoop();
+        $this->parseType();
 
     }
 
