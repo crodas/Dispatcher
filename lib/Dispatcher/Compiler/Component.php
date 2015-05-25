@@ -183,10 +183,8 @@ class Component
         return $parts;
     }
 
-    public function doParse()
+    protected function parseIsLoop(Array $parts)
     {
-        $parts = $this->parseParts();
-
         $this->isLoop = false;
         $last = end($parts);
         if (substr($last[1], -1) == '+') {
@@ -195,25 +193,18 @@ class Component
             if (empty($parts[count($parts)-1][1])) {
                 array_pop($parts);
             }
-        }
 
-        foreach ($parts as $part) {
-            if (empty($this->type)) {
-                $this->type = $part[0];
-            } else {
-                if ($this->type != $part[0]) {
-                    $this->type = self::MIXED;
-                    break;
-                }
-            }
-        }
-
-        if ($this->isLoop) {
             $this->stype = $this->type;
             $this->type  = self::LOOP;
         }
 
         $this->parts = $parts;
+    }
+
+    public function doParse()
+    {
+        $this->parts = $this->parseParts();
+        $this->parseIsLoop();
 
     }
 
