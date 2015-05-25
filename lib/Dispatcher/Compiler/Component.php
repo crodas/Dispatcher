@@ -185,17 +185,16 @@ class Component
 
     protected function parseType()
     {
-        $var = self::LOOP == $this->type ? 'stype' : 'type';
+        $type = 0;
         foreach ($this->parts as $part) {
-            if (empty($this->$var)) {
-                $this->$var = $part[0];
-            } else {
-                if ($this->$var != $part[0]) {
-                    $this->$var = self::MIXED;
-                    break;
-                }
+            if (empty($type)) {
+                $type = $part[0];
+            } else if ($type != $part[0]) {
+                $type = self::MIXED;
+                break;
             }
         }
+        return $type;
     }
 
     protected function parseIsLoop()
@@ -214,13 +213,19 @@ class Component
         }
 
         $this->parts = $parts;
+
+        return $this->isLoop;
     }
 
     public function doParse()
     {
         $this->parseParts();
-        $this->parseIsLoop();
-        $this->parseType();
+        if ($this->parseIsLoop()) {
+            $this->stype = $this->parseType();
+        } else {
+            $this->type = $this->parseType();
+        }
+
 
     }
 
