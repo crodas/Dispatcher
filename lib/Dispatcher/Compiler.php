@@ -53,7 +53,7 @@ class Compiler
     protected $urls;
     protected $filters = array();
     protected $all_filters   = array();
-    protected $route_filters = array();
+    protected $routeFilters = array();
     protected $not_found = array();
     protected $complex = array();
 
@@ -266,7 +266,7 @@ class Compiler
             $this->filters[$name] = $filterAnnotation->GetObject();
         }
 
-        $this->route_filters = array();
+        $this->routeFilters = array();
         foreach ($this->annotations->get('preroute,postroute', 'Callable') as $filterAnnotation) {
             $type = $filterAnnotation->getName();
             $args = $filterAnnotation->getArgs();
@@ -282,7 +282,7 @@ class Compiler
                 $this->all_filters[$type][] = array($filterAnnotation, $weight);
                 continue;
             }
-            $this->route_filters[$name][] = array($type, $filterAnnotation, $weight);
+            $this->routeFilters[$name][] = array($type, $filterAnnotation, $weight);
 
         }
 
@@ -296,24 +296,9 @@ class Compiler
     protected function getUrl($routeAnnotation, $route, $args = array())
     {
         $url = new Url($routeAnnotation, $this);
-        if (!empty($route)) {
-            $url->setRoute($route);
-        }
+        $url->setRouteAndArgs($route, $args);
 
-        if (isset($args['set'])) {
-            $url->setArguments($args['set']);
-        }
-        if (!empty($args[1]) || !empty($args['name'])) {
-            $url->setName(empty($args[1]) ? $args['name'] : $args[1]);
-        }
-
-        $base = 0;
-        $filters = $this->all_filters;
-        foreach ($this->all_filters as $type => $filters) {
-            foreach ($filters as $filter) {
-                $url->addFilter($type, $filter[0], array(), $filter[1]+ ++$base);
-            }
-        }
+        $base = $url->addFilters($this->all_filters);
 
         $filters = iterator_to_array($routeAnnotation->GetParent());
         if ($routeAnnotation->isMethod()) {
@@ -321,15 +306,7 @@ class Compiler
             $filters = array_merge($classAnn, $filters);
         }
 
-        foreach ($filters as $annotation) {
-            $name = $annotation->getName();
-
-            if (!empty($this->route_filters[$name])) {
-                foreach ($this->route_filters[$name] as $filter) {
-                    $url->addFilter($filter[0], $filter[1], $annotation->getArgs(), $filter[2]+ ++$base);
-                }
-            }
-        }
+        $url->addFiltersFromAnnotations($this->routeFilters, $filters, $base);
 
         return $url;
     }
