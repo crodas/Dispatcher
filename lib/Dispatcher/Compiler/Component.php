@@ -229,20 +229,19 @@ class Component
 
     }
 
+
     public function getVariables($id)
     {
         $isVariable = $this->getType() == Component::VARIABLE
              || $this->stype == Component::VARIABLE;
         $id1 = 1;
         $vars = array();
-        foreach ($this->getParts() as $part) {
-            if ($part[0] == Component::VARIABLE) {
-                $name = ($i=strpos($part[1], ':')) ? substr($part[1], $i+1) : $part[1];
-                if ($isVariable) {
-                    $vars[$name] = array($id);
-                } else {
-                    $vars[$name] = array($id, $id1++);
-                }
+        foreach ($this->getParts(Component::VARIABLE) as $part) {
+            $name = ($i=strpos($part[1], ':')) ? substr($part[1], $i+1) : $part[1];
+            if ($isVariable) {
+                $vars[$name] = array($id);
+            } else {
+                $vars[$name] = array($id, $id1++);
             }
         }
         return $vars;
@@ -266,8 +265,13 @@ class Component
         return false;
     }
 
-    public function getParts()
+    public function getParts($filter = 0)
     {
+        if ($filter) {
+            return array_filter($this->parts, function($t) use ($filter) {
+                return $t[0] == $filter;
+            });
+        }
         return $this->parts;
     }
 
