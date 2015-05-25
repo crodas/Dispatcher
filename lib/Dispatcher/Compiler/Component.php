@@ -223,7 +223,8 @@ class Component
         if ($this->parseIsLoop()) {
             $this->stype = $this->parseType();
         } else {
-            $this->type = $this->parseType();
+            $this->type  = $this->parseType();
+            $this->stype = $this->type;
         }
 
 
@@ -232,8 +233,7 @@ class Component
 
     public function getVariables($id)
     {
-        $isVariable = $this->getType() == Component::VARIABLE
-             || $this->stype == Component::VARIABLE;
+        $isVariable = $this->stype == Component::VARIABLE;
         $id1 = 1;
         $vars = array();
         foreach ($this->getParts(Component::VARIABLE) as $part) {
