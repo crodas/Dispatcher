@@ -97,6 +97,7 @@ class Generator
             throw new \RuntimeException("{$file} is not a file");
         }
         $this->files[] = $file;
+        $this->dirs[]  = dirname($file);
 
         return $this;
     }
@@ -116,49 +117,24 @@ class Generator
     public function generate()
     {
         $output = $this->getOutput();
-        if (empty($output)) {
-            throw new \RuntimeException("You need to set an output file");
-        }
         $cache = new Watch($output . '.cache');
-        $dirs  = $this->dirs;
-        foreach ($this->files as $file) {
-            $dirs[] = dirname($file);
-        }
+        $dirs  = array_unique($this->dirs);
+        $files = array_unique($this->files);
 
-        $cache->watchFiles($this->files);
+        $cache->watchFiles($files);
         $cache->watchDirs($dirs);
 
         if (!$cache->hasChanged()) {
             return;
         }
 
-        $isCached = $output && file_exists($output);
-        $files    = array();
-        $dirs     = array();
-
-        $annotations = new \Notoj\Filesystem(array_unique(array_merge($this->dirs, $this->files)));
-
-        foreach (array_unique($this->files) as $file) {
-            $files[] = $file;
-            $dirs[] = dirname($file);
-        }
-
-        foreach (array_unique($this->dirs) as $dir) {
-            $dirs[] = $dir;
-        }
-
+        $annotations = new \Notoj\Filesystem(array_unique(array_merge($dirs, $files)));
         $cache->watchFiles($files)->watchDirs($dirs);
         $cache->watch();
-
-        foreach ($files as $file) {
-            $dirs[] = dirname($file);
-        }
-
         
         $compiler = new Compiler($this, $annotations);
-        if (!empty($output)) {
-            file_put_contents($output, $compiler->getOutput());
-        }
+        file_put_contents($output, $compiler->getOutput());
+
         return $compiler->getOutput();
     }
 }

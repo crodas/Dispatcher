@@ -97,62 +97,79 @@ class Component
         return "";
     }
 
-    public function getExpr()
+    protected function exprMixed()
     {
-        switch ($this->type) {
-        case self::CONSTANT:
-            $expr = '$parts[' . $this->index . '] === ' . var_export($this->raw, true);
-            break;
-        case self::MIXED:
-            $regex = array();
-            $filters = array();
-            $i = 0;
-            foreach ($this->parts as $id => $part) {
-                if ($part[0] == self::CONSTANT) {
-                    $regex[] = preg_quote($part[1]);
-                } else {
-                    $regex[] = "(.+)";
-                    $f = $this->compiler->getFilterExpr($part[1]);
-                    if (!empty($f)) {
-                        $i++;
-                        $index = (int)$this->index;
-                        $filters[] = $this->compiler->callback($f['filter'], '$req', $f['name'], "\$matches_{$index}[$i]");
-                    }
+        $regex = array();
+        $filters = array();
+        $i = 0;
+        foreach ($this->parts as $id => $part) {
+            if ($part[0] == self::CONSTANT) {
+                $regex[] = preg_quote($part[1]);
+            } else {
+                $regex[] = "(.+)";
+                $f = $this->compiler->getFilterExpr($part[1]);
+                if (!empty($f)) {
+                    $i++;
+                    $index = (int)$this->index;
+                    $filters[] = $this->compiler->callback($f['filter'], '$req', $f['name'], "\$matches_{$index}[$i]");
                 }
             }
-            $regex = var_export("/^" . implode("", $regex) . "/", true);
-            $index = (int)$this->index;
-            $expr  = "preg_match($regex, \$parts[{$this->index}], \$matches_{$index}) > 0";
-            if (count($filters)) {
-                $expr .= ' && ' .implode(' && ', $filters);
-            }
-            break;
-        case self::VARIABLE:
-            $f = $this->compiler->getFilterExpr($this->parts[0][1]);
-            if (empty($f)) {
-                return "";
-            }
-            $f['filter'] = $this->compiler->callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
-            $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_" . intval($this->index);
-            if ($this->isLoop) {
-                $expr = "($name={$f['filter']})";
-            } else {
-                $expr = "(!empty($name) || ($name={$f['filter']}))";
-            }
-            break;
-        case self::LOOP:
-            $this->type = $this->stype;
-            $expr = $this->getExpr();
-            $this->type = self::LOOP;
+        }
+        $regex = var_export("/^" . implode("", $regex) . "/", true);
+        $index = (int)$this->index;
+        $expr  = "preg_match($regex, \$parts[{$this->index}], \$matches_{$index}) > 0";
+        if (count($filters)) {
+            $expr .= ' && ' .implode(' && ', $filters);
         }
 
         return $expr;
     }
 
-    public function doParse()
+    protected function exprVariable()
+    {
+        $f = $this->compiler->getFilterExpr($this->parts[0][1]);
+        if (empty($f)) {
+            return "";
+        }
+        $f['filter'] = $this->compiler->callback($f['filter'], '$req', $f['name'], '$parts[' . $this->index . ']');
+        $name = "\$filter_" . substr(sha1($f['name']), 0, 8) . "_" . intval($this->index);
+        if ($this->isLoop) {
+            $expr = "($name={$f['filter']})";
+        } else {
+            $expr = "(!empty($name) || ($name={$f['filter']}))";
+        }
+
+        return $expr;
+    }
+
+
+    public function getExpr()
+    {
+        switch ($this->type) {
+        case self::CONSTANT:
+            return '$parts[' . $this->index . '] === ' . var_export($this->raw, true);
+
+        case self::MIXED:
+            return $this->exprMixed();
+
+        case self::VARIABLE:
+            return $this->exprVariable();
+
+        case self::LOOP:
+            $this->type = $this->stype;
+            $expr = $this->getExpr();
+            $this->type = self::LOOP;
+
+            return $expr;
+        }
+
+    }
+
+    protected function parseParts()
     {
         $str = $this->raw;
         $len = strlen($str);
+
         $parts  = array();
         $buffer = "";
         for($i=0; $i < $len; $i++) {
@@ -179,49 +196,68 @@ class Component
             $parts[] = array(self::CONSTANT, $buffer);
         }
 
+        $this->parts = $parts;
+    }
+
+    protected function parseType()
+    {
+        $type = 0;
+        foreach ($this->parts as $part) {
+            if (empty($type)) {
+                $type = $part[0];
+            } else if ($type != $part[0]) {
+                $type = self::MIXED;
+                break;
+            }
+        }
+        return $type;
+    }
+
+    protected function parseIsLoop()
+    {
+        $parts = $this->parts;
+        $last = end($parts);
         $this->isLoop = false;
-        if (substr($buffer, -1) == '+') {
+        if (substr($last[1], -1) == '+') {
             $this->isLoop  = true;
             $parts[count($parts)-1][1] = rtrim($parts[count($parts)-1][1], '+');
             if (empty($parts[count($parts)-1][1])) {
                 array_pop($parts);
             }
-        }
 
-        foreach ($parts as $part) {
-            if (empty($this->type)) {
-                $this->type = $part[0];
-            } else {
-                if ($this->type != $part[0]) {
-                    $this->type = self::MIXED;
-                    break;
-                }
-            }
-        }
-
-        if ($this->isLoop) {
-            $this->stype = $this->type;
             $this->type  = self::LOOP;
         }
 
         $this->parts = $parts;
 
+        return $this->isLoop;
     }
+
+    public function doParse()
+    {
+        $this->parseParts();
+        if ($this->parseIsLoop()) {
+            $this->stype = $this->parseType();
+        } else {
+            $this->type  = $this->parseType();
+            $this->stype = $this->type;
+        }
+
+
+    }
+
 
     public function getVariables($id)
     {
-        $isVariable = $this->getType() == Component::VARIABLE
-             || $this->stype == Component::VARIABLE;
+        $isVariable = $this->stype == Component::VARIABLE;
         $id1 = 1;
         $vars = array();
-        foreach ($this->getParts() as $part) {
-            if ($part[0] == Component::VARIABLE) {
-                $name = ($i=strpos($part[1], ':')) ? substr($part[1], $i+1) : $part[1];
-                if ($isVariable) {
-                    $vars[$name] = array($id);
-                } else {
-                    $vars[$name] = array($id, $id1++);
-                }
+        foreach ($this->getParts(Component::VARIABLE) as $part) {
+            $name = ($i=strpos($part[1], ':')) ? substr($part[1], $i+1) : $part[1];
+            if ($isVariable) {
+                $vars[$name] = array($id);
+            } else {
+                $vars[$name] = array($id, $id1++);
             }
         }
         return $vars;
@@ -245,8 +281,13 @@ class Component
         return false;
     }
 
-    public function getParts()
+    public function getParts($filter = 0)
     {
+        if ($filter) {
+            return array_filter($this->parts, function($t) use ($filter) {
+                return $t[0] == $filter;
+            });
+        }
         return $this->parts;
     }
 
