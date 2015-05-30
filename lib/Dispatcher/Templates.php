@@ -756,7 +756,8 @@ namespace {
             foreach($postRoute as $filter) {
 
                 $this->context['filter'] = $filter;
-                echo "            \$return = " . ($compiler->callback($filter[0], '$req', $filter[1], '$response')) . ";\n            if (is_array(\$return)) {\n                \$response = \$return;\n            }\n";
+                echo "            " . ($compiler->callbackPrepare($filter[0])) . "\n            \$return = ";
+                echo $compiler->callback($filter[0], '$req', $filter[1], '$response') . ";\n            if (is_array(\$return)) {\n                \$response = \$return;\n            }\n";
             }
             echo "\n        return \$response;\n    }\n\n\n";
             if ($expr) {
