@@ -1,8 +1,8 @@
 <?php
 
-use Dispatcher\Generator,
-    AllTest\Route,
-    AllTest\Request;
+use Dispatcher\Generator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
 
 class AllTest extends \phpunit_framework_testcase
 {
@@ -27,9 +27,9 @@ class AllTest extends \phpunit_framework_testcase
     public function testBug01Sorting()
     {
         $route = new Route;
-        $req   = new Request;
+        $req   =  Request::create('/foo/barxxx', 'GET');
         $req->set('phpunit', $this);
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/foo/barxxx'));
+        $out = $route->doRoute($req);
         $this->assertEquals($out, 'bug01\foobar');
 
         $route = new Route;
