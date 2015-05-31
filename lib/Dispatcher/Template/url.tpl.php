@@ -42,6 +42,7 @@
         $response = {{ $compiler->callback($url, '$req') }};
 
         @foreach ($postRoute as $filter)
+            {{ $compiler->callbackPrepare($filter[0]) }}
             $return = {{$compiler->callback($filter[0], '$req', $filter[1], '$response') }};
             if (is_array($return)) {
                 $response = $return;
