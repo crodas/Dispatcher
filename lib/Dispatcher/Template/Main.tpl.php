@@ -9,24 +9,22 @@
 @set($ns, "crodas\\Dispatcher\\Generate\\t" . uniqid(true))
 namespace {{ $ns }};
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Dispatcher\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
 class Router
 {
-    public function fromRequest(Request $req = NULL)
+    public function setWrapper(\Dispatcher\Router $wrapper)
     {
-        if (empty($req)) {
-            $req = Request::createFromGlobals();
-        }
-        return $this->doRoute($req, $_SERVER);
+        $this->wrapper = $wrapper;
+        return $this;
     }
 
     @foreach($self->getComplexUrls() as $id => $url)
         @include('complexurl')
     @end
 
-    protected function handleComplexUrl(Request $req, $parts, $length, $server)
+    protected function handleComplexUrl(Request $req, $parts, $length)
     {
         @foreach ($self->getComplexUrls() as $id => $url)
             $is_candidate = $length >= {{$url->getMinLength()}}
@@ -41,7 +39,7 @@ class Router
                 && count(array_intersect($parts, {{@$consts}})) == {{count($consts)}}
             @end
                 ;
-            if ($is_candidate && $this->complexUrl{{$id}}($req, $parts, $length, $server, $r) == true) {
+            if ($is_candidate && $this->complexUrl{{$id}}($req, $parts, $length, $r) == true) {
                 return $r;
             }
         @end
@@ -52,23 +50,19 @@ class Router
         throw new NotFoundHttpException;
     }
 
-    public function doRoute(Request $req, $server)
+    public function doRoute(Request $req)
     {
-        $uri    = $server['REQUEST_URI'];
+        $uri    = $req->getRequestUri();
         $uri    = ($p = strpos($uri, '?')) ? substr($uri, 0, $p) : $uri;
         $parts  = array_values(array_filter(explode("/", $uri)));
         $length = count($parts);
         $req->uri = $uri;
 
-        if (empty($server['REQUEST_METHOD'])) {
-            $server['REQUEST_METHOD'] = 'GET';
-        }
-
         {{ $groups->__toString() }}
 
         // We couldn't find any handler for the URL,
         // let's find in our complex url set (if there is any)
-        $this->handleComplexUrl($req, $parts, $length, $server);
+        $this->handleComplexUrl($req, $parts, $length);
     }
 
     public static function getRoute($name, $args = array())

@@ -23,8 +23,8 @@ function empty_level_2($req) {
  */
 function some_function($Request)
 {
-    $phpunit = $Request->get('phpunit');
-    $Request->set('controller', __FUNCTION__);
+    $phpunit = $Request->attributes->get('phpunit');
+    $Request->attributes->set('controller',  __FUNCTION__);
     return __FUNCTION__;
 }
 
@@ -32,14 +32,14 @@ function some_function($Request)
 /** @Route("/deadly-simple") */
 function simple($Request)
 {
-    $phpunit = $Request->get('phpunit');
-    $Request->set('controller', __FUNCTION__);
+    $phpunit = $Request->attributes->get('phpunit');
+    $Request->attributes->set('controller',  __FUNCTION__);
     return __FUNCTION__;
 }
 
 /** @Route("/zzzsfasd_prefix_{id}") */
 function soo($req)
 {
-    return $req->get('id');
+    return $req->attributes->get('id');
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-class TestCacheClass implements \AllTest\FilterCache
+class TestCacheClass implements Dispatcher\FilterCache
 {
     protected $cache = array();
 
