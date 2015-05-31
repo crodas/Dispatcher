@@ -53,7 +53,7 @@ class Compiler
     protected $urls;
     protected $filters = array();
     protected $all_filters   = array();
-    protected $route_filters = array();
+    protected $routeFilters = array();
     protected $not_found = array();
     protected $complex = array();
 
@@ -111,23 +111,21 @@ class Compiler
         return Templates::get('callback')->render($args, true);
     }
 
-    public function callback($annotation)
+    protected function getCallbackArgs(Array $args)
     {
-        // Get Code representation out of arguments array
-        $args = func_get_args();
         array_shift($args);
-        $args = array_map(function($param) {
+        return array_map(function($param) {
             $param = is_scalar($param) ? ((string)$param) : $param;
             $text  = !empty($param[0]) && $param[0] == '$' ? $param : var_export($param, true);
             return $text;
         }, $args);
-        
-        list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+    }
 
-        // check if the filter is cachable
+    protected function isCacheable($annotation, Array & $args)
+    {
+        $cache = 0;
         switch (count($args)) {
         case 3:
-            $cache = 0;
             if ($annotation->getParent()->has('Cache')) {
                 $cache = intval(current($annotation->getParent()->getOne('Cache')->getArgs()));
             }
@@ -140,15 +138,23 @@ class Compiler
             break;
         }
 
+        return $cache;
+    }
+
+    public function callback($annotation)
+    {
+        list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+        $args  = $this->getCallbackArgs(func_get_args());
+        $cache = $this->isCacheable($annotation, $args); 
+        
         $arguments = implode(", ", $args);
         if ($annotation->isFunction()) {
             // generate code for functions 
             $function = "\\" . $object->getName();
             if (!empty($cache)) { 
                 return  '$this->doCachedFilter(' . var_export($function,true) . ", $arguments, $cache)";
-            } else {
-                return "$function($arguments)";
             }
+            return "$function($arguments)";
         } else if ($annotation->isMethod()) {
             // It is a method, *for now* we don't care if the method
             // is static so we instanciate an object if it wasn't done before
@@ -157,10 +163,10 @@ class Compiler
             $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
             if (!empty($cache)) { 
                 return  '$this->doCachedFilter(array(' . "{$obj}, '{$method}'), $arguments, $cache)";
-            } else {
-                return "{$obj}->{$method}($arguments)";
             }
+            return "{$obj}->{$method}($arguments)";
         }
+
         throw new \RuntimeException("Invalid callback");
     }
     
@@ -201,15 +207,13 @@ class Compiler
         )) == count($arr);
     }
 
-    public function groupByPatterns(Array $urls)
+    protected function getUrlGroupsPatternsIndexes($urls)
     {
-        $indexes  = array();
         $groups   = array();
+        $indexes  = array();
         $patterns = array();
         foreach ($urls as $url) {
-            $parts = array_filter($url->getParts(), function($element) {
-                return $element->getType() == Component::CONSTANT;
-            });
+            $parts = $url->getConstants();
             if (empty($parts)) {
                 $patterns[] = $url;
                 continue;
@@ -225,6 +229,14 @@ class Compiler
                 $indexes[] = array_slice($parts, 0, $i);
             }
         }
+
+        return array($groups, $patterns, $indexes);
+    }
+
+    public function groupByPatterns(Array $urls)
+    {
+        $indexes  = array();
+        list($groups, $patterns, $indexes) = $this->getUrlGroupsPatternsIndexes($urls);
         if (count($groups) > 1) {
             foreach ($indexes as $id => $rules) {
                 if (empty($groups[$id])) continue;
@@ -254,7 +266,7 @@ class Compiler
             $this->filters[$name] = $filterAnnotation->GetObject();
         }
 
-        $this->route_filters = array();
+        $this->routeFilters = array();
         foreach ($this->annotations->get('preroute,postroute', 'Callable') as $filterAnnotation) {
             $type = $filterAnnotation->getName();
             $args = $filterAnnotation->getArgs();
@@ -270,7 +282,7 @@ class Compiler
                 $this->all_filters[$type][] = array($filterAnnotation, $weight);
                 continue;
             }
-            $this->route_filters[$name][] = array($type, $filterAnnotation, $weight);
+            $this->routeFilters[$name][] = array($type, $filterAnnotation, $weight);
 
         }
 
@@ -284,24 +296,9 @@ class Compiler
     protected function getUrl($routeAnnotation, $route, $args = array())
     {
         $url = new Url($routeAnnotation, $this);
-        if (!empty($route)) {
-            $url->setRoute($route);
-        }
+        $url->setRouteAndArgs($route, $args);
 
-        if (isset($args['set'])) {
-            $url->setArguments($args['set']);
-        }
-        if (!empty($args[1]) || !empty($args['name'])) {
-            $url->setName(empty($args[1]) ? $args['name'] : $args[1]);
-        }
-
-        $base = 0;
-        $filters = $this->all_filters;
-        foreach ($this->all_filters as $type => $filters) {
-            foreach ($filters as $filter) {
-                $url->addFilter($type, $filter[0], array(), $filter[1]+ ++$base);
-            }
-        }
+        $base = $url->addFilters($this->all_filters);
 
         $filters = iterator_to_array($routeAnnotation->GetParent());
         if ($routeAnnotation->isMethod()) {
@@ -309,15 +306,7 @@ class Compiler
             $filters = array_merge($classAnn, $filters);
         }
 
-        foreach ($filters as $annotation) {
-            $name = $annotation->getName();
-
-            if (!empty($this->route_filters[$name])) {
-                foreach ($this->route_filters[$name] as $filter) {
-                    $url->addFilter($filter[0], $filter[1], $annotation->getArgs(), $filter[2]+ ++$base);
-                }
-            }
-        }
+        $url->addFiltersFromAnnotations($this->routeFilters, $filters, $base);
 
         return $url;
     }

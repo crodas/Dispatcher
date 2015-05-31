@@ -61,6 +61,44 @@ class Url
         $this->compiler = $cmp;
     }
 
+    public function setRouteAndArgs($route, $args)
+    {
+        if (!empty($route)) {
+            $this->setRoute($route);
+        }
+
+        if (isset($args['set'])) {
+            $this->setArguments($args['set']);
+        }
+        if (!empty($args[1]) || !empty($args['name'])) {
+            $this->setName(empty($args[1]) ? $args['name'] : $args[1]);
+        }
+    }
+
+    public function addFiltersFromAnnotations(Array $routeFilters, Array $filters, $base = 0)
+    {
+        foreach ($filters as $annotation) {
+            $name = $annotation->getName();
+
+            if (!empty($routeFilters[$name])) {
+                foreach ($routeFilters[$name] as $filter) {
+                    $this->addFilter($filter[0], $filter[1], $annotation->getArgs(), $filter[2]+ ++$base);
+                }
+            }
+        }
+    }
+
+    public function addFilters(Array $allFilters, $base = 0)
+    {
+        foreach ($allFilters as $type => $filters) {
+            foreach ($filters as $filter) {
+                $this->addFilter($type, $filter[0], array(), $filter[1]+ ++$base);
+            }
+        }
+
+        return $base;
+    }
+
     public function setName($name)
     {
         $this->name = $name;
@@ -176,6 +214,13 @@ class Url
     public function getParts()
     {
         return $this->parts;
+    }
+
+    public function getConstants()
+    {
+        return array_filter($this->parts, function($e) {
+            return $e->getType() == Component::CONSTANT;
+        });
     }
 
     public function getGeneratorFilter()
