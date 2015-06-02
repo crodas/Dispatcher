@@ -1,6 +1,6 @@
 //<?php
 
-protected function complexUrl{{$id}}($req, $parts, $length, $server, &$return)
+protected function complexUrl{{$id}}($req, $parts, $length, &$return)
 {
     $i = 0;
     $args = array();
@@ -76,11 +76,15 @@ protected function complexUrl{{$id}}($req, $parts, $length, $server, &$return)
     @foreach ($url->getArguments() as $name => $var)
     $req->set({{@$name}}, {{@$var}});
     @end
+    $attributes = $req->attributes->all();
     foreach ($args as $key => $value) {
-        $req->setIfEmpty($key, $value);
+        if (empty($attributes[$key])) {
+            $attributes[$key] = $value;
+        }
     }
+    $req->attributes->add($attributes);
     {{ $self->callbackPrepare($url) }}
-    $req->setIfEmpty('__handler__', {{$self->callbackObject($url)}});
+    $req->attributes->set('__handler__', {{$self->callbackObject($url)}});
     $return = {{$self->callback($url, '$req')}};
 
     @foreach ($url->getFilters('postroute') as $filter)

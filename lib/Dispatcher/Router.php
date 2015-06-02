@@ -37,16 +37,17 @@
 
 namespace Dispatcher;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class Router extends Generator
 {
     protected $development = false;
     protected $loaded;
-    protected $_router;
+    protected static $_router = array();
 
     public function __construct($output = '')
     {
         $this->setOutput($output);
-        $this->setNamespace(__CLASS__ . "\\Generated"); 
     }
 
     public function development()
@@ -55,42 +56,118 @@ class Router extends Generator
         return $this;
     }
 
-    public function newRequest()
+    public function url($name, $args = null)
     {
-        $class = $this->getNamespace() . "\\Request";;
-        return new $class;
+        if (!is_array($args)) {
+            $args = func_get_args();
+            array_shift($args);
+        }
+        return $this->load()->getRoute($name, $args);
     }
 
-    public function getRoute($name, Array $args = array())
+    public function getRoute($name, $args = null)
     {
-        return $this->load()->getRoute($name, $args);
+        if (!is_array($args)) {
+            $args = func_get_args();
+            array_shift($args);
+        }
+        return $this->url($name, $args);
     }
     
     public function load()
     {
-        if ($this->loaded) return $this->_router;
+        $output = $this->getOutput();
 
-        if (!is_file($this->getOutput()) || $this->development) {
-            $this->generate();
+        if (empty(self::$_router[$output])) {
+            if (!is_file($output) || $this->development) {
+                $this->generate();
+            }
+
+            $router = require $output;
+            if (!is_object($router)) {
+                unlink($output);
+                return $this->load();
+            }
+            self::$_router[$output] = $router;;
         }
 
-        require $this->getOutput();
-
-        $class = $this->getNamespace() . "\\Route";
-
-        $this->loaded  = true;
-        $this->_router = new $class; 
-
-        return $this->_router;
+        return self::$_router[$output];
     }
 
-    public function doRoute($req = null, Array $server = array())
+    protected $cache;
+
+    public function setCache(FilterCache $cache)
     {
-        $this->load();
-        if (empty($server)) {
-            $server = $_SERVER;
+        $this->cache = $cache;
+    }
+
+    protected function array_diff($orig, $new)
+    {
+        $changes = array();
+        foreach ($new as $key => $value) {
+            if (empty($orig[$key]) || $value !== $orig[$key]) {
+                $changes[$key] = $value;
+            }
+        }
+        return $changes;
+    }
+
+    // doCachedFilter {{{
+    /**
+     *  Cache layer for Filters.
+     *
+     *  If a filter is cachable and a cache object is setup this method will
+     *  cache the output of a filter (and all their modifications to a request).
+     *
+     *  This function is designed to help with those expensive filters which 
+     *  for instance talks to databases.
+     */
+    public function doCachedFilter($callback, Request $req, $key, $value, $ttl)
+    {
+        if (empty($this->cache)) {
+            // no cache layer, we're just a proxy, call to the original callback
+            if (is_string($callback)) {
+                $return = $callback($req, $key, $value);
+            } else {
+                $return = $callback[0]->{$callback[1]}($req, $key, $value);
+            }
+            return $return;
         }
 
-        return $this->_router->doRoute($req ?: $this->newRequest(), $server);
+        $objid = "{$key}\0{$value}";
+        if ($v=$this->cache->get($objid)) {
+            $req->attributes->set('filter:cached:' . $key, true);
+            $object = unserialize($v);
+            $req->attributes->add($object['set']);
+            return $object['return'];
+        }
+
+        // not yet cached yet so we call the filter as normal
+        // but we save all their changes it does on Request object
+        $attributes = $req->attributes->all();
+        if (is_string($callback)) {
+            $return = $callback($req, $key, $value);
+        } else {
+            $return = $callback[0]->{$callback[1]}($req, $key, $value);
+        }
+        if (!$req->attributes->has($key)) {
+            $req->attribute->set($key, $value);
+        }
+        $set = $this->array_diff($attributes,$req->attributes->all());
+
+        $this->cache->set($objid, serialize(compact('return', 'set')), 3600);
+
+        
+        return $return;
+    }
+    // }}}
+
+    public function doRoute($req = null)
+    {
+        if (empty($req)) {
+            $req = Request::createFromGlobals();
+        }
+
+        return $this->load()->setWrapper($this)->doRoute($req);
     }
 }

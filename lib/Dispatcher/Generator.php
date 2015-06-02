@@ -37,11 +37,11 @@
 
 namespace Dispatcher;
 
-use Notoj\Dir as DirParser,
-    Notoj\File as FileParser,
-    Notoj\Annotations,
-    crodas\FileUtil\File,
-    WatchFiles\Watch;
+use Notoj\Dir as DirParser;
+use Notoj\File as FileParser;
+use Notoj\Annotations;
+use crodas\FileUtil\File;
+use WatchFiles\Watch;
 
 class Generator
 {
@@ -111,7 +111,7 @@ class Generator
 
     public function getOutput()
     {
-        return $this->output ?: File::generateFilepath('dispatcher', getcwd());
+        return $this->output = ($this->output ?: File::generateFilepath('dispatcher', getcwd()));
     }
 
     public function generate()
@@ -120,6 +120,7 @@ class Generator
         $cache = new Watch($output . '.cache');
         $dirs  = array_unique($this->dirs);
         $files = array_unique($this->files);
+        $files[] = $output;
 
         $cache->watchFiles($files);
         $cache->watchDirs($dirs);
@@ -129,12 +130,12 @@ class Generator
         }
 
         $annotations = new \Notoj\Filesystem(array_unique(array_merge($dirs, $files)));
+        $compiler = new Compiler($this, $annotations);
+        File::write($output, $compiler->getOutput());
+
         $cache->watchFiles($files)->watchDirs($dirs);
         $cache->watch();
         
-        $compiler = new Compiler($this, $annotations);
-        file_put_contents($output, $compiler->getOutput());
-
         return $compiler->getOutput();
     }
 }

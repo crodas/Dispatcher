@@ -1,7 +1,7 @@
 {
     "name": "crodas/dispatcher",
     "description": "Dispatcher generator",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require-dev": {
         "crodas/cli": "*"
     },
@@ -10,7 +10,8 @@
         "crodas/notoj": "^1.0.4",
         "crodas/watch-files": "~0.1",
         "crodas/file-util": "~0.1.14",
-        "crodas/simple-view-engine": "^0.1"
+        "crodas/simple-view-engine": "^0.1",
+        "symfony/http-foundation": "^2.6"
     },
 
     "license": "BSD-4-Clause",

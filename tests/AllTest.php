@@ -1,24 +1,23 @@
 <?php
 
-use Dispatcher\Generator,
-    AllTest\Route,
-    AllTest\Request;
+use Dispatcher\Generator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
+use Dispatcher\Router;
 
 class AllTest extends \phpunit_framework_testcase
 {
     public function testCompile()
     {
+        define('file', __DIR__ . '/generated/' . __CLASS__ . '.php');
         $gen  = new Generator;
-        $file = __DIR__ . '/generated/' . __CLASS__ . '.php';
-        $this->assertFalse(file_Exists($file));
+        $this->assertFalse(file_Exists(file));
         $gen->addDirectory(__DIR__ . '/input');
-        $gen->setNamespace(__CLASS__);
-        $gen->setOutput($file);
+        $gen->setOutput(file);
         $gen->generate();
 
-        $this->assertTrue(file_Exists($file));
+        $this->assertTrue(file_Exists(file));
 
-        require ($file);
         // add mockup cache class
         require __DIR__ . "/input/cache_class.php";
     }
@@ -26,108 +25,111 @@ class AllTest extends \phpunit_framework_testcase
     /** @depends testCompile */
     public function testBug01Sorting()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/foo/barxxx'));
+        $route = new Router(file);
+        $req   =  Request::create('/foo/barxxx?x=1', 'GET');
+        $req->attributes->get('phpunit', $this);
+        $out = $route->doRoute($req);
         $this->assertEquals($out, 'bug01\foobar');
 
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/foo/bar'));
+        $req   =  Request::create('/foo/bar?x=1', 'GET');
+        $route = new Router(file);
+        $req->attributes->get('phpunit', $this);
+        $out = $route->doRoute($req);
         $this->assertEquals($out, 'bug01\barfoo');
     }
 
     /** @depends testCompile */
     public function testUrlSorting()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/function/reverse'));
+        $route = new Router(file);
+        $req   = Request::create('/function/reverse?x=1', 'GET');
+        $req->attributes->get('phpunit', $this);
+        $out = $route->doRoute($req);
         $this->assertEquals($out, 'some_function');
-        $this->assertEquals(NULL, $req->get('reverse'));
+        $this->assertFalse($req->attributes->has('reverse'));
 
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/function/esrever'));
+        $req   = Request::create('/function/esrever', 'GET');
+        $req->attributes->get('phpunit', $this);
+        $out = $route->doRoute($req);
         $this->assertEquals($out, 'some_function');
-        $this->assertEquals('esrever', $req->get('reverse'));
-        $this->assertTrue($req->get('__all__'));
+        $this->assertEquals('esrever', $req->attributes->get('reverse'));
+        $this->assertTrue($req->attributes->get('__all__'));
     }
 
     /** @depends testCompile */
     public function testSetIfEmpty()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
+        $route = new Router(file);
+        $req   = Request::create('/ifempty/algo?x=1', 'GET');
+        $req->attributes->set('phpunit', $this);
         $route->setCache(TestCacheClass::getInstance());
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/ifempty/algo'));
-        $this->assertEquals('ALGO', $req->get('algo-alias'));
-        $this->assertTrue($req->get('__all__'));
-        $this->assertTrue($req->get('__post__'));
+        $out = $route->doRoute($req);
+        $this->assertEquals('ALGO', $req->attributes->get('algo-alias'));
+        $this->assertTrue($req->attributes->get('__all__'));
+        $this->assertTrue($req->attributes->get('__post__'));
     }
 
     /** @depends testCompile */
     public function testSetIfEmptyCached()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
+        $route = new Router(file);
         $route->setCache(TestCacheClass::getInstance());
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/ifempty/algo'));
-        $this->assertEquals('ALGO', $req->get('algo-alias'));
-        $this->assertTrue($req->get('filter:cached:algo-alias'));
+        $req   = Request::create('/ifempty/algo?x=1', 'GET');
+        $req->attributes->set('phpunit', $this);
+        $out = $route->doRoute($req);
+        $this->assertEquals('ALGO', $req->attributes->get('algo-alias'));
+        $this->assertTrue($req->attributes->get('filter:cached:algo-alias'));
     }
 
     /** 
      * @depends testCompile
-     * @expectedException AllTest\NotFoundException
+     * @expectedException Dispatcher\Exception\NotFoundHttpException
      */
     public function testPreRouteFilter()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $req->set('fail_session', true);
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix', 'REQUEST_METHOD' => 'POST'));
+        $route = new Router(file);
+        $req = Request::create('/prefix', 'POST');
+        $out = $route->doRoute($req);
+        $req->attributes->set('phpunit', $this);
+        $req->attributes->set('fail_session', true);
+        $out = $route->doRoute($req);
     }
 
     /** 
      * @depends testCompile
-     * @expectedException AllTest\NotFoundException
+     * @expectedException Dispatcher\Exception\NotFoundHttpException
      */
     public function testClassPreRouteFilter()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix'));
+        $route = new Router(file);
+        $req   = Request::create('/prefix');
+        $req->attributes->set('phpunit', $this);
+        $out = $route->doRoute($req);
         $this->assertEquals($out, 'SomeClass::save');
-        $this->assertTrue($req->get('run_all'));
+        $this->assertTrue($req->attributes->get('run_all'));
     }
 
     /** @depends testCompile */
     public function testClassInheritance()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix', 'REQUEST_METHOD' => 'POST'));
+        $route = new Router(file);
+        $req = Request::create('/prefix', 'POST');
+        $req->attributes->set('phpunit', $this);
+        $out = $route->doRoute($req);
         $this->assertEquals($out, 'SomeClass::save');
-        $this->assertTrue($req->get('run_all'));
+        $this->assertTrue($req->attributes->get('run_all'));
     }
 
     /** 
      * @depends testCompile
-     * @expectedException AllTest\NotFoundException
+     * @expectedException Dispatcher\Exception\NotFoundHttpException
      */
     public function testClassInheritanceNotFound()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $out = $route->doRoute($req, array('REQUEST_URI' => '/prefix', 'REQUEST_METHOD' => 'GET'));
+        $route = new Router(file);
+        $req   = Request::create('/prefix', 'GET');
+        $req->attributes->set('phpunit', $this);
+        $out = $route->doRoute($req);
     }
 
 
@@ -136,40 +138,44 @@ class AllTest extends \phpunit_framework_testcase
      */
     public function testComplex1()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/foobar/12345'));
+        $route = new Router(file);
+        $req   = Request::create('/foobar/12345');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
         $this->assertEquals($num, 'SomeMethodController::get');
 
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/foobar/12345', 'REQUEST_METHOD' => 'DELETE'));
+        $req   = Request::create('/foobar/12345', 'DELETE');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
         $this->assertEquals($num, 'SomeMethodController::modify');
 
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/foobar/12345/something', 'REQUEST_METHOD' => 'DELETE'));
+        $req   = Request::create('/foobar/12345/something', 'DELETE');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
         $this->assertEquals($num, 'SomeMethodController::modify_something');
     }
 
     /**
      *  @depends testCompile
-     *  @expectedException AllTest\NotFoundException
+     *  @expectedException Dispatcher\Exception\NotFoundHttpException
      */
     public function testBug001()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/something/silly'));
-        $this->assertEquals($num, $req->get('return'));
+        $route = new Router(file);
+        $req   = Request::create('/somthing/silly');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
+        $this->assertEquals($num, $req->attributes->get('return'));
     }
     /**
      *  @depends testCompile
      */
     public function testRoot() 
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => "/"));
+        $route = new Router(file);
+        $req   = Request::create('/');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
         $this->assertEquals('empty_level_2', $num);
     }
 
@@ -180,10 +186,10 @@ class AllTest extends \phpunit_framework_testcase
      */
     public function testWithNoGroup()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => "/zzzsfasd_prefix_93"));
+        $route = new Router(file);
+        $req   = Request::create('/zzzsfasd_prefix_93');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
         $this->assertEquals(93, $num);
     }
 
@@ -192,48 +198,46 @@ class AllTest extends \phpunit_framework_testcase
      */
     public function testWithNoGroupSimple()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
+        $route = new Router(file);
+        $req   = Request::create('/deadly-simple');
+        $req->attributes->set('phpunit', $this);
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/deadly-simple"));
-        $this->assertEquals($controller, $req->get('controller'));
+        $this->assertEquals($controller, $req->attributes->get('controller'));
     }
 
     public function testComplexUrlWithNoFilter()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $controller = $route->doRoute($req, array('REQUEST_URI' => "/hola/que/tal/route"));
-        $this->assertEquals($controller, $req->get('controller'));
-        $this->assertEquals(array('hola', 'que', 'tal'), $req->get('foobar_nofilter'));
+        $route = new Router(file);
+        $req   = Request::create('/hola/que/tal/route');
+        $req->attributes->set('phpunit', $this);
+        $controller = $route->doRoute($req);
+        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals(array('hola', 'que', 'tal'), $req->attributes->get('foobar_nofilter'));
 
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $controller = $route->doRoute($req, array('REQUEST_URI' => "/router/hola/que/tal"));
-        $this->assertEquals($controller, $req->get('controller'));
-        $this->assertEquals(array('hola', 'que', 'tal'), $req->get('foobar_nofilter'));
+        $req   = Request::create('/router/hola/que/tal');
+        $req->attributes->set('phpunit', $this);
+        $controller = $route->doRoute($req);
+        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals(array('hola', 'que', 'tal'), $req->attributes->get('foobar_nofilter'));
 
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $controller = $route->doRoute($req, array('REQUEST_URI' => "/routex/hola/que/tal/all"));
-        $this->assertEquals($controller, $req->get('controller'));
-        $this->assertEquals(array('hola', 'que', 'tal'), $req->get('foobar_nofilter'));
+        $req   = Request::create('/routex/hola/que/tal/all');
+        $req->attributes->set('phpunit', $this);
+        $controller = $route->doRoute($req);
+        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals(array('hola', 'que', 'tal'), $req->attributes->get('foobar_nofilter'));
     }
 
     public function testComplexUrl()
     {
-        $route = new Route;
-        $req   = new Request;
-        $req->set('phpunit', $this);
-        $controller = $route->doRoute($req, array('REQUEST_URI' => "/loop-00/l-1-1/l-2-3/l-3-4/loop/4/5/bar"));
-        $this->assertEquals($controller, $req->get('controller'));
-        $this->assertEquals($req->get('numeric'), '00');
-        $this->assertEquals($req->get('a'), array('1', '2', '3'));
-        $this->assertEquals($req->get('x'), array('1', '3', '4'));
-        $this->assertEquals($req->get('b'), array('4', '5'));
+        $route = new Router(file);
+        $req   = Request::create("/loop-00/l-1-1/l-2-3/l-3-4/loop/4/5/bar");
+        $req->attributes->set('phpunit', $this);
+        $controller = $route->doRoute($req);
+        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals($req->attributes->get('numeric'), '00');
+        $this->assertEquals($req->attributes->get('a'), array('1', '2', '3'));
+        $this->assertEquals($req->attributes->get('x'), array('1', '3', '4'));
+        $this->assertEquals($req->attributes->get('b'), array('4', '5'));
     }
 
 }

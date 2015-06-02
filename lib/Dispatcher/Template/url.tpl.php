@@ -7,14 +7,23 @@
     $req->get({{@$name}}, {{@$var}});
     @end
 
+    $attributes = $req->attributes->all();
+    $merge      = false;
     @foreach ($url->getVariables() as $name => $var)
         @if (count($var) == 1)
             @set($variable, "parts[" . $var[0] . "]")
         @else
             @set($variable, "matches_" . $var[0] . "[" . $var[1] . "]")
         @end
-        $req->setIfEmpty({{@$name}}, ${{$variable}});
+        if (empty($attributes[{{@$name}}])) {
+            $attributes[{{@$name}}] = ${{$variable}};
+            $merge = true;
+        }
     @end
+
+    if ($merge) {
+        $req->attributes->add($attributes);
+    }
 
     $allow = true;
     @if (count($preRoute) > 0) 
@@ -29,7 +38,7 @@
 
     if ($allow) {
         {{ $compiler->callbackPrepare($url) }}
-        $req->setIfEmpty('__handler__', {{$compiler->callbackObject($url->getAnnotation())}});
+        $req->attributes->__handler__ = {{$compiler->callbackObject($url->getAnnotation())}};
         $response = {{ $compiler->callback($url, '$req') }};
 
         @foreach ($postRoute as $filter)
