@@ -9,6 +9,7 @@
 @set($ns, "crodas\\Dispatcher\\Generate\\t" . uniqid(true))
 namespace {{ $ns }};
 
+use Dispatcher\Exception\RouteNotFoundException;
 use Dispatcher\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 

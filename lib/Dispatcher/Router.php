@@ -56,9 +56,22 @@ class Router extends Generator
         return $this;
     }
 
-    public function getRoute($name, Array $args = array())
+    public function url($name, $args = null)
     {
+        if (!is_array($args)) {
+            $args = func_get_args();
+            array_shift($args);
+        }
         return $this->load()->getRoute($name, $args);
+    }
+
+    public function getRoute($name, $args = null)
+    {
+        if (!is_array($args)) {
+            $args = func_get_args();
+            array_shift($args);
+        }
+        return $this->url($name, $args);
     }
     
     public function load()
@@ -121,7 +134,7 @@ class Router extends Generator
             return $return;
         }
 
-        $objid = "{$key}\n{$value}";
+        $objid = "{$key}\0{$value}";
         if ($v=$this->cache->get($objid)) {
             $req->attributes->set('filter:cached:' . $key, true);
             $object = unserialize($v);

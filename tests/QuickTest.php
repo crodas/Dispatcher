@@ -252,26 +252,29 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function testGenerator()
     {
-        //$this->assertequals(\quicktest\route::getroute("foobar_x", 'foobar'), '/foo/bar/foobar');
-        //$this->assertEquals(Router(xfile)::getRoute("foobar_xx", 'foobar'), '/foo/bar/xxx-foobar');
-        //$this->assertEquals(Router(xfile)::getRoute("foobar_xx"), '/foo/bar/xxx');
+        $route = new Router(xfile);
+        $this->assertequals($route->getroute("foobar_x", 'foobar'), '/foo/bar/foobar');
+        $this->assertEquals($route->getRoute("foobar_xx", 'foobar'), '/foo/bar/xxx-foobar');
+        $this->assertEquals($route->getRoute("foobar_xx"), '/foo/bar/xxx');
     }
 
     /**
      *  @depends testCompile
-     *  @expectedException QuickTest\RouteNotFoundException
+     *  @expectedException Dispatcher\Exception\RouteNotFoundException
      */
-    public function ztestGeneratorNotFound()
+    public function testGeneratorNotFound()
     {
-        //Router(xfile)::getRoute("foobar_xdsdasdada");
+        $router = new Router(xfile);
+        $router->getRoute("foobar_xdsdasdada");
     }
 
     /**
      *  @depends testCompile
-     *  @expectedException QuickTest\RouteNotFoundException
+     *  @expectedException Dispatcher\Exception\RouteNotFoundException
      */
-    public function ztestGeneratorInvalidArgs()
+    public function testGeneratorInvalidArgs()
     {
-        //\quicktest\route::getroute("foobar_x", 'foobar', 'xxx');
+        $router = new Router(xfile);
+        $router->getroute("foobar_x", 'foobar', 'xxx');
     }
 }
