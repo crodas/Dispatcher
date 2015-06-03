@@ -9,7 +9,7 @@ Installing
 You can install using composer:
 
 ```sh
-composer require crodas/dispatcher:"dev-develop"
+composer require crodas/dispatcher:"^1.0"
 ```
 
 Defining routes

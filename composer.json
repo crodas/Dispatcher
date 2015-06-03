@@ -3,7 +3,7 @@
     "description": "Dispatcher generator",
     "minimum-stability": "stable",
     "require-dev": {
-        "crodas/cli": "*"
+        "crodas/cli": "^0.1.0"
     },
     "require": {
         "php": ">=5.3",
@@ -15,7 +15,7 @@
     },
 
     "license": "BSD-4-Clause",
-    "version": "v0.1.23",
+    "version": "v1.0.0",
     "authors": [
         {
             "name": "César D. Rodas",
