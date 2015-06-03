@@ -91,14 +91,26 @@ To simply things, `Dispatcher` doesn't allow you *yet* to define regular express
 
 
 ```php
-<?php
-/** @Route("/profile/{user}") */
+/**
+ * In this URL, the placeholder user have a Filter, that means
+ * if the controller is called we can be sure we get a valid
+ * user object.
+ *
+ * @Route("/profile/{user}")
+ */
 function show_profile(Request $req, $user) {
   return "Hi {$user->name}";
 }
 
 
-/** @Filter("user") */
+/**
+ * Validate {user} placeholders
+ *
+ * Check if the user exists in the database, if it does exists
+ * it will return true and the controller will be called.
+ *
+ * @Filter("user") 
+ */
 function some_filter(Request $req, $name, $value) {
   $userobj = DB::getUserById($value);
   if ($userobj) {
