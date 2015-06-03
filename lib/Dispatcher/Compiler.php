@@ -271,7 +271,7 @@ class Compiler
         $this->filters = array();
 
         foreach ($this->annotations->get('Filter', 'Callable') as $filterAnnotation) {
-            $name = current($filterAnnotation->GetARgs());
+            $name = strtolower(current($filterAnnotation->GetArgs()));
             if (empty($name)) continue;
             $this->filters[$name] = $filterAnnotation->GetObject();
         }

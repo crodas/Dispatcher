@@ -24,6 +24,23 @@ function x_int($req, $a, $b)
 }
 
 /**
+ *  @Filter MongoId2
+ *  @Builtin
+ */
+function filter_built_in($var)
+{
+    return "preg_match('@^[a-f0-9]{24}$@', $var)";
+}
+
+/**
+ *  @Route("/{mongoid2}")
+ */
+function mongoid_controller($req, $mongoid2)
+{
+    return __FUNCTION__;
+}
+
+/**
  *  @Route("/{email}")
  */
 function email_controller($req)

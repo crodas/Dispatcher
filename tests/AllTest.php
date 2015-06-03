@@ -243,11 +243,39 @@ class AllTest extends \phpunit_framework_testcase
     public static function urlAndcontrollers()
     {
         return array(
+            array('/numeric/0/-2', 'numbers'),
+            array('/numeric/0/2', 'numbers'),
+            array('/numeric/2/0', 'numbers'),
             array('/numeric/1/2', 'numbers'),
+            array('/numeric/0/2.4', 'numbers'),
+            array('/numeric/1.1/0', 'numbers'),
             array('/numeric/1.1/2.4', 'numbers'),
             array('/int/1/2', 'x_int'),
             array('/crodas@php.net', 'email_controller'),
+            array('/aef123456789afedbdbaaaaa', 'mongoid_controller'),
         );
+    }
+
+    public static function urlAndControllers404()
+    {
+        return array(
+            array('/int/1.9/2.9'),
+            array('/int/1/2x'),
+            array('/1crodas@1phpnet'),
+            array('/aef123456789afedbdbaaaaaa'),
+            array('/aef123456789afedbdbaaaaz'),
+        );
+    }
+
+    /**
+     *  @dataProvider urlAndControllers404
+     *  @expectedException Dispatcher\Exception\NotFoundHttpException
+     */
+    public function testBuiltInFilter404($url)
+    {
+        $route = new Router(file);
+        $req   = Request::create($url);
+        $this->assertEquals(null, $route->doRoute($req));
     }
 
     /**

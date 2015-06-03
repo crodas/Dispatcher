@@ -51,11 +51,16 @@ class Router
         throw new NotFoundHttpException;
     }
 
+    public function filter($n)
+    {
+        return strlen($n) > 0;
+    }
+
     public function doRoute(Request $req)
     {
         $uri    = $req->getRequestUri();
         $uri    = ($p = strpos($uri, '?')) ? substr($uri, 0, $p) : $uri;
-        $parts  = array_values(array_filter(explode("/", $uri)));
+        $parts  = array_values(array_filter(explode("/", $uri), array($this, 'filter')));
         $length = count($parts);
         $req->uri = $uri;
 

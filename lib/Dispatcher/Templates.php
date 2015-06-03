@@ -602,7 +602,7 @@ namespace {
             if ($self->getNotFoundHandler()) {
                 echo "            " . ($self->getNotFoundHandler()) . ";\n";
             }
-            echo "        throw new NotFoundHttpException;\n    }\n\n    public function doRoute(Request \$req)\n    {\n        \$uri    = \$req->getRequestUri();\n        \$uri    = (\$p = strpos(\$uri, '?')) ? substr(\$uri, 0, \$p) : \$uri;\n        \$parts  = array_values(array_filter(explode(\"/\", \$uri)));\n        \$length = count(\$parts);\n        \$req->uri = \$uri;\n\n        ";
+            echo "        throw new NotFoundHttpException;\n    }\n\n    public function filter(\$n)\n    {\n        return strlen(\$n) > 0;\n    }\n\n    public function doRoute(Request \$req)\n    {\n        \$uri    = \$req->getRequestUri();\n        \$uri    = (\$p = strpos(\$uri, '?')) ? substr(\$uri, 0, \$p) : \$uri;\n        \$parts  = array_values(array_filter(explode(\"/\", \$uri), array(\$this, 'filter')));\n        \$length = count(\$parts);\n        \$req->uri = \$uri;\n\n        ";
             echo $groups->__toString() . "\n\n        // We couldn't find any handler for the URL,\n        // let's find in our complex url set (if there is any)\n        \$this->handleComplexUrl(\$req, \$parts, \$length);\n    }\n\n    public static function getRoute(\$name, \$args = array())\n    {\n        if (!is_array(\$args)) {\n            \$args = func_get_args();\n            array_shift(\$args);\n        }\n\n        \$count = count(\$args);\n        switch (\$name) {\n";
             foreach($self->getNamedUrls() as $name => $route) {
 
