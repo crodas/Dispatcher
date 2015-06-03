@@ -240,4 +240,24 @@ class AllTest extends \phpunit_framework_testcase
         $this->assertEquals($req->attributes->get('b'), array('4', '5'));
     }
 
+    public static function urlAndcontrollers()
+    {
+        return array(
+            array('/numeric/1/2', 'numbers'),
+            array('/numeric/1.1/2.4', 'numbers'),
+            array('/int/1/2', 'x_int'),
+            array('/crodas@php.net', 'email_controller'),
+        );
+    }
+
+    /**
+     *  @dataProvider urlAndControllers
+     */
+    public function testBuiltInFilter($url, $controller)
+    {
+        $route = new Router(file);
+        $req   = Request::create($url);
+        $this->assertEquals($controller, $route->doRoute($req));
+    }
+
 }

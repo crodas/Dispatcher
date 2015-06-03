@@ -15,6 +15,30 @@ function empty_level_2($req) {
     return __FUNCTION__;
 }
 
+/**
+ *  @Route("/int/{int:a}/{int:b}")
+ */
+function x_int($req, $a, $b)
+{
+    return __FUNCTION__;
+}
+
+/**
+ *  @Route("/{email}")
+ */
+function email_controller($req)
+{
+    return __FUNCTION__;
+}
+
+/**
+ *  @Route("/numeric/{number:a}/{number:b}")
+ */
+function numbers($req, $a, $b)
+{
+    return __FUNCTION__;
+}
+
 
 /** 
  * @Route("/function/{reverse}") 

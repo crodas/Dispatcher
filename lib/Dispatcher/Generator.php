@@ -121,6 +121,7 @@ class Generator
         $dirs  = array_unique($this->dirs);
         $files = array_unique($this->files);
         $files[] = $output;
+        $dirs[]  = __DIR__ . '/Filters';
 
         $cache->watchFiles($files);
         $cache->watchDirs($dirs);

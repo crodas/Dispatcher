@@ -95,6 +95,10 @@ class Compiler
     public function callbackPrepare($annotation)
     {
         list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+        if ($object->has('builtin')) {
+            return '';
+        }
+
         $args = array(
             'filePath' => $annotation->getFile(),
             'annotation' => $annotation,
@@ -146,6 +150,10 @@ class Compiler
         list($annotation, $object) = $this->getAnnotationAndObject($annotation);
         $args  = $this->getCallbackArgs(func_get_args());
         $cache = $this->isCacheable($annotation, $args); 
+
+        if ($object->has('builtin')) {
+            return "(" . $object->exec($args[2], $args[1]) . ")";
+        }
         
         $arguments = implode(", ", $args);
         if ($annotation->isFunction()) {
@@ -260,6 +268,8 @@ class Compiler
 
     protected function readFilters()
     {
+        $this->filters = array();
+
         foreach ($this->annotations->get('Filter', 'Callable') as $filterAnnotation) {
             $name = current($filterAnnotation->GetARgs());
             if (empty($name)) continue;
