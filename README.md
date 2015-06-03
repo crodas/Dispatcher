@@ -3,6 +3,15 @@ Dispatcher
 
 `Dispatcher` is a routing library that maps URLs to actions. 
 
+Installing
+----------
+
+You can install using composer:
+
+```sh
+composer require crodas/dispatcher:"dev-develop"
+```
+
 Defining routes
 ---------------
 
