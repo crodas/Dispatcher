@@ -13,7 +13,7 @@ class SomeSillyClass
     /** @Filter something @Cache 3600 */
     function filter_set($Req, $name, $value)
     {
-        $Req->set($name, strtoupper($value));
+        $Req->attributes->set($name, strtoupper($value));
         return true;
     }
 
@@ -22,7 +22,7 @@ class SomeSillyClass
      */
     function _all_filter($Request, $args)
     {
-        $Request->set('__all__', true);
+        $Request->attributes->set('__all__', true);
         return true;
     }
 
@@ -31,7 +31,7 @@ class SomeSillyClass
      */
     function _all_filter_post($Request, $args, $return)
     {
-        $Request->set('__post__', true);
+        $Request->attributes->set('__post__', true);
         return $return;
     }
 }

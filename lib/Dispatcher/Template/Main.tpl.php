@@ -6,191 +6,26 @@
  *
  *  This is a generated file, do not modify it.
  */
-@if ($config->getNamespace())
-namespace {{ $config->getNamespace() }};
-@end
+@set($ns, "crodas\\Dispatcher\\Generate\\t" . uniqid(true))
+namespace {{ $ns }};
 
-class NotFoundException extends \Exception 
+use Dispatcher\Exception\RouteNotFoundException;
+use Dispatcher\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
+
+class Router
 {
-}
-
-class RouteNotFoundException extends \Exception 
-{
-}
-
-interface FilterCache
-{
-    public function has($key);
-    public function set($key, $value, $ttl);
-    public function get($key);
-}
-
-class Request
-{
-    protected $var = array();
-    protected $changes = array();
-    protected $watch   = false;
-    protected $begin;
-
-    public function __construct()
+    public function setWrapper(\Dispatcher\Router $wrapper)
     {
-        $this->begin = microtime(true);
-    }
-
-    public function getResponseTime()
-    {
-        return microtime(true) - $this->begin;
-    }
-
-    @foreach (array("GET", "PUT", "DELETE", "POST", "HEAD") as $type)
-    public function is{{$type}}()
-    {
-        return $_SERVER['REQUEST_METHOD'] === {{@$type}};
-    }
-    @end
-
-    public function isAjax()
-    {
-        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-    }
-
-    public function watchChanges()
-    {
-        $this->watch   = true;
-        $this->changes = array();
-        return true;
-    }
-
-    public function getChanges()
-    {
-        $this->watch = false;
-        return $this->changes;
-    }
-
-    protected function handleNotFound()
-    {
-        @if ($self->getNotFoundHandler())
-            $req = $this;
-            {{ $self->getNotFoundHandler() }};
-        @end
-
-        return false;
-    }
-
-    public function notFound()
-    {
-        if ($this->handleNotFound() !== false) {
-            /** Was it handled? Yes! */
-            exit;
-        }
-
-        throw new NotFoundException;
-    }
-
-    public function setIfEmpty($name, $value)
-    {
-        if (empty($this->var[$name])) {
-            $this->var[$name] = $value;
-            if ($this->watch) {
-                $this->changes[] = $name;
-            }
-        }
+        $this->wrapper = $wrapper;
         return $this;
-    }
-
-    public function set($name, $value)
-    {
-        $this->var[$name] = $value;
-        if ($this->watch) {
-            $this->changes[] = $name;
-        }
-        return $this;
-    }
-
-    public function get($name)
-    {
-        if (array_key_exists($name, $this->var)) {
-            return $this->var[$name];
-        }
-        return NULL;
-    }
-}
-
-class Route
-{
-    protected $cache;
-
-    public function setCache(FilterCache $cache)
-    {
-        $this->cache = $cache;
-    }
-
-    // doCachedFilter
-    /**
-     *  Cache layer for Filters.
-     *
-     *  If a filter is cachable and a cache object is setup this method will
-     *  cache the output of a filter (and all their modifications to a request).
-     *
-     *  This function is designed to help with those expensive filters which 
-     *  for instance talks to databases.
-     */
-    protected function doCachedFilter($callback, Request $req, $key, $value, $ttl)
-    {
-        if (empty($this->cache)) {
-            // no cache layer, we're just a proxy, call to the original callback
-            if (is_string($callback)) {
-                $return = $callback($req, $key, $value);
-            } else {
-                $return = $callback[0]->{$callback[1]}($req, $key, $value);
-            }
-            return $return;
-        }
-
-        $objid = "{$key}\n{$value}";
-        if ($v=$this->cache->get($objid)) {
-            $req->set('filter:cached:' . $key, true);
-            $object = unserialize($v);
-            foreach ($object['set'] as $key => $value) {
-                $req->set($key, $value);
-            }
-            return $object['return'];
-        }
-
-        // not yet cached yet so we call the filter as normal
-        // but we save all their changes it does on Request object
-        $req->watchChanges();
-        if (is_string($callback)) {
-            $return = $callback($req, $key, $value);
-        } else {
-            $return = $callback[0]->{$callback[1]}($req, $key, $value);
-        }
-        $keys = $req->setIfEmpty($key, $value)->getChanges();
-        $set  = array();
-        foreach ($keys as $key) {
-            $set[$key] = $req->get($key);
-        }
-
-        $this->cache->set($objid, serialize(compact('return', 'set')), 3600); 
-
-        
-        return $return;
-    }
-
-    public function fromRequest(Request $req = NULL)
-    {
-        if (empty($req)) {
-            $req = new Request;
-        }
-        return $this->doRoute($req, $_SERVER);
     }
 
     @foreach($self->getComplexUrls() as $id => $url)
         @include('complexurl')
     @end
 
-    protected function handleComplexUrl(Request $req, $parts, $length, $server)
+    protected function handleComplexUrl(Request $req, $parts, $length)
     {
         @foreach ($self->getComplexUrls() as $id => $url)
             $is_candidate = $length >= {{$url->getMinLength()}}
@@ -205,7 +40,7 @@ class Route
                 && count(array_intersect($parts, {{@$consts}})) == {{count($consts)}}
             @end
                 ;
-            if ($is_candidate && $this->complexUrl{{$id}}($req, $parts, $length, $server, $r) == true) {
+            if ($is_candidate && $this->complexUrl{{$id}}($req, $parts, $length, $r) == true) {
                 return $r;
             }
         @end
@@ -213,26 +48,27 @@ class Route
         @if ($self->getNotFoundHandler())
             {{ $self->getNotFoundHandler() }};
         @end
-        throw new NotFoundException;
+        throw new NotFoundHttpException;
     }
 
-    public function doRoute(Request $req, $server)
+    public function filter($n)
     {
-        $uri    = $server['REQUEST_URI'];
+        return strlen($n) > 0;
+    }
+
+    public function doRoute(Request $req)
+    {
+        $uri    = $req->getRequestUri();
         $uri    = ($p = strpos($uri, '?')) ? substr($uri, 0, $p) : $uri;
-        $parts  = array_values(array_filter(explode("/", $uri)));
+        $parts  = array_values(array_filter(explode("/", $uri), array($this, 'filter')));
         $length = count($parts);
         $req->uri = $uri;
-
-        if (empty($server['REQUEST_METHOD'])) {
-            $server['REQUEST_METHOD'] = 'GET';
-        }
 
         {{ $groups->__toString() }}
 
         // We couldn't find any handler for the URL,
         // let's find in our complex url set (if there is any)
-        $this->handleComplexUrl($req, $parts, $length, $server);
+        $this->handleComplexUrl($req, $parts, $length);
     }
 
     public static function getRoute($name, $args = array())
@@ -260,3 +96,5 @@ class Route
     }
 
 }
+
+return new Router;

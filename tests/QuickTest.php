@@ -1,45 +1,49 @@
 <?php
+
+use Symfony\Component\HttpFoundation\Request;
+use Dispatcher\Router;
+
 /** @NotFound */
 function __not_found($req) {
-    $req->set('__not_found__', true);
+    $req->attributes->set('__not_found__', true);
 }
 
 /** @postRoute @Last */
 function __1last($req, $args, $return) {
-    $phpunit = $req->get('phpunit');
-    $phpunit->assertTrue($req->Get('__1b'));
-    $req->set('__1a', 'xxx');
+    $phpunit = $req->attributes->get('phpunit');
+    $phpunit->assertTrue($req->attributes->get('__1b'));
+    $req->attributes->set('__1a', 'xxx');
     return $return;
 }
 
 /** @postRoute @First */
 function __1first($req, $args, $return) {
-    $phpunit = $req->get('phpunit');
-    $phpunit->assertNull($req->Get('__1a'));
-    $req->set('__1b', true);
+    $phpunit = $req->attributes->get('phpunit');
+    $phpunit->assertNull($req->attributes->get('__1a'));
+    $req->attributes->set('__1b', true);
     return $return;
 }
 
 /** @preRoute @Last */
 function __last($req) {
-    $phpunit = $req->get('phpunit');
-    $phpunit->assertTrue($req->Get('__b'));
-    $req->set('__a', 'xxx');
+    $phpunit = $req->attributes->get('phpunit');
+    $phpunit->assertTrue($req->attributes->get('__b'));
+    $req->attributes->set('__a', 'xxx');
     return true;
 }
 
 /** @preRoute @First */
 function __first($req) {
-    $phpunit = $req->get('phpunit');
-    $phpunit->assertNull($req->Get('__a'));
-    $req->set('__b', true);
+    $phpunit = $req->attributes->get('phpunit');
+    $phpunit->assertNull($req->attributes->get('__a'));
+    $req->attributes->set('__b', true);
     return true;
 }
 
 /** @postRoute @Last */
 function __last_for_all($req, $args, $return)
 {
-    $req->set('last_for_all', true);
+    $req->attributes->set('last_for_all', true);
     return $return;
 }
 
@@ -53,17 +57,17 @@ function __buffer_start($req)
 /** @postRoute buffer @Last */
 function __buffer_end($req, $args, $return)
 {
-    $req->set('__buffer__', ob_get_clean());
+    $req->attributes->set('__buffer__', ob_get_clean());
     return $return;
 }
 
 /** @Filter foo */
 function filter_1($Req) {
-    $Req->set('filter_1', true);
+    $req->attributes->set('filter_1', true);
 }
 /** @Filter bar */
 function filter_2() {
-    $Req->set('filter_2', true);
+    $req->attributes->set('filter_2', true);
 }
 
 /**
@@ -89,11 +93,11 @@ function TestBuffer()
  */
 function Controller($req)
 {
-    $self = $req->get('phpunit');
+    $self = $req->attributes->get('phpunit');
     $self->assertTrue(true);
-    $req->set('return', 'fnc:' . mt_rand());
+    $req->attributes->set('return', 'fnc:' . mt_rand());
     
-    return $req->get('return');
+    return $req->attributes->get('return');
 }
 
 class Foo
@@ -104,9 +108,9 @@ class Foo
      */
     function simple_filter($req, $field, $value)
     {
-        $self = $req->get('phpunit');
+        $self = $req->attributes->get('phpunit');
         $self->assertEquals($field, 'foobar');
-        $req->set('simple_filter', true);
+        $req->attributes->set('simple_filter', true);
         return $value == 'foobar';
     }
 
@@ -123,11 +127,11 @@ class Foo
      */
     public function Bar($req)
     {
-        $self = $req->get('phpunit');
+        $self = $req->attributes->get('phpunit');
         $self->assertTrue(true);
-        $req->set('return', 'method:' . mt_rand());
+        $req->attributes->set('return', 'method:' . mt_rand());
     
-        return $req->get('return');
+        return $req->attributes->get('return');
     }
 
     /**
@@ -135,9 +139,9 @@ class Foo
      */
     function TestingComplexUri($req)
     {
-        $self = $req->get('phpunit');
+        $self = $req->attributes->get('phpunit');
         $self->assertTrue(true);
-        $self->assertEquals($req->get('extension'), 'php');
+        $self->assertEquals($req->attributes->get('extension'), 'php');
     }
 }
 
@@ -146,6 +150,7 @@ class QuickTest extends \phpunit_framework_testcase
     public function testCompile()
     {
         $file = __DIR__ . '/generated/' . __CLASS__ . '.php';
+        define('xfile', $file);
 
         $router = new Dispatcher\Router($file);
         $router
@@ -155,8 +160,6 @@ class QuickTest extends \phpunit_framework_testcase
         $this->assertFalse(file_Exists($file));
         $router->load();
         $this->assertTrue(file_Exists($file));
-
-        $this->assertTrue($router->newRequest() instanceof QuickTest\Request);
     }
 
     /**
@@ -164,11 +167,11 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function testMatch()
     {
-        $route = new \QuickTest\Route;
-        $req   = new \QuickTest\Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/function'));
-        $this->assertEquals($num, $req->get('return'));
+        $route = new Router(xfile);
+        $req   = Request::create('/foo/function');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
+        $this->assertEquals($num, $req->attributes->get('return'));
     }
 
     /**
@@ -176,12 +179,12 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function testMatchWithFilter()
     {
-        $route = new \QuickTest\Route;
-        $req   = new \QuickTest\Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/xxx/foobar'));
-        $this->assertEquals($num, $req->get('return'));
-        $this->assertTrue($req->get('simple_filter'));
+        $route = new Router(xfile);
+        $req   = Request::create('/xxx/foobar');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
+        $this->assertEquals($num, $req->attributes->get('return'));
+        $this->assertTrue($req->attributes->get('simple_filter'));
     }
 
     /**
@@ -189,11 +192,11 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function testMatchMethod()
     {
-        $route = new \QuickTest\Route;
-        $req   = new \QuickTest\Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/method'));
-        $this->assertEquals($num, $req->get('return'));
+        $route = new Router(xfile);
+        $req   = Request::create('/foobar/method');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
+        $this->assertEquals($num, $req->attributes->get('return'));
     }
 
     /**
@@ -201,10 +204,10 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function testMatchMixed()
     {
-        $route = new \QuickTest\Route;
-        $req   = new \QuickTest\Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/foobar.php'));
+        $route = new Router(xfile);
+        $req   = Request::create('/foo/foobar.php');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
     }
 
     /**
@@ -212,11 +215,11 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function test404()
     {
-        $route = new \QuickTest\Route;
-        $req   = new \QuickTest\Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/foo/function/something'));
-        $this->assertTrue($req->get('__not_found__'));
+        $route = new Router(xfile);
+        $req   = Request::create('/foo/function/something');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
+        $this->assertTrue($req->attributes->get('__not_found__'));
     }
 
     /**
@@ -224,11 +227,11 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function test404WithFilter()
     {
-        $route = new \QuickTest\Route;
-        $req   = new \QuickTest\Request;
-        $req->set('phpunit', $this);
-        $num = $route->doRoute($req, array('REQUEST_URI' => '/xxx/barfoo'));
-        $this->assertTrue($req->get('__not_found__'));
+        $route = new Router(xfile);
+        $req   = Request::create('/xxx/barfoo');
+        $req->attributes->set('phpunit', $this);
+        $num = $route->doRoute($req);
+        $this->assertTrue($req->attributes->get('__not_found__'));
    }
 
     /**
@@ -236,12 +239,12 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function testLast()
     {
-        $route = new \QuickTest\Route;
-        $req   = new \QuickTest\Request;
-        $req->set('phpunit', $this);
-        $route->doRoute($req, array('REQUEST_URI' => '/buffer'));
-        $this->assertEquals($req->get('__buffer__'), "Hi there!\n");
-        $this->assertTrue($req->get('last_for_all'));
+        $route = new Router(xfile);
+        $req   = Request::create('/buffer');
+        $req->attributes->set('phpunit', $this);
+        $route->doRoute($req);
+        $this->assertEquals($req->attributes->get('__buffer__'), "Hi there!\n");
+        $this->assertTrue($req->attributes->get('last_for_all'));
     }
 
     /**
@@ -249,26 +252,29 @@ class QuickTest extends \phpunit_framework_testcase
      */
     public function testGenerator()
     {
-        $this->assertequals(\quicktest\route::getroute("foobar_x", 'foobar'), '/foo/bar/foobar');
-        $this->assertEquals(\QuickTest\Route::getRoute("foobar_xx", 'foobar'), '/foo/bar/xxx-foobar');
-        $this->assertEquals(\QuickTest\Route::getRoute("foobar_xx"), '/foo/bar/xxx');
+        $route = new Router(xfile);
+        $this->assertequals($route->getroute("foobar_x", 'foobar'), '/foo/bar/foobar');
+        $this->assertEquals($route->getRoute("foobar_xx", 'foobar'), '/foo/bar/xxx-foobar');
+        $this->assertEquals($route->getRoute("foobar_xx"), '/foo/bar/xxx');
     }
 
     /**
      *  @depends testCompile
-     *  @expectedException QuickTest\RouteNotFoundException
+     *  @expectedException Dispatcher\Exception\RouteNotFoundException
      */
     public function testGeneratorNotFound()
     {
-        \QuickTest\Route::getRoute("foobar_xdsdasdada");
+        $router = new Router(xfile);
+        $router->getRoute("foobar_xdsdasdada");
     }
 
     /**
      *  @depends testCompile
-     *  @expectedException QuickTest\RouteNotFoundException
+     *  @expectedException Dispatcher\Exception\RouteNotFoundException
      */
     public function testGeneratorInvalidArgs()
     {
-        \quicktest\route::getroute("foobar_x", 'foobar', 'xxx');
+        $router = new Router(xfile);
+        $router->getroute("foobar_x", 'foobar', 'xxx');
     }
 }

@@ -1,20 +1,21 @@
 {
     "name": "crodas/dispatcher",
     "description": "Dispatcher generator",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require-dev": {
-        "crodas/cli": "*"
+        "crodas/cli": "^0.1.0"
     },
     "require": {
         "php": ">=5.3",
-        "crodas/notoj": "^1.0.4",
+        "crodas/notoj": "^1.0.5",
         "crodas/watch-files": "~0.1",
         "crodas/file-util": "~0.1.14",
-        "crodas/simple-view-engine": "^0.1"
+        "crodas/simple-view-engine": "^0.1",
+        "symfony/http-foundation": "^2.6"
     },
 
     "license": "BSD-4-Clause",
-    "version": "v0.1.23",
+    "version": "v1.0.0",
     "authors": [
         {
             "name": "César D. Rodas",

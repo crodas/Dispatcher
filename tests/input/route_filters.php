@@ -1,16 +1,16 @@
 <?php
 
 /** @preRoute checkSession @Cache 30 */
-function CheckSession(Alltest\Request $req)
+function CheckSession($req)
 {
-    $req->set('session', true);
+    $req->attributes->set('session', true);
     return !$req->get('fail_session');
 }
 
 /** @preRoute run_all @Cache 30 */
-function CheckSession_another(Alltest\Request $req)
+function CheckSession_another($req)
 {
-    $req->set('run_all', true);
+    $req->attributes->set('run_all', true);
     return true;
 }
 

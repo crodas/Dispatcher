@@ -95,6 +95,10 @@ class Compiler
     public function callbackPrepare($annotation)
     {
         list($annotation, $object) = $this->getAnnotationAndObject($annotation);
+        if ($object->has('builtin')) {
+            return '';
+        }
+
         $args = array(
             'filePath' => $annotation->getFile(),
             'annotation' => $annotation,
@@ -146,13 +150,17 @@ class Compiler
         list($annotation, $object) = $this->getAnnotationAndObject($annotation);
         $args  = $this->getCallbackArgs(func_get_args());
         $cache = $this->isCacheable($annotation, $args); 
+
+        if ($object->has('builtin')) {
+            return "(" . $object->exec($args[2], $args[1]) . ")";
+        }
         
         $arguments = implode(", ", $args);
         if ($annotation->isFunction()) {
             // generate code for functions 
             $function = "\\" . $object->getName();
             if (!empty($cache)) { 
-                return  '$this->doCachedFilter(' . var_export($function,true) . ", $arguments, $cache)";
+                return  '$this->wrapper->doCachedFilter(' . var_export($function,true) . ", $arguments, $cache)";
             }
             return "$function($arguments)";
         } else if ($annotation->isMethod()) {
@@ -162,7 +170,7 @@ class Compiler
             $method = $object->getName();
             $obj    = "\$obj_filt_" . substr(sha1($class), 0, 8);
             if (!empty($cache)) { 
-                return  '$this->doCachedFilter(array(' . "{$obj}, '{$method}'), $arguments, $cache)";
+                return  '$this->wrapper->doCachedFilter(array(' . "{$obj}, '{$method}'), $arguments, $cache)";
             }
             return "{$obj}->{$method}($arguments)";
         }
@@ -172,7 +180,7 @@ class Compiler
     
     protected function groupByMethod(Array $urls)
     {
-        $group = new UrlGroup_Switch('$server["REQUEST_METHOD"]');
+        $group = new UrlGroup_Switch('$req->getMethod()');
         foreach ($urls as $url) {
             if ($url->isComplex()) {
                 $this->complex[] = new ComplexUrl($url);
@@ -260,8 +268,10 @@ class Compiler
 
     protected function readFilters()
     {
+        $this->filters = array();
+
         foreach ($this->annotations->get('Filter', 'Callable') as $filterAnnotation) {
-            $name = current($filterAnnotation->GetARgs());
+            $name = strtolower(current($filterAnnotation->GetArgs()));
             if (empty($name)) continue;
             $this->filters[$name] = $filterAnnotation->GetObject();
         }

@@ -15,6 +15,47 @@ function empty_level_2($req) {
     return __FUNCTION__;
 }
 
+/**
+ *  @Route("/int/{int:a}/{int:b}")
+ */
+function x_int($req, $a, $b)
+{
+    return __FUNCTION__;
+}
+
+/**
+ *  @Filter MongoId2
+ *  @Builtin
+ */
+function filter_built_in($var)
+{
+    return "preg_match('@^[a-f0-9]{24}$@', $var)";
+}
+
+/**
+ *  @Route("/{mongoid2}")
+ */
+function mongoid_controller($req, $mongoid2)
+{
+    return __FUNCTION__;
+}
+
+/**
+ *  @Route("/{email}")
+ */
+function email_controller($req)
+{
+    return __FUNCTION__;
+}
+
+/**
+ *  @Route("/numeric/{number:a}/{number:b}")
+ */
+function numbers($req, $a, $b)
+{
+    return __FUNCTION__;
+}
+
 
 /** 
  * @Route("/function/{reverse}") 
@@ -23,8 +64,8 @@ function empty_level_2($req) {
  */
 function some_function($Request)
 {
-    $phpunit = $Request->get('phpunit');
-    $Request->set('controller', __FUNCTION__);
+    $phpunit = $Request->attributes->get('phpunit');
+    $Request->attributes->set('controller',  __FUNCTION__);
     return __FUNCTION__;
 }
 
@@ -32,14 +73,14 @@ function some_function($Request)
 /** @Route("/deadly-simple") */
 function simple($Request)
 {
-    $phpunit = $Request->get('phpunit');
-    $Request->set('controller', __FUNCTION__);
+    $phpunit = $Request->attributes->get('phpunit');
+    $Request->attributes->set('controller',  __FUNCTION__);
     return __FUNCTION__;
 }
 
 /** @Route("/zzzsfasd_prefix_{id}") */
 function soo($req)
 {
-    return $req->get('id');
+    return $req->attributes->get('id');
 }
 
