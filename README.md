@@ -1,100 +1,121 @@
 Dispatcher
 ==========
 
-It is a compiler which generates an optimized URL Router class for your application. It can be used as an offline (production friendly) tool or inside your project (development friendly).
+`Dispatcher` is a routing library that maps URLs to actions. 
 
-The generated Router class searchs for the appropiate `controller` for the current URL. The `callbacks` could be methods or functions.
+Defining routes
+---------------
+
+Routes are defined using annotations for methods or functions.
+
+```php
+use Symfony\Component\HttpFoundation\Request;
+
+/** 
+ * A single function can have multiple routes.
+ * 
+ * @Route("/{user}") 
+ * @Route("/user/{user}")
+ */
+function handler(Request $req, $user)
+{
+  return "Hello {$user}";
+}
+
+/**
+ *  You can also set default values and use multiple routes
+ *
+ *  @Route("/foo/{bar}")
+ *  @Route("/foo", {bar="index"})
+ */
+function do_something_with_bar(Request $request, $bar) {
+  print "I've got bar=" . $bar;
+}
+
+/**
+ *  If @Route is define at a class it would behave as a
+ *  namespace of prefix for the routes defined at their
+ *  methods
+ *
+ *  @Route("/admin")
+ */
+class Foobar
+{
+  /**
+   *  This handles POST /admin/login
+   *
+   *  @Route("/login")
+   *  @Method POST
+   */
+  public function do_login(Request $req)
+  {
+  }
+  
+  /**
+   *  This handles GET /admin/login
+   *
+   *  @Route("/login")
+   */
+  public function login(Request $req)
+  {
+  }
+}
+```
+
+`Dispatcher` walks over the filesystem looking for `@Route` annotations on functions and methods.
 
 How to use it
 -------------
 
 ```php
-// compiler
-$router = new \Dispatcher\Router("/tmp/router.php");
+$router = new Dispatcher\Router;
 $router->
   // where our controllers are located
-  ->addDirectory(__DIR__ . "/../projects") 
-  // Do we want to give it a custom namespace?
-  ->setNamespace("Project\\Router"); 
+  ->addDirectory(__DIR__ . "/../projects");
 
 // Do the router
 $router->doRoute();
 ```
-
-By default `Dispatcher` is production friendly, that means the router code is generated *only* when the file is missing.
-
-It is very easy however to enable development mode. By doing this, the compiler would rebuild the router on any change.
+By default, it runs in `production mode` and it won't rebuild the routes on changes. If you wish to run on development mode, you should do this:
 
 ```php
 $router->development();
 
 ```
 
-The annotations
----------------
-
-We scan your project directory (or directories) looking for the @Route annotation. They can be in `functions`, `methods` or `classes`.
-
-```php
-<?php
-// one function
-/**
- *  @Route("/foo/{bar}")
- *  @Route("/foo", {bar="index"})
- */
-function do_something_post(Request $request) {
-  print "I've got bar=" . $request->get("bar");
-}
-
-// one class and several methods 
-/**
- *  @Route("/foobar")
- */
-class ControllerClassFoo
-{
-  /**
-   *  @Route("/bar") 
-   *  @Method GET
-   */
-  function list(Request $req) {
-    echo "I'm listing something on /foobar/bar";
-  }
-  
-  /**
-   *  @Method POST
-   */
-  function save(Request $req) {
-    echo "I'm saving something";
-  }
-}
-
-// One method per route
-class ControllerClassBar {
-  /** @Route("/bar") @Route("/bar/index") */
-  function indexAction() {
-    
-  }
-}
-```
 
 Filters
 -------
 
-`Dispatcher` has a filter that allows to verify and modify variables of our URL.
+To simply things, `Dispatcher` doesn't allow you *yet* to define regular expressions to validate your placeholders. Instead it lets you to define functions which validates and modified the values of your placeholders.
+
 
 ```php
-<?php
-/** @Route("/profile/{user}") */
-function show_profile(Request $req) {
-  $user = $req->get("user");
+/**
+ * In this URL, the placeholder user have a Filter, that means
+ * if the controller is called we can be sure we get a valid
+ * user object.
+ *
+ * @Route("/profile/{user}")
+ */
+function show_profile(Request $req, $user) {
+  return "Hi {$user->name}";
 }
 
 
-/** @Filter("user") */
+/**
+ * Validate {user} placeholders
+ *
+ * Check if the user exists in the database, if it does exists
+ * it will return true and the controller will be called.
+ *
+ * @Filter("user") 
+ */
 function some_filter(Request $req, $name, $value) {
   $userobj = DB::getUserById($value);
   if ($userobj) {
-    $req->set('user', $userobj);
+    /* I'm overriding the placeholder $name for an object of the Database */
+    $req->attributes->set($name, $userobj);
     return true;
   }
   return false;
