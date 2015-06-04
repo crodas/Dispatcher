@@ -10,6 +10,12 @@ function empty_level_1($req) {
     return __FUNCTION__;
 }
 
+/** @Route("/secure") @Secure */
+function is_secure()
+{
+    return __FUNCTION__;
+}
+
 /** @Route("/just-ajax-2") @XmlHttpRequest @ContentType json  */
 function is_ajax_json() {
     return __FUNCTION__;

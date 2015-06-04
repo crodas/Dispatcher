@@ -244,6 +244,7 @@ class AllTest extends \phpunit_framework_testcase
     {
         $ajax1 = Request::create('/just-ajax', 'GET', [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
         $ajax2 = Request::create('/just-ajax-2', 'GET', [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest', 'CONTENT_TYPE' => 'application/json']);
+        $secure = Request::create('/secure', 'GET', [], [], [], ['HTTPS' => 'on']);
         return array(
             array('/numeric/0/-2', 'numbers'),
             array('/numeric/0/2', 'numbers'),
@@ -257,6 +258,7 @@ class AllTest extends \phpunit_framework_testcase
             array('/aef123456789afedbdbaaaaa', 'mongoid_controller'),
             array($ajax1, 'is_ajax'),
             array($ajax2, 'is_ajax_json'),
+            array($secure, 'is_secure'),
         );
     }
 
@@ -271,6 +273,7 @@ class AllTest extends \phpunit_framework_testcase
             array('/aef123456789afedbdbaaaaz'),
             array('/just-ajax'),
             array($ajax2),
+            array('/secure'),
         );
     }
 
