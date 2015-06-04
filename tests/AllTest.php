@@ -242,7 +242,8 @@ class AllTest extends \phpunit_framework_testcase
 
     public static function urlAndcontrollers()
     {
-        $ajax = Request::create('/just-ajax', 'GET', [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
+        $ajax1 = Request::create('/just-ajax', 'GET', [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
+        $ajax2 = Request::create('/just-ajax-2', 'GET', [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest', 'CONTENT_TYPE' => 'application/json']);
         return array(
             array('/numeric/0/-2', 'numbers'),
             array('/numeric/0/2', 'numbers'),
@@ -254,7 +255,8 @@ class AllTest extends \phpunit_framework_testcase
             array('/int/1/2', 'x_int'),
             array('/crodas@php.net', 'email_controller'),
             array('/aef123456789afedbdbaaaaa', 'mongoid_controller'),
-            array($ajax, 'is_ajax'),
+            array($ajax1, 'is_ajax'),
+            array($ajax2, 'is_ajax_json'),
         );
     }
 

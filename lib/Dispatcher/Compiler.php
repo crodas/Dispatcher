@@ -148,12 +148,13 @@ class Compiler
     public function callback($annotation)
     {
         list($annotation, $object) = $this->getAnnotationAndObject($annotation);
-        $args  = $this->getCallbackArgs(func_get_args());
+        $rargs = func_get_args();
+        $args  = $this->getCallbackArgs($rargs);
         $cache = $this->isCacheable($annotation, $args); 
 
         if ($object->has('builtin')) {
             if (empty($args[2])) {
-                return $object->exec($args[0], $args[1]);
+                return $object->exec($args[0], $rargs[2]);
             }
             return "(" . $object->exec($args[2], $args[1], $args[0]) . ")";
         }
