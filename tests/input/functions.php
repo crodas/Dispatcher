@@ -10,6 +10,11 @@ function empty_level_1($req) {
     return __FUNCTION__;
 }
 
+/** @Route("/just-ajax") @XmlHttpRequest */
+function is_ajax() {
+    return __FUNCTION__;
+}
+
 /** @Route("/") */
 function empty_level_2($req) {
     return __FUNCTION__;

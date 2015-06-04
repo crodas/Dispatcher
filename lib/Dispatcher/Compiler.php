@@ -152,7 +152,10 @@ class Compiler
         $cache = $this->isCacheable($annotation, $args); 
 
         if ($object->has('builtin')) {
-            return "(" . $object->exec($args[2], $args[1]) . ")";
+            if (empty($args[2])) {
+                return $object->exec($args[0], $args[1]);
+            }
+            return "(" . $object->exec($args[2], $args[1], $args[0]) . ")";
         }
         
         $arguments = implode(", ", $args);

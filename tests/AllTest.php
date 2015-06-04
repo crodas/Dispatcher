@@ -242,6 +242,7 @@ class AllTest extends \phpunit_framework_testcase
 
     public static function urlAndcontrollers()
     {
+        $ajax = Request::create('/just-ajax', 'GET', [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
         return array(
             array('/numeric/0/-2', 'numbers'),
             array('/numeric/0/2', 'numbers'),
@@ -253,6 +254,7 @@ class AllTest extends \phpunit_framework_testcase
             array('/int/1/2', 'x_int'),
             array('/crodas@php.net', 'email_controller'),
             array('/aef123456789afedbdbaaaaa', 'mongoid_controller'),
+            array($ajax, 'is_ajax'),
         );
     }
 
@@ -264,6 +266,7 @@ class AllTest extends \phpunit_framework_testcase
             array('/1crodas@1phpnet'),
             array('/aef123456789afedbdbaaaaaa'),
             array('/aef123456789afedbdbaaaaz'),
+            array('/just-ajax'),
         );
     }
 
@@ -274,8 +277,10 @@ class AllTest extends \phpunit_framework_testcase
     public function testBuiltInFilter404($url)
     {
         $route = new Router(file);
-        $req   = Request::create($url);
-        $this->assertEquals(null, $route->doRoute($req));
+        if (is_string($url)) {
+            $url = Request::create($url);
+        }
+        $this->assertEquals(null, $route->doRoute($url));
     }
 
     /**
@@ -284,8 +289,10 @@ class AllTest extends \phpunit_framework_testcase
     public function testBuiltInFilter($url, $controller)
     {
         $route = new Router(file);
-        $req   = Request::create($url);
-        $this->assertEquals($controller, $route->doRoute($req));
+        if (is_string($url)) {
+            $url = Request::create($url);
+        }
+        $this->assertEquals($controller, $route->doRoute($url));
     }
 
     public function testCustomErrorHandler()
