@@ -262,6 +262,7 @@ class AllTest extends \phpunit_framework_testcase
 
     public static function urlAndControllers404()
     {
+        $ajax2 = Request::create('/just-ajax-2', 'GET', [], [], [], ['CONTENT_TYPE' => 'application/xml']);
         return array(
             array('/int/1.9/2.9'),
             array('/int/1/2x'),
@@ -269,6 +270,7 @@ class AllTest extends \phpunit_framework_testcase
             array('/aef123456789afedbdbaaaaaa'),
             array('/aef123456789afedbdbaaaaz'),
             array('/just-ajax'),
+            array($ajax2),
         );
     }
 
