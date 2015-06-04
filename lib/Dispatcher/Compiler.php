@@ -52,9 +52,9 @@ class Compiler
     protected $annotations;
     protected $urls;
     protected $filters = array();
-    protected $all_filters   = array();
+    protected $allFilterss   = array();
     protected $routeFilters = array();
-    protected $not_found = array();
+    protected $errorHandler = array();
     protected $complex = array();
 
     public function __construct(Generator $conf, \Notoj\Filesystem $annotations)
@@ -289,7 +289,7 @@ class Compiler
             }
 
             if (empty($name)) {
-                $this->all_filters[$type][] = array($filterAnnotation, $weight);
+                $this->allFilterss[$type][] = array($filterAnnotation, $weight);
                 continue;
             }
             $this->routeFilters[$name][] = array($type, $filterAnnotation, $weight);
@@ -308,7 +308,7 @@ class Compiler
         $url = new Url($routeAnnotation, $this);
         $url->setRouteAndArgs($route, $args);
 
-        $base = $url->addFilters($this->all_filters);
+        $base = $url->addFilters($this->allFilterss);
 
         $filters = iterator_to_array($routeAnnotation->GetParent());
         if ($routeAnnotation->isMethod()) {
@@ -379,8 +379,13 @@ class Compiler
             $this->processRoute($routeAnnotation, $routeAnnotation->GetArgs());
         }
 
-        foreach($this->annotations->get('NotFound') as $route) {
-            $this->not_found[] = $this->getUrl($route, '@NotFound');
+        foreach($this->annotations->get('NotFound,Error,ErrorHandler') as $route) {
+            if ($route->getName() == 'notfound') {
+                $code = 404;
+            } else {
+                $code = current($route->getArgs());
+            }
+            $this->errorHandler[$code] = $this->getUrl($route, '@NotFound');
         }
     }
     
@@ -414,9 +419,9 @@ class Compiler
         return $urls;
     }
 
-    public function getNotFoundHandler()
+    public function getErrorHandlers()
     {
-        return current($this->not_found);
+        return $this->errorHandler;
     }
 
     protected function compile()

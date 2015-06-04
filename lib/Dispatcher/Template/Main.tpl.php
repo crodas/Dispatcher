@@ -10,6 +10,7 @@
 namespace {{ $ns }};
 
 use Dispatcher\Exception\RouteNotFoundException;
+use Dispatcher\Exception\HttpException;
 use Dispatcher\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,10 +46,21 @@ class Router
             }
         @end
 
-        @if ($self->getNotFoundHandler())
-            {{ $self->getNotFoundHandler() }};
+        throw new HttpException($req, 404);
+    }
+
+    public function handleError($req, \Exception $e)
+    {
+        $req->attributes->set('exception', $e);
+
+        switch ($e->errno) {
+        @foreach ($self->getErrorHandlers() as $err => $handler)
+        case {{@$err}}:
+            {{ $handler }}
+            break;
         @end
-        throw new NotFoundHttpException;
+        }
+        throw $e;
     }
 
     public function filter($n)

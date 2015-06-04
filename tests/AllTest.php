@@ -1,7 +1,7 @@
 <?php
 
 use Dispatcher\Generator;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Dispatcher\Router;
 
@@ -83,7 +83,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /** 
      * @depends testCompile
-     * @expectedException Dispatcher\Exception\NotFoundHttpException
+     * @expectedException Dispatcher\Exception\HttpException
      */
     public function testPreRouteFilter()
     {
@@ -97,7 +97,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /** 
      * @depends testCompile
-     * @expectedException Dispatcher\Exception\NotFoundHttpException
+     * @expectedException Dispatcher\Exception\HttpException
      */
     public function testClassPreRouteFilter()
     {
@@ -122,7 +122,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /** 
      * @depends testCompile
-     * @expectedException Dispatcher\Exception\NotFoundHttpException
+     * @expectedException Dispatcher\Exception\HttpException
      */
     public function testClassInheritanceNotFound()
     {
@@ -157,7 +157,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /**
      *  @depends testCompile
-     *  @expectedException Dispatcher\Exception\NotFoundHttpException
+     *  @expectedException Dispatcher\Exception\HttpException
      */
     public function testBug001()
     {
@@ -269,7 +269,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /**
      *  @dataProvider urlAndControllers404
-     *  @expectedException Dispatcher\Exception\NotFoundHttpException
+     *  @expectedException Dispatcher\Exception\HttpException
      */
     public function testBuiltInFilter404($url)
     {
@@ -286,6 +286,13 @@ class AllTest extends \phpunit_framework_testcase
         $route = new Router(file);
         $req   = Request::create($url);
         $this->assertEquals($controller, $route->doRoute($req));
+    }
+
+    public function testCustomErrorHandler()
+    {
+        $route = new Router(file);
+        $req   = Request::create('/something/silly/error');
+        $this->assertEquals('Handling exception RuntimeException', $route->doRoute($req));
     }
 
 }
