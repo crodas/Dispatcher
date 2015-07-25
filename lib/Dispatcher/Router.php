@@ -56,6 +56,12 @@ class Router extends Generator
         return $this;
     }
 
+    public function setApplication($name)
+    {
+        $this->load()->setApplication($name);
+        return $this;
+    }
+
     public function url($name, $args = null)
     {
         if (!is_array($args)) {

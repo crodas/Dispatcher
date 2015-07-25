@@ -49,6 +49,27 @@ class UrlGroup_Switch extends UrlGroup
         $this->urls[$type][] = $url;
     }
 
+    public function getUrls()
+    {
+        $urls = $this->urls;
+        unset($urls['']);
+        return $urls;
+    }
+
+    public function getElse()
+    {
+        if (empty($this->urls[''])) {
+            return false;
+        }
+        return $this->urls[''];
+    }
+    
+    public function hasRules()
+    {
+        $keys = array_filter(array_keys($this->urls));
+        return count($keys) > 0;
+    }
+
     public function __toString()
     {
         return Templates::get('groups/switch')->render(array('self' => $this), true);

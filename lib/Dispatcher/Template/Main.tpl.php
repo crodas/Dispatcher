@@ -12,13 +12,25 @@ namespace {{ $ns }};
 use Dispatcher\Exception\RouteNotFoundException;
 use Dispatcher\Exception\HttpException;
 use Dispatcher\Exception\NotFoundHttpException;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 
 class Router
 {
+    public $currentApp;
+
     public function setWrapper(\Dispatcher\Router $wrapper)
     {
         $this->wrapper = $wrapper;
+        return $this;
+    }
+
+    public function setApplication($app)
+    {
+        if (!in_array($app, {{@$self->getApps()}})) {
+            throw new RuntimeException("$app is not a valid application");
+        }
+        $this->currentApp = $app;
         return $this;
     }
 

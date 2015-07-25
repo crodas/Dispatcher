@@ -145,6 +145,16 @@ class Compiler
         return $cache;
     }
 
+    public function getApps()
+    {
+        $apps = [];
+        foreach ($this->annotations->get('app,application') as $ann) {
+            $apps[] = current($ann->getArgs());
+        }
+
+        return array_unique(array_filter($apps));
+    }
+
     public function callback($annotation)
     {
         list($annotation, $object) = $this->getAnnotationAndObject($annotation);
@@ -181,8 +191,21 @@ class Compiler
 
         throw new \RuntimeException("Invalid callback");
     }
+
+    protected function groupByApps(Array $urls)
+    {
+        $group = new UrlGroup_Switch('$this->currentApp');
+        $extra = array();
+        foreach ($urls as $url) {
+            foreach ($url->getApplication() as $app) {
+                $group->addUrl($url, $app);
+            }
+        }
+
+        return $group;
+    }
     
-    protected function groupByMethod(Array $urls)
+    public function groupByMethod(Array $urls)
     {
         $group = new UrlGroup_Switch('$req->getMethod()');
         foreach ($urls as $url) {
@@ -433,7 +456,8 @@ class Compiler
         $this->readFilters();
         $this->createUrlObjects();
 
-        $groups = $this->groupByMethod($this->urls);
+        $groups = $this->groupByApps($this->urls);
+        $groups->iterate(array($this, 'groupByMethod'));
         $groups->iterate(array($this, 'groupByPartsSize'));
         $groups->iterate(array($this, 'groupByPatterns'));
         $self = $this;

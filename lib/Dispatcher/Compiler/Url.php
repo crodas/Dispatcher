@@ -181,6 +181,34 @@ class Url
         return $vars;
     }
 
+    protected function getAnnotations($name)
+    {
+        $obj = $this->def->getObject();
+        $ann = $obj->get($name);
+        if ($obj instanceof \Notoj\Object\ZMethod) {
+            $ann = array_merge($ann, $obj->getClass()->get($name));
+        }
+        return $ann;
+    }
+
+    public function getApplication()
+    {
+        $apps = $this->getAnnotations('App,Application');
+        $names = array();
+        foreach ($apps as $app) {
+            $name = current($app->getArgs());
+            if ($name) {
+                $names[] = $name;
+            }
+        }
+
+        if (empty($names)) {
+            return [''];
+        }
+
+        return $names;
+    }
+
     public function getMethod()
     {
         return $this->method;

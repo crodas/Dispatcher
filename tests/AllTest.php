@@ -308,5 +308,32 @@ class AllTest extends \phpunit_framework_testcase
         $req   = Request::create('/something/silly/error');
         $this->assertEquals('Handling exception RuntimeException', $route->doRoute($req));
     }
+    
+    /**
+     * @expectedException Dispatcher\Exception\HttpException
+     */
+    public function testApplicationEncapsulation()
+    {
+        $route = new Router(file);
+        $req   = Request::create('/prefix1/apps/foo');
+        $route->doRoute($req);
+    }
+
+    public function testApplicationEncapsulation2()
+    {
+        $route = new Router(file);
+        $route->setApplication('foo');
+        $req   = Request::create('/prefix1/apps/foo');
+        $this->assertEquals('foobar', $route->doRoute($req));
+    }
+
+    /**
+     *  @expectedException RuntimeException
+     */
+    public function testAppNotFound()
+    {
+        $route = new Router(file);
+        $route->setApplication('foo bar');
+    }
 
 }
