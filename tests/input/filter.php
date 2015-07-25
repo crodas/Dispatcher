@@ -4,6 +4,22 @@
  */
 class SomeSillyClass
 {
+    /**
+     *  @Error 500
+     */
+    function handle_500($req, $exception)
+    {
+        return "Handling exception ". get_class($exception);
+    }
+
+    /**
+     *  @Route("/error")
+     */
+    public function xxx()
+    {
+        throw new \runtimeexception;
+    }
+
     /** @Filter reverse @Cached 3600 */
     function filter_reverse($Req, $name, $value)
     {

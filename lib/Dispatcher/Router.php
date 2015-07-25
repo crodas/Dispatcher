@@ -56,6 +56,12 @@ class Router extends Generator
         return $this;
     }
 
+    public function setApplication($name)
+    {
+        $this->load()->setApplication($name);
+        return $this;
+    }
+
     public function url($name, $args = null)
     {
         if (!is_array($args)) {
@@ -168,6 +174,15 @@ class Router extends Generator
             $req = Request::createFromGlobals();
         }
 
-        return $this->load()->setWrapper($this)->doRoute($req);
+        try {
+            $dispatcher = $this->load()->setWrapper($this);
+            return $dispatcher->doRoute($req);
+        } catch (Exception\HttpException $e) {
+            return $dispatcher->handleError($req, $e);
+        } catch (\Exception $e) {
+            // handle every exception, show it as an internal error (http-500)
+            $e->errno = 500;
+            return $dispatcher->handleError($req, $e);
+        }
     }
 }

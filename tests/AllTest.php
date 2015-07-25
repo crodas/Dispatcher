@@ -1,7 +1,7 @@
 <?php
 
 use Dispatcher\Generator;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Dispatcher\Router;
 
@@ -83,7 +83,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /** 
      * @depends testCompile
-     * @expectedException Dispatcher\Exception\NotFoundHttpException
+     * @expectedException Dispatcher\Exception\HttpException
      */
     public function testPreRouteFilter()
     {
@@ -97,7 +97,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /** 
      * @depends testCompile
-     * @expectedException Dispatcher\Exception\NotFoundHttpException
+     * @expectedException Dispatcher\Exception\HttpException
      */
     public function testClassPreRouteFilter()
     {
@@ -122,7 +122,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /** 
      * @depends testCompile
-     * @expectedException Dispatcher\Exception\NotFoundHttpException
+     * @expectedException Dispatcher\Exception\HttpException
      */
     public function testClassInheritanceNotFound()
     {
@@ -157,7 +157,7 @@ class AllTest extends \phpunit_framework_testcase
 
     /**
      *  @depends testCompile
-     *  @expectedException Dispatcher\Exception\NotFoundHttpException
+     *  @expectedException Dispatcher\Exception\HttpException
      */
     public function testBug001()
     {
@@ -242,6 +242,9 @@ class AllTest extends \phpunit_framework_testcase
 
     public static function urlAndcontrollers()
     {
+        $ajax1 = Request::create('/just-ajax', 'GET', [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
+        $ajax2 = Request::create('/just-ajax-2', 'GET', [], [], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest', 'CONTENT_TYPE' => 'application/json']);
+        $secure = Request::create('/secure', 'GET', [], [], [], ['HTTPS' => 'on']);
         return array(
             array('/numeric/0/-2', 'numbers'),
             array('/numeric/0/2', 'numbers'),
@@ -253,29 +256,38 @@ class AllTest extends \phpunit_framework_testcase
             array('/int/1/2', 'x_int'),
             array('/crodas@php.net', 'email_controller'),
             array('/aef123456789afedbdbaaaaa', 'mongoid_controller'),
+            array($ajax1, 'is_ajax'),
+            array($ajax2, 'is_ajax_json'),
+            array($secure, 'is_secure'),
         );
     }
 
     public static function urlAndControllers404()
     {
+        $ajax2 = Request::create('/just-ajax-2', 'GET', [], [], [], ['CONTENT_TYPE' => 'application/xml']);
         return array(
             array('/int/1.9/2.9'),
             array('/int/1/2x'),
             array('/1crodas@1phpnet'),
             array('/aef123456789afedbdbaaaaaa'),
             array('/aef123456789afedbdbaaaaz'),
+            array('/just-ajax'),
+            array($ajax2),
+            array('/secure'),
         );
     }
 
     /**
      *  @dataProvider urlAndControllers404
-     *  @expectedException Dispatcher\Exception\NotFoundHttpException
+     *  @expectedException Dispatcher\Exception\HttpException
      */
     public function testBuiltInFilter404($url)
     {
         $route = new Router(file);
-        $req   = Request::create($url);
-        $this->assertEquals(null, $route->doRoute($req));
+        if (is_string($url)) {
+            $url = Request::create($url);
+        }
+        $this->assertEquals(null, $route->doRoute($url));
     }
 
     /**
@@ -284,8 +296,44 @@ class AllTest extends \phpunit_framework_testcase
     public function testBuiltInFilter($url, $controller)
     {
         $route = new Router(file);
-        $req   = Request::create($url);
-        $this->assertEquals($controller, $route->doRoute($req));
+        if (is_string($url)) {
+            $url = Request::create($url);
+        }
+        $this->assertEquals($controller, $route->doRoute($url));
+    }
+
+    public function testCustomErrorHandler()
+    {
+        $route = new Router(file);
+        $req   = Request::create('/something/silly/error');
+        $this->assertEquals('Handling exception RuntimeException', $route->doRoute($req));
+    }
+    
+    /**
+     * @expectedException Dispatcher\Exception\HttpException
+     */
+    public function testApplicationEncapsulation()
+    {
+        $route = new Router(file);
+        $req   = Request::create('/prefix1/apps/foo');
+        $route->doRoute($req);
+    }
+
+    public function testApplicationEncapsulation2()
+    {
+        $route = new Router(file);
+        $route->setApplication('foo');
+        $req   = Request::create('/prefix1/apps/foo');
+        $this->assertEquals('foobar', $route->doRoute($req));
+    }
+
+    /**
+     *  @expectedException RuntimeException
+     */
+    public function testAppNotFound()
+    {
+        $route = new Router(file);
+        $route->setApplication('foo bar');
     }
 
 }

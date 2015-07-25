@@ -52,9 +52,9 @@ class Compiler
     protected $annotations;
     protected $urls;
     protected $filters = array();
-    protected $all_filters   = array();
+    protected $allFilterss   = array();
     protected $routeFilters = array();
-    protected $not_found = array();
+    protected $errorHandler = array();
     protected $complex = array();
 
     public function __construct(Generator $conf, \Notoj\Filesystem $annotations)
@@ -145,14 +145,28 @@ class Compiler
         return $cache;
     }
 
+    public function getApps()
+    {
+        $apps = [];
+        foreach ($this->annotations->get('app,application') as $ann) {
+            $apps[] = current($ann->getArgs());
+        }
+
+        return array_unique(array_filter($apps));
+    }
+
     public function callback($annotation)
     {
         list($annotation, $object) = $this->getAnnotationAndObject($annotation);
-        $args  = $this->getCallbackArgs(func_get_args());
+        $rargs = func_get_args();
+        $args  = $this->getCallbackArgs($rargs);
         $cache = $this->isCacheable($annotation, $args); 
 
         if ($object->has('builtin')) {
-            return "(" . $object->exec($args[2], $args[1]) . ")";
+            if (empty($args[2])) {
+                return $object->exec($args[0], $rargs[2]);
+            }
+            return "(" . $object->exec($args[2], $args[1], $args[0]) . ")";
         }
         
         $arguments = implode(", ", $args);
@@ -177,8 +191,21 @@ class Compiler
 
         throw new \RuntimeException("Invalid callback");
     }
+
+    protected function groupByApps(Array $urls)
+    {
+        $group = new UrlGroup_Switch('$this->currentApp');
+        $extra = array();
+        foreach ($urls as $url) {
+            foreach ($url->getApplication() as $app) {
+                $group->addUrl($url, $app);
+            }
+        }
+
+        return $group;
+    }
     
-    protected function groupByMethod(Array $urls)
+    public function groupByMethod(Array $urls)
     {
         $group = new UrlGroup_Switch('$req->getMethod()');
         foreach ($urls as $url) {
@@ -289,7 +316,7 @@ class Compiler
             }
 
             if (empty($name)) {
-                $this->all_filters[$type][] = array($filterAnnotation, $weight);
+                $this->allFilterss[$type][] = array($filterAnnotation, $weight);
                 continue;
             }
             $this->routeFilters[$name][] = array($type, $filterAnnotation, $weight);
@@ -308,7 +335,7 @@ class Compiler
         $url = new Url($routeAnnotation, $this);
         $url->setRouteAndArgs($route, $args);
 
-        $base = $url->addFilters($this->all_filters);
+        $base = $url->addFilters($this->allFilterss);
 
         $filters = iterator_to_array($routeAnnotation->GetParent());
         if ($routeAnnotation->isMethod()) {
@@ -379,8 +406,13 @@ class Compiler
             $this->processRoute($routeAnnotation, $routeAnnotation->GetArgs());
         }
 
-        foreach($this->annotations->get('NotFound') as $route) {
-            $this->not_found[] = $this->getUrl($route, '@NotFound');
+        foreach($this->annotations->get('NotFound,Error,ErrorHandler') as $route) {
+            if ($route->getName() == 'notfound') {
+                $code = 404;
+            } else {
+                $code = current($route->getArgs());
+            }
+            $this->errorHandler[$code] = $this->getUrl($route, '@NotFound');
         }
     }
     
@@ -414,9 +446,9 @@ class Compiler
         return $urls;
     }
 
-    public function getNotFoundHandler()
+    public function getErrorHandlers()
     {
-        return current($this->not_found);
+        return $this->errorHandler;
     }
 
     protected function compile()
@@ -424,7 +456,8 @@ class Compiler
         $this->readFilters();
         $this->createUrlObjects();
 
-        $groups = $this->groupByMethod($this->urls);
+        $groups = $this->groupByApps($this->urls);
+        $groups->iterate(array($this, 'groupByMethod'));
         $groups->iterate(array($this, 'groupByPartsSize'));
         $groups->iterate(array($this, 'groupByPatterns'));
         $self = $this;
