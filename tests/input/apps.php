@@ -15,3 +15,16 @@ class fooApp
         return 'foobar';
     }
 }
+
+/**
+ *  @Route("/")
+ *  @App xxx
+ */
+function home_by_apps($req, $do_fail)
+{
+    if ($do_fail) {
+        throw new \RuntimeException("hi");
+    }
+    return 'foo-home';
+}
+

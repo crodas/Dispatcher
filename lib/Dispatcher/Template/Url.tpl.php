@@ -38,7 +38,7 @@
 
     if ($allow) {
         {{ $compiler->callbackPrepare($url) }}
-        $req->attributes->__handler__ = {{$compiler->callbackObject($url->getAnnotation())}};
+        $req->attributes->set('__handler__', {{$compiler->callbackObject($url->getAnnotation())}});
         $response = {{ $compiler->callback($url, '$req') }};
 
         @foreach ($postRoute as $filter)

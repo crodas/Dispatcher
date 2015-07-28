@@ -49,6 +49,11 @@ class Router
             @if ($url->getLastConstant())
                 && $parts[$length-1] == {{@$url->getLastConstant()}}
             @end
+            @if (array_filter($url->getApplication()))
+                && in_array($this->currentApp, {{@array_filter($url->getApplication())}})
+            @else
+                && !$this->currentApp
+            @end
             @if (count($consts) > 0)
                 && count(array_intersect($parts, {{@$consts}})) == {{count($consts)}}
             @end
@@ -65,10 +70,16 @@ class Router
     {
         $req->attributes->set('exception', $e);
 
-        switch ($e->errno) {
-        @foreach ($self->getErrorHandlers() as $err => $handler)
-        case {{@$err}}:
-            {{ $handler }}
+        switch ($this->currentApp) {
+        @foreach ($self->getErrorHandlers() as $app => $handler)
+        case {{@$app}}:
+            switch ($e->errno) {
+            @foreach ($handler as $err => $code)
+            case {{@$err}}:
+                {{ $code }}
+                break;
+            @end
+            }
             break;
         @end
         }
@@ -90,9 +101,10 @@ class Router
 
         {{ $groups->__toString() }}
 
+        not_found:
         // We couldn't find any handler for the URL,
         // let's find in our complex url set (if there is any)
-        $this->handleComplexUrl($req, $parts, $length);
+        return $this->handleComplexUrl($req, $parts, $length);
     }
 
     public static function getRoute($name, $args = array())

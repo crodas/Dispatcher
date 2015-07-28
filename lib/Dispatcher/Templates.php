@@ -479,7 +479,13 @@ namespace {
                     echo "        case ";
                     var_export($case);
                     echo ":\n            ";
-                    echo Dispatcher\Templates::get('urls')->render(array('urls' => $urls), true) . "\n            break;\n";
+                    echo Dispatcher\Templates::get('urls')->render(array('urls' => $urls), true) . "\n";
+                    if ($self->isApp()) {
+                        echo "                goto not_found;\n";
+                    }
+                    else {
+                        echo "                break;\n";
+                    }
                 }
                 echo "}\n";
             }
@@ -590,6 +596,14 @@ namespace {
                     var_export($url->getLastConstant());
                     echo "\n";
                 }
+                if (array_filter($url->getApplication())) {
+                    echo "                && in_array(\$this->currentApp, ";
+                    var_export(array_filter($url->getApplication()));
+                    echo ")\n";
+                }
+                else {
+                    echo "                && !\$this->currentApp\n";
+                }
                 if (count($consts) > 0) {
                     echo "                && count(array_intersect(\$parts, ";
                     var_export($consts);
@@ -598,18 +612,27 @@ namespace {
                 echo "                ;\n            if (\$is_candidate && \$this->complexUrl";
                 echo $id . "(\$req, \$parts, \$length, \$r) == true) {\n                return \$r;\n            }\n";
             }
-            echo "\n        throw new HttpException(\$req, 404);\n    }\n\n    public function handleError(\$req, \\Exception \$e)\n    {\n        \$req->attributes->set('exception', \$e);\n\n        switch (\$e->errno) {\n";
-            foreach($self->getErrorHandlers() as $err => $handler) {
+            echo "\n        throw new HttpException(\$req, 404);\n    }\n\n    public function handleError(\$req, \\Exception \$e)\n    {\n        \$req->attributes->set('exception', \$e);\n\n        switch (\$this->currentApp) {\n";
+            foreach($self->getErrorHandlers() as $app => $handler) {
 
-                $this->context['err'] = $err;
+                $this->context['app'] = $app;
                 $this->context['handler'] = $handler;
                 echo "        case ";
-                var_export($err);
-                echo ":\n            ";
-                echo $handler . "\n            break;\n";
+                var_export($app);
+                echo ":\n            switch (\$e->errno) {\n";
+                foreach($handler as $err => $code) {
+
+                    $this->context['err'] = $err;
+                    $this->context['code'] = $code;
+                    echo "            case ";
+                    var_export($err);
+                    echo ":\n                ";
+                    echo $code . "\n                break;\n";
+                }
+                echo "            }\n            break;\n";
             }
             echo "        }\n        throw \$e;\n    }\n\n    public function filter(\$n)\n    {\n        return strlen(\$n) > 0;\n    }\n\n    public function doRoute(Request \$req)\n    {\n        \$uri    = \$req->getRequestUri();\n        \$uri    = (\$p = strpos(\$uri, '?')) ? substr(\$uri, 0, \$p) : \$uri;\n        \$parts  = array_values(array_filter(explode(\"/\", \$uri), array(\$this, 'filter')));\n        \$length = count(\$parts);\n        \$req->uri = \$uri;\n\n        ";
-            echo $groups->__toString() . "\n\n        // We couldn't find any handler for the URL,\n        // let's find in our complex url set (if there is any)\n        \$this->handleComplexUrl(\$req, \$parts, \$length);\n    }\n\n    public static function getRoute(\$name, \$args = array())\n    {\n        if (!is_array(\$args)) {\n            \$args = func_get_args();\n            array_shift(\$args);\n        }\n\n        \$count = count(\$args);\n        switch (\$name) {\n";
+            echo $groups->__toString() . "\n\n        not_found:\n        // We couldn't find any handler for the URL,\n        // let's find in our complex url set (if there is any)\n        return \$this->handleComplexUrl(\$req, \$parts, \$length);\n    }\n\n    public static function getRoute(\$name, \$args = array())\n    {\n        if (!is_array(\$args)) {\n            \$args = func_get_args();\n            array_shift(\$args);\n        }\n\n        \$count = count(\$args);\n        switch (\$name) {\n";
             foreach($self->getNamedUrls() as $name => $route) {
 
                 $this->context['name'] = $name;
@@ -744,8 +767,8 @@ namespace {
                 }
             }
             echo "\n    if (\$allow) {\n        ";
-            echo $compiler->callbackPrepare($url) . "\n        \$req->attributes->__handler__ = ";
-            echo $compiler->callbackObject($url->getAnnotation()) . ";\n        \$response = ";
+            echo $compiler->callbackPrepare($url) . "\n        \$req->attributes->set('__handler__', ";
+            echo $compiler->callbackObject($url->getAnnotation()) . ");\n        \$response = ";
             echo $compiler->callback($url, '$req') . ";\n\n";
             foreach($postRoute as $filter) {
 

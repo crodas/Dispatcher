@@ -195,7 +195,6 @@ class Compiler
     protected function groupByApps(Array $urls)
     {
         $group = new UrlGroup_Switch('$this->currentApp');
-        $extra = array();
         foreach ($urls as $url) {
             foreach ($url->getApplication() as $app) {
                 $group->addUrl($url, $app);
@@ -412,7 +411,14 @@ class Compiler
             } else {
                 $code = current($route->getArgs());
             }
-            $this->errorHandler[$code] = $this->getUrl($route, '@NotFound');
+            $apps = $route->getObject()->get('app,application');
+            if ($apps) {
+                foreach ($apps as $app) {
+                    $this->errorHandler[current($app->getArgs())][$code] = $this->getUrl($route, '@NotFound');
+                }
+            } else {
+                $this->errorHandler[''][$code] = $this->getUrl($route, '@NotFound');
+            }
         }
     }
     
