@@ -56,6 +56,11 @@ class UrlGroup_Switch extends UrlGroup
         return $urls;
     }
 
+    public function isApp()
+    {
+        return $this->variable === '$this->currentApp';
+    }
+
     public function getElse()
     {
         if (empty($this->urls[''])) {
@@ -66,7 +71,9 @@ class UrlGroup_Switch extends UrlGroup
     
     public function hasRules()
     {
-        $keys = array_filter(array_keys($this->urls));
+        $keys = array_filter(array_keys($this->urls), function($val) {
+            return $val !== '';
+        });
         return count($keys) > 0;
     }
 

@@ -202,7 +202,7 @@ class AllTest extends \phpunit_framework_testcase
         $req   = Request::create('/deadly-simple');
         $req->attributes->set('phpunit', $this);
         $controller = $route->doRoute($req, array('REQUEST_URI' => "/deadly-simple"));
-        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals($controller, $req->attributes->get('__handler__'));
     }
 
     public function testComplexUrlWithNoFilter()
@@ -211,19 +211,19 @@ class AllTest extends \phpunit_framework_testcase
         $req   = Request::create('/hola/que/tal/route');
         $req->attributes->set('phpunit', $this);
         $controller = $route->doRoute($req);
-        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals($controller, $req->attributes->get('__handler__'));
         $this->assertEquals(array('hola', 'que', 'tal'), $req->attributes->get('foobar_nofilter'));
 
         $req   = Request::create('/router/hola/que/tal');
         $req->attributes->set('phpunit', $this);
         $controller = $route->doRoute($req);
-        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals($controller, $req->attributes->get('__handler__'));
         $this->assertEquals(array('hola', 'que', 'tal'), $req->attributes->get('foobar_nofilter'));
 
         $req   = Request::create('/routex/hola/que/tal/all');
         $req->attributes->set('phpunit', $this);
         $controller = $route->doRoute($req);
-        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals($controller, $req->attributes->get('__handler__'));
         $this->assertEquals(array('hola', 'que', 'tal'), $req->attributes->get('foobar_nofilter'));
     }
 
@@ -233,7 +233,7 @@ class AllTest extends \phpunit_framework_testcase
         $req   = Request::create("/loop-00/l-1-1/l-2-3/l-3-4/loop/4/5/bar");
         $req->attributes->set('phpunit', $this);
         $controller = $route->doRoute($req);
-        $this->assertEquals($controller, $req->attributes->get('controller'));
+        $this->assertEquals($controller, $req->attributes->get('__handler__'));
         $this->assertEquals($req->attributes->get('numeric'), '00');
         $this->assertEquals($req->attributes->get('a'), array('1', '2', '3'));
         $this->assertEquals($req->attributes->get('x'), array('1', '3', '4'));
@@ -317,6 +317,47 @@ class AllTest extends \phpunit_framework_testcase
         $route = new Router(file);
         $req   = Request::create('/prefix1/apps/foo');
         $route->doRoute($req);
+    }
+
+    /**
+     * @expectedException Dispatcher\Exception\HttpException
+     */
+    public function testApplicationHomeWrongApp()
+    {
+        $route = new Router(file);
+        $route->setApplication('foo');
+        $req   = Request::create('/');
+        $this->assertEquals('foo-home', $route->doRoute($req));
+    }
+
+    public function testApplicationHome()
+    {
+        $route = new Router(file);
+        $route->setApplication('xxx');
+        $req   = Request::create('/');
+        $req->attributes->set('_from_app', true);
+        $this->assertEquals('foo-home', $route->doRoute($req));
+    }
+
+    public function testApplicationComplex()
+    {
+        $route = new Router(file);
+        $route->setApplication('xxx');
+        $req   = Request::create('/router/cesar/rodas/with/app');
+        $req->attributes->set('phpunit', $this);
+        $req->attributes->set('_from_app', true);
+        $this->assertEquals('yet_another_from_app', $route->doRoute($req));
+    }
+
+    public function testApplicationInternalError()
+    {
+        $route = new Router(file);
+        $route->setApplication('xxx');
+        $req   = Request::create('/');
+        $req->attributes->set('_from_app', true);
+        $req->attributes->set('do_fail', true);
+        $this->assertNotEquals('Handling exception RuntimeException', $route->doRoute($req));
+        $this->assertEquals('XXX exception RuntimeException', $route->doRoute($req));
     }
 
     public function testApplicationEncapsulation2()

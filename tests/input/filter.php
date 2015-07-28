@@ -13,6 +13,26 @@ class SomeSillyClass
     }
 
     /**
+     *  @Error 500
+     *  @App xxx
+     */
+    public function xxx_handle_500($req, $exception)
+    {
+        return "XXX exception " . get_class($exception);
+    }
+
+    /**
+     *  @preRoute
+     *  @App xxx
+     */
+    public function from_app_filter($req)
+    {
+        if (!$req->attributes->get('_from_app')) {
+            throw new \RuntimeException("Invalid call");
+        }
+    }
+
+    /**
      *  @Route("/error")
      */
     public function xxx()

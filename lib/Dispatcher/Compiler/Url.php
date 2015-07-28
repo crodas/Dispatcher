@@ -123,6 +123,18 @@ class Url
         if (empty($this->filters[$type])) {
             $this->filters[$type] = array();
         }
+        $filterApps = $def->getObject()->get('app,application');
+        if ($filterApps) {
+            $found = false;
+            $apps  = $this->getApplication();
+            foreach ($filterApps as $app) {
+                if (in_array(current($app->getArgs()), $apps)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if(!$found) return;
+        }
         $this->filters[$type][] = array($def, $args, $weight);
     }
 
