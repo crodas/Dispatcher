@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Router
 {
-    public $currentApp;
+    public $currentApp = 'default';
 
     public function setWrapper(\Dispatcher\Router $wrapper)
     {
@@ -49,8 +49,8 @@ class Router
             @if ($url->getLastConstant())
                 && $parts[$length-1] == {{@$url->getLastConstant()}}
             @end
-            @if (array_filter($url->getApplication()))
-                && in_array($this->currentApp, {{@array_filter($url->getApplication())}})
+            @if (array_filter($url->getApplications()))
+                && in_array($this->currentApp, {{@array_filter($url->getApplications())}})
             @else
                 && !$this->currentApp
             @end

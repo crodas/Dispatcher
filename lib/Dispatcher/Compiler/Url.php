@@ -123,12 +123,12 @@ class Url
         if (empty($this->filters[$type])) {
             $this->filters[$type] = array();
         }
-        $filterApps = $def->getObject()->get('app,application');
+        $filterApps = Compiler::getApplications($def);
         if ($filterApps) {
             $found = false;
-            $apps  = $this->getApplication();
+            $apps  = $this->getApplications();
             foreach ($filterApps as $app) {
-                if (in_array(current($app->getArgs()), $apps)) {
+                if (in_array($app, $apps)) {
                     $found = true;
                     break;
                 }
@@ -193,32 +193,9 @@ class Url
         return $vars;
     }
 
-    protected function getAnnotations($name)
+    public function getApplications()
     {
-        $obj = $this->def->getObject();
-        $ann = $obj->get($name);
-        if ($obj instanceof \Notoj\Object\ZMethod) {
-            $ann = array_merge($ann, $obj->getClass()->get($name));
-        }
-        return $ann;
-    }
-
-    public function getApplication()
-    {
-        $apps = $this->getAnnotations('App,Application');
-        $names = array();
-        foreach ($apps as $app) {
-            $name = current($app->getArgs());
-            if ($name) {
-                $names[] = $name;
-            }
-        }
-
-        if (empty($names)) {
-            return [''];
-        }
-
-        return $names;
+        return Compiler::getApplications($this->def);
     }
 
     public function getMethod()
