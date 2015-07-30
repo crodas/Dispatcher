@@ -26,6 +26,7 @@ class AllTest extends \phpunit_framework_testcase
     public function testBug01Sorting()
     {
         $route = new Router(file);
+        $route->setApplication('default');
         $req   =  Request::create('/foo/barxxx?x=1', 'GET');
         $req->attributes->get('phpunit', $this);
         $out = $route->doRoute($req);

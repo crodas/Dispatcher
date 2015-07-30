@@ -148,7 +148,7 @@ class Compiler
 
     public function getApps()
     {
-        $apps = [];
+        $apps = ['default'];
         foreach ($this->annotations->get('app,application') as $ann) {
             $apps[] = current($ann->getArgs());
         }
