@@ -4,6 +4,7 @@ script: phpunit tests
 php:
   - 5.5.9
   - 5.6
+  - 7.0
 
 before_script:
   - curl -sS https://getcomposer.org/installer | php
