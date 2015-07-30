@@ -37,14 +37,15 @@
 
 namespace Dispatcher;
 
-use Dispatcher\Compiler\Component,
-    Dispatcher\Compiler\ComplexUrl,
-    Dispatcher\Compiler\Url,
-    Dispatcher\Compiler\UrlGroup_Switch,
-    Dispatcher\Compiler\UrlGroup_If,
-    Notoj\Annotation\Annotation,
-    crodas\SimpleView\FixCode,
-    crodas\FileUtil\Path;
+use Dispatcher\Compiler\Component;
+use Dispatcher\Compiler\ComplexUrl;
+use Dispatcher\Compiler\Url;
+use Dispatcher\Compiler\UrlGroup_Switch;
+use Dispatcher\Compiler\UrlGroup_If;
+use Notoj\Annotation\Annotation;
+use Notoj\Object\ZMethod;
+use crodas\SimpleView\FixCode;
+use crodas\FileUtil\Path;
 
 class Compiler
 {
@@ -196,7 +197,7 @@ class Compiler
     {
         $group = new UrlGroup_Switch('$this->currentApp');
         foreach ($urls as $url) {
-            foreach ($url->getApplication() as $app) {
+            foreach ($url->getApplications() as $app) {
                 $group->addUrl($url, $app);
             }
         }
@@ -411,15 +412,28 @@ class Compiler
             } else {
                 $code = current($route->getArgs());
             }
-            $apps = $route->getObject()->get('app,application');
-            if ($apps) {
-                foreach ($apps as $app) {
-                    $this->errorHandler[current($app->getArgs())][$code] = $this->getUrl($route, '@NotFound');
-                }
-            } else {
-                $this->errorHandler[''][$code] = $this->getUrl($route, '@NotFound');
+
+            foreach (self::getApplications($route) as $app) {
+                $this->errorHandler[$app][$code] = $this->getUrl($route, '@NotFound');
             }
         }
+    }
+
+    public static function getApplications(Annotation $annotation)
+    {
+        $object = $annotation->getObject();
+        $apps   = [];
+        foreach ($object->get('app,application') as $app) {
+            $apps[] = strtolower(trim(current($app->getArgs()) ?: ''));
+        }
+
+        if ($object instanceof ZMethod) {
+            foreach ($object->getClass()->get('app,application') as $app) {
+                $apps[] = strtolower(trim(current($app->getArgs()) ?: ''));
+            }
+        }
+
+        return array_unique(array_filter($apps)) ?: ['default'];
     }
     
     public function getFilterExpr($name)
