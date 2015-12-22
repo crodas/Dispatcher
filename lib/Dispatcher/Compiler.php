@@ -383,10 +383,6 @@ class Compiler
 
     protected function createUrlObjects()
     {
-        if (!$this->annotations->has('Route')) {
-            throw new \RuntimeException("cannot find @Route annotation");
-        }
-
         $this->urls = array();
         foreach ($this->annotations->get('Route') as $routeAnnotation) {
             if ($routeAnnotation->isClass()) {
@@ -416,6 +412,10 @@ class Compiler
             foreach (self::getApplications($route) as $app) {
                 $this->errorHandler[$app][$code] = $this->getUrl($route, '@NotFound');
             }
+        }
+
+        if (empty($this->urls)) {
+            throw new \RuntimeException("cannot find @Route annotation");
         }
     }
 

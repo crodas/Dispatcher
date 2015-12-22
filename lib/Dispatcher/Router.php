@@ -47,6 +47,9 @@ class Router extends Generator
 
     public function __construct($output = '')
     {
+        if (defined('DEVELOPMENT_MODE')) {
+            $this->development = true;
+        }
         $this->setOutput($output);
     }
 

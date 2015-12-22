@@ -37,8 +37,9 @@
 
 namespace Dispatcher\Compiler;
 
-use Notoj\Annotation,
-    Dispatcher\Compiler;
+use Notoj\Annotation;
+use Dispatcher\Compiler;
+use RuntimeException;
 
 class Component
 {
