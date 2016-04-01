@@ -40,13 +40,19 @@ class SomeSillyClass
         throw new \runtimeexception;
     }
 
-    /** @Filter reverse @Cached 3600 */
+    /**
+     * @Filter reverse
+     * @Cached 3600
+     */
     function filter_reverse($Req, $name, $value)
     {
         return $name == strrev($value);
     }
  
-    /** @Filter something @Cache 3600 */
+    /**
+     * @Filter something
+     * @Cache 3600
+     */
     function filter_set($Req, $name, $value)
     {
         $Req->attributes->set($name, strtoupper($value));
