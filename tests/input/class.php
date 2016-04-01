@@ -13,7 +13,10 @@ class SomeClass
         return __METHOD__;
     }
 
-    /** @Method POST @checkSession */
+    /**
+     * @Method POST 
+     * @checkSession 
+     */
     public function save()
     {
         return __METHOD__;

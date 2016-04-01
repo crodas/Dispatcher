@@ -54,7 +54,7 @@ function __buffer_start($req)
     return true;
 }
 
-/** @postRoute buffer @Last */
+/** @postRoute("buffer") @Last */
 function __buffer_end($req, $args, $return)
 {
     $req->attributes->set('__buffer__', ob_get_clean());

@@ -173,7 +173,7 @@ class Url
     public function setMethod($method)
     {
         if (!in_array($method, $this->allowedMethods)) {
-            throw new \RuntimeException("{$exception} is not a valid method");
+            throw new \RuntimeException("{$method} is not a valid method");
         }
         $this->method = $method;
         return $this;
